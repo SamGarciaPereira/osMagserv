@@ -99,10 +99,10 @@
                         <option value="Pendente" {{ old('status', $orcamento->status) == 'Pendente' ? 'selected' : '' }}>
                             Pendente</option>
                         <option value="Em Andamento" {{ old('status', $orcamento->status) == 'Em Andamento' ? 'selected' : '' }}>Em Andamento</option>
-                        <option value="Enviado" {{ old('status', $orcamento->status) == 'Enviado' ? 'selected' : '' }}>Enviado
-                        </option>
-                        <option value="Aprovado" {{ old('status', $orcamento->status) == 'Aprovado' ? 'selected' : '' }}>
-                            Aprovado</option>
+                        <option value="Em Validação" {{ old('status', $orcamento->status) == 'Em Validação' ? 'selected' : '' }}>Em Validação</option>
+                        <option value="Validado" {{ old('status', $orcamento->status) == 'Validado' ? 'selected' : '' }}>Validado</option>
+                        <option value="Enviado" {{ old('status', $orcamento->status) == 'Enviado' ? 'selected' : '' }}>Enviado</option>
+                        <option value="Aprovado" {{ old('status', $orcamento->status) == 'Aprovado' ? 'selected' : '' }}>Aprovado</option>
                     </select>
                     @error('status') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>

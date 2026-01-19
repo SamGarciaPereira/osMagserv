@@ -53,6 +53,21 @@ class DashboardController extends Controller
                   });
             })
             ->orWhere(function($q) use ($mes, $ano) {
+                $q->where('status', 'Em Andamento')
+                  ->whereMonth('updated_at', $mes)
+                  ->whereYear('updated_at', $ano);
+            })
+            ->orWhere(function($q) use ($mes, $ano) {
+                $q->where('status', 'Em Validação')
+                  ->whereMonth('updated_at', $mes)
+                  ->whereYear('updated_at', $ano);
+            })
+            ->orWhere(function($q) use ($mes, $ano) {
+                $q->where('status', 'Validado')
+                  ->whereMonth('updated_at', $mes)
+                  ->whereYear('updated_at', $ano);
+            })
+            ->orWhere(function($q) use ($mes, $ano) {
                 $q->where('status', 'Enviado')
                   ->whereMonth('data_envio', $mes)
                   ->whereYear('data_envio', $ano);

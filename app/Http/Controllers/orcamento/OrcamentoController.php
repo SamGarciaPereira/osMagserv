@@ -78,14 +78,15 @@ class OrcamentoController extends Controller
         $validatedData = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
             'numero_manual' => 'nullable|integer|min:1',
-            'valor' => 'nullable|numeric|min:0',
-            'status' => 'required|string|in:Pendente,Em Andamento,Enviado,Aprovado',
+            'valor' => 'required_if:status,Em Validação,Validado,Enviado,Aprovado|nullable|numeric|min:0',
+            'status' => 'required|string|in:Pendente,Em Andamento,Em Validação,Validado,Enviado,Aprovado',
             'revisao' => 'nullable|integer|min:0',
             'escopo' => 'nullable|string',
             'data_solicitacao' => 'required_if:status,Pendente,Em Andamento|nullable|date',
             'data_envio' => 'required_if:status,Enviado|nullable|date',
             'data_aprovacao' => 'required_if:status,Aprovado|nullable|date',
         ],[
+            'valor.required_if' => 'Preencha o valor para o status selecionado!',
             'data_solicitacao.required_if' => 'A Data de Solicitação é obrigatória para status Pendente ou Em Andamento.',
             'data_envio.required_if'       => 'A Data de Envio é obrigatória para status Enviado.',
             'data_aprovacao.required_if'   => 'A Data de Aprovação é obrigatória para status Aprovado.',
@@ -133,8 +134,8 @@ class OrcamentoController extends Controller
         $validatedData = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
             'numero_proposta_sufixo' => ['required', 'integer', 'min:0', 'max:999'],
-            'valor' => 'nullable|numeric|min:0',
-            'status' => 'required|string|in:Pendente,Em Andamento,Enviado,Aprovado',
+            'valor' => 'required_if:status,Em Validação,Validado,Enviado,Aprovado|nullable|numeric|min:0',
+            'status' => 'required|string|in:Pendente,Em Andamento,Em Validação,Validado,Enviado,Aprovado',
             'revisao' => 'nullable|integer|min:0',
             'escopo' => 'nullable|string',
             'checklist_data' => 'nullable|json',
@@ -142,6 +143,7 @@ class OrcamentoController extends Controller
             'data_envio' => 'required_if:status,Enviado|nullable|date',
             'data_aprovacao' => 'required_if:status,Aprovado|nullable|date',
         ],[
+            'valor.required_if' => 'Preencha o valor para o status selecionado!',
             'data_solicitacao.required_if' => 'A Data de Solicitação é obrigatória para status Pendente ou Em Andamento.',
             'data_envio.required_if'       => 'A Data de Envio é obrigatória para status Enviado.',
             'data_aprovacao.required_if'   => 'A Data de Aprovação é obrigatória para status Aprovado.',
@@ -170,13 +172,13 @@ class OrcamentoController extends Controller
 
         $temPendencias = collect($validatedData['checklist'])->contains('completed', false);
 
-        $statusProibidos = ['Enviado', 'Aprovado'];
+        $statusProibidos = ['Em Validação', 'Validado', 'Enviado', 'Aprovado'];
 
         if ($temPendencias && in_array($validatedData['status'], $statusProibidos)) {
             return back()
                 ->withInput() 
                 ->withErrors([
-                    'status' => 'Existem tarefas pendentes no checklist! Conclua todas as tarefas antes de alterar o status para Enviado ou Aprovado.'
+                    'status' => 'Existem tarefas pendentes no checklist! Conclua todas as tarefas antes de alterar para os status seguintes!'
                 ]);
         }
 

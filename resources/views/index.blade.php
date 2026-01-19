@@ -32,36 +32,7 @@
     </form>
 </div>
 
-@php
-    function renderStatusList($stats, $isMoney = false) {
-        if(empty($stats)) return '<p class="text-xs text-gray-400 mt-2">Sem dados no período.</p>';
-        
-        $html = '<div class="mt-3 space-y-1">';
-        foreach($stats as $status => $val) {
-            $displayVal = $isMoney ? 'R$ ' . number_format($val, 2, ',', '.') : $val;
-            $color = match($status) {
-                'Concluída', 'Aprovado', 'Aceita', 'Finalizado', 'Pago', 'Ativo' => 'bg-green-500',
-                'Pendente', 'Em Aberto', 'Agendada' => 'bg-yellow-500',
-                'Cancelada', 'Recusado', 'Recusada', 'Atrasado', 'Inativo' => 'bg-red-500',
-                'Em Andamento', 'Enviado' => 'bg-blue-500',
-                'Faturado' => 'bg-purple-500',
-                default => 'bg-gray-400'
-            };
 
-            $html .= '
-                <div class="flex justify-between items-center text-sm">
-                    <div class="flex items-center">
-                        <span class="w-2 h-2 rounded-full '.$color.' mr-2"></span>
-                        <span class="text-gray-600">'.$status.'</span>
-                    </div>
-                    <span class="font-semibold text-gray-800">'.$displayVal.'</span>
-                </div>
-            ';
-        }
-        $html .= '</div>';
-        return $html;
-    }
-@endphp
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
@@ -76,7 +47,7 @@
             </div>
         </div>
         <div class="border-t border-gray-100 pt-2">
-            {!! renderStatusList($processosStats) !!}
+            <x-dashboard-list :stats="$processosStats" />
         </div>
     </div>
     
@@ -91,7 +62,7 @@
             </div>
         </div>
         <div class="border-t border-gray-100 pt-2">
-            {!! renderStatusList($orcamentosStats) !!}
+            <x-dashboard-list :stats="$orcamentosStats" />
         </div>
     </div>
 
@@ -106,7 +77,7 @@
             </div>
         </div>
         <div class="border-t border-gray-100 pt-2">
-            {!! renderStatusList($contratosStats) !!}
+            <x-dashboard-list :stats="$contratosStats" />
         </div>
     </div>
 
@@ -121,7 +92,7 @@
             </div>
         </div>
         <div class="border-t border-gray-100 pt-2">
-            {!! renderStatusList($prevStats) !!}
+            <x-dashboard-list :stats="$prevStats" />
         </div>
     </div>
     
@@ -136,7 +107,7 @@
             </div>
         </div>
         <div class="border-t border-gray-100 pt-2">
-            {!! renderStatusList($corrStats) !!}
+            <x-dashboard-list :stats="$corrStats" />
         </div>
     </div>
 
@@ -151,7 +122,7 @@
             </div>
         </div>
         <div class="border-t border-gray-100 pt-2">
-            {!! renderStatusList($solicitacoesStats) !!}
+            <x-dashboard-list :stats="$solicitacoesStats" />
         </div>
     </div>
     
@@ -168,7 +139,7 @@
             </div>
         </div>
         <div class="border-t border-gray-100 pt-2">
-            {!! renderStatusList($receberStats, true) !!}
+            <x-dashboard-list :stats="$receberStats" :isMoney="true" />
         </div>
     </div>
 
@@ -183,7 +154,7 @@
             </div>
         </div>
         <div class="border-t border-gray-100 pt-2">
-            {!! renderStatusList($pagarStats, true) !!}
+            <x-dashboard-list :stats="$pagarStats" :isMoney="true" />
         </div>
     </div>
     @endif

@@ -82,8 +82,9 @@
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         required>
                         <option value="Pendente" {{ old('status') == 'Pendente' ? 'selected' : '' }}>Pendente</option>
-                        <option value="Em Andamento" {{ old('status') == 'Em Andamento' ? 'selected' : '' }}>Em Andamento
-                        </option>
+                        <option value="Em Andamento" {{ old('status') == 'Em Andamento' ? 'selected' : '' }}>Em Andamento</option>
+                        <option value="Em Validação" {{ old('status') == 'Em Validação' ? 'selected' : '' }}>Em Validação</option>
+                        <option value="Validado" {{ old('status') == 'Validado' ? 'selected' : '' }}>Validado</option>
                         <option value="Enviado" {{ old('status') == 'Enviado' ? 'selected' : '' }}>Enviado</option>
                         <option value="Aprovado" {{ old('status') == 'Aprovado' ? 'selected' : '' }}>Aprovado</option>
                     </select>

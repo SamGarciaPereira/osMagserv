@@ -36,6 +36,8 @@
                     <option value="">Todos</option>
                     <option value="Pendente" {{ request('status') == 'Pendente' ? 'selected' : '' }}>Pendente</option>
                     <option value="Em Andamento" {{ request('status') == 'Em Andamento' ? 'selected' : '' }}>Em Andamento</option>
+                    <option value="Em Validação" {{ request('status') == 'Em Validação' ? 'selected' : '' }}>Em Validação</option>
+                    <option value="Validado" {{ request('status') == 'Validado' ? 'selected' : '' }}>Validado</option>
                     <option value="Enviado" {{ request('status') == 'Enviado' ? 'selected' : '' }}>Enviado</option>
                     <option value="Aprovado" {{ request('status') == 'Aprovado' ? 'selected' : '' }}>Aprovado</option>
                 </select>
@@ -129,7 +131,7 @@
                                         <p><strong>Data de Envio:</strong> {{ $orcamento->data_envio ? \Carbon\Carbon::parse($orcamento->data_envio)->format('d/m/Y') : 'Não definida' }}</p>
                                         <p><strong>Data de Aprovação:</strong> {{ $orcamento->data_aprovacao ? \Carbon\Carbon::parse($orcamento->data_aprovacao)->format('d/m/Y') : 'Não definida' }}</p>
                                         <p><strong>Revisão:</strong> {{ $orcamento->revisao }}</p>
-                                        @if($orcamento->status == 'Pendente' || $orcamento->status == 'Em andamento')
+                                        @if($orcamento->status == 'Pendente' || $orcamento->status == 'Em Andamento')
                                         <p><strong>Checklist:</strong></p>
                                         <ul>
                                             @php
