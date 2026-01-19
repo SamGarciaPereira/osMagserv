@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 class AnexoController extends Controller{
     public function store(Request $request){
         $request->validate([
-            'arquivo' => 'required|file|mimes:pdf,jpg,png,jpeg|max:10240', 
+            'arquivo' => 'required|file|mimes:pdf,jpg,png,jpeg,xlsx,xls,csv|max:10240', 
             'model_id' => 'required|integer',
             'model_type' => 'required|string', 
         ]);

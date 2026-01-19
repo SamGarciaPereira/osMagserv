@@ -26,8 +26,8 @@
                                     Adicionando anexo para: <strong id="modalModelName"></strong>
                                 </p>
                                 
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Selecione o arquivo (PDF ou Imagem)</label>
-                                <input type="file" name="arquivo" required accept=".pdf,image/*"
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Selecione o arquivo</label>
+                                <input type="file" name="arquivo" required accept=".pdf,image/*,.xlsx,.xls,.csv"
                                        class="block w-full text-sm text-gray-500
                                               file:mr-4 file:py-2 file:px-4
                                               file:rounded-md file:border-0

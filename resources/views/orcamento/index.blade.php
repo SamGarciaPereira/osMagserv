@@ -161,10 +161,21 @@
                                                 @foreach($orcamento->anexos as $anexo)
                                                     <div class="bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between shadow-sm hover:shadow-md transition">
                                                         <div class="flex items-center overflow-hidden">
-                                                            @if(Str::endsWith(strtolower($anexo->nome_original), '.pdf'))
+                                                            @php
+                                                                $ext = strtolower(pathinfo($anexo->nome_original, PATHINFO_EXTENSION));
+                                                            @endphp
+
+                                                            @if($ext === 'pdf')
                                                                 <i class="bi bi-file-earmark-pdf-fill text-red-500 text-xl mr-3 flex-shrink-0"></i>
-                                                            @else
+                                                            
+                                                            @elseif(in_array($ext, ['xls', 'xlsx', 'csv']))
+                                                                <i class="bi bi-file-earmark-excel-fill text-green-500 text-xl mr-3 flex-shrink-0"></i>
+                                                            
+                                                            @elseif(in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
                                                                 <i class="bi bi-file-earmark-image-fill text-blue-500 text-xl mr-3 flex-shrink-0"></i>
+                                                            
+                                                            @else
+                                                                <i class="bi bi-file-earmark-fill text-gray-500 text-xl mr-3 flex-shrink-0"></i>
                                                             @endif
                                                             
                                                             <div class="truncate">
