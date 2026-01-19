@@ -131,6 +131,9 @@
                                         <p><strong>Data de Envio:</strong> {{ $orcamento->data_envio ? \Carbon\Carbon::parse($orcamento->data_envio)->format('d/m/Y') : 'Não definida' }}</p>
                                         <p><strong>Data de Aprovação:</strong> {{ $orcamento->data_aprovacao ? \Carbon\Carbon::parse($orcamento->data_aprovacao)->format('d/m/Y') : 'Não definida' }}</p>
                                         <p><strong>Revisão:</strong> {{ $orcamento->revisao }}</p>
+                                        <p><strong>Comentários:</strong></p>
+                                        <p class="whitespace-pre-line {{ $orcamento->comentario ? 'text-blue-800 font-bold' : 'text-gray-500 italic' }}">{{ $orcamento->comentario ?: 'Nenhum comentário adicionado.' }}
+                                        </p>
                                         @if($orcamento->status == 'Pendente' || $orcamento->status == 'Em Andamento')
                                         <p><strong>Checklist:</strong></p>
                                         <ul>
@@ -139,7 +142,7 @@
                                             @endphp
 
                                             @forelse($tarefas as $tarefa)
-                                                <li class="text-blue-800 font-bold">- {{ $tarefa['text'] }}</li>
+                                                <li class="text-orange-700 font-bold">- {{ $tarefa['text'] }}</li>
                                             @empty
                                                 <li class="text-green-600 font-bold">
                                                     <i class="bi bi-check-all"></i> Tudo em dia!

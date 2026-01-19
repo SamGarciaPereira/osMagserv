@@ -21,6 +21,7 @@ class Orcamento extends Model
         'data_envio',
         'data_aprovacao',
         'escopo',
+        'comentario',
         'checklist',
         'valor',
         'revisao',

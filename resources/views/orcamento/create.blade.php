@@ -104,6 +104,13 @@
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">{{ old('escopo') }}</textarea>
                     @error('escopo') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
+
+                <div class="lg:col-span-3">
+                    <label for="comentario" class="block text-sm font-medium text-gray-700 mb-2">Comentários</label>
+                    <textarea id="comentario" name="comentario" rows="4"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">{{ old('comentario') }}</textarea>
+                    @error('comentario') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
             </div>
 
             <div class="flex justify-end mt-10 pt-6">
