@@ -12,8 +12,12 @@
         'Cancelada'     => 'bg-red-100 text-red-800 border-red-200',
         'Aprovado'      => 'bg-green-100 text-green-800 border-green-200',
         'Recusado'      => 'bg-red-100 text-red-800 border-red-200',
+        'Recusada'      => 'bg-red-100 text-red-800 border-red-200',
+        'Aceita'        => 'bg-green-100 text-green-800 border-green-200',
+        'Faturado'      => 'bg-green-100 text-green-800 border-green-200',
+        'Em Aberto'     => 'bg-yellow-100 text-yellow-800 border-yellow-200',
         'Pago'          => 'bg-green-100 text-green-800 border-green-200',
-        'Atrasado'       => 'bg-red-100 text-red-800 border-red-200',
+        'Atrasado'      => 'bg-red-100 text-red-800 border-red-200',
         '1'             => 'bg-green-100 text-green-800 border-green-200', 
         '0'             => 'bg-red-100 text-red-800 border-red-200',  
     ];
