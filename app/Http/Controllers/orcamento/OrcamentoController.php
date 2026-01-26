@@ -56,6 +56,12 @@ class OrcamentoController extends Controller
                 break;
         }
 
+        if ($request->filled('mes_ano')) {
+            $data = \Carbon\Carbon::createFromFormat('Y-m', $request->mes_ano);
+            $query->whereMonth('created_at', $data->month)
+                  ->whereYear('created_at', $data->year);
+        }
+
         $orcamentos = $query->paginate(200);
         return view('orcamento.index', compact('orcamentos'));
     }
