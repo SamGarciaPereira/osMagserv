@@ -48,6 +48,12 @@ class ContasPagarController extends Controller
                 break;
         }
 
+        if ($request->filled('mes_ano')) {
+            $data = Carbon::createFromFormat('Y-m', $request->mes_ano);
+            $query->whereMonth('data_vencimento', $data->month)
+                  ->whereYear('data_vencimento', $data->year);
+        }
+
         $contasFixas = $query->clone()->where('fixa', true)->paginate(100, ['*'], 'page_fixas');
         $contasVariaveis = $query->clone()->where('fixa', false)->paginate(100, ['*'], 'page_variaveis');
 
