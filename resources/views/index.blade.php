@@ -13,20 +13,19 @@
         </p>
     </div>
     
-    <form method="GET" action="{{ route('home') }}" class="flex items-center gap-2 bg-white p-2 rounded-lg shadow-sm">
-        <select name="mes" class="border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
-            @foreach(range(1, 12) as $m)
-                <option value="{{ $m }}" {{ $mes == $m ? 'selected' : '' }}>
-                    {{ ucfirst(\Carbon\Carbon::create()->month($m)->locale('pt_BR')->translatedFormat('F')) }}
-                </option>
-            @endforeach
-        </select>
-        <select name="ano" class="border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
-            @foreach(range(now()->year - 4, now()->year + 4) as $y)
-                <option value="{{ $y }}" {{ $ano == $y ? 'selected' : '' }}>{{ $y }}</option>
-            @endforeach
-        </select>
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 transition">
+    <form method="GET" action="{{ route('home') }}" class="flex items-end gap-2 p-2 rounded-lg shadow">
+    
+        <div>
+            <input 
+                type="month" 
+                name="mes_ano" 
+                id="mes_ano" 
+                value="{{ request('mes_ano', now()->format('Y-m')) }}"
+                class="w-full px-3 py-2 border bg-white border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
+            >
+        </div>
+
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 transition mb-[1px]">
             <i class="bi bi-filter"></i>
         </button>
     </form>

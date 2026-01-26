@@ -19,8 +19,14 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $mes = (int) $request->input('mes', now()->month);
-        $ano = (int) $request->input('ano', now()->year);
+        if ($request->filled('mes_ano')) {
+            $data = Carbon::createFromFormat('Y-m', $request->mes_ano);
+            $mes = $data->month;
+            $ano = $data->year;
+        } else {
+            $mes = now()->month;
+            $ano = now()->year;
+        }
 
         $dataInicioFiltro = Carbon::create($ano, $mes, 1)->startOfMonth();
         $dataFimFiltro    = Carbon::create($ano, $mes, 1)->endOfMonth();
