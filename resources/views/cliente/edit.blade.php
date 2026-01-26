@@ -63,7 +63,16 @@
         <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
             <div class="md:col-span-2">
                 <label for="cep" class="block text-sm font-medium text-gray-700 mb-2">CEP</label>
-                <input type="text" id="cep" name="cep" value="{{ $cliente->cep }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                <div class="flex gap-2">
+                    <input type="text" id="cep" name="cep" 
+                        value="{{ isset($cliente) ? $cliente->cep : '' }}" 
+                        class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" 
+                        placeholder="Ex: 01001-000">
+                    
+                    <button type="button" id="btn-buscar-cep" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors" title="Buscar CEP">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
             </div>
             <div class="md:col-span-4">
                 <label for="logradouro" class="block text-sm font-medium text-gray-700 mb-2">Logradouro</label>
