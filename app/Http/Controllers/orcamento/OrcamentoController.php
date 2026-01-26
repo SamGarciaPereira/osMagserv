@@ -58,8 +58,8 @@ class OrcamentoController extends Controller
 
         if ($request->filled('mes_ano')) {
             $data = \Carbon\Carbon::createFromFormat('Y-m', $request->mes_ano);
-            $query->whereMonth('created_at', $data->month)
-                  ->whereYear('created_at', $data->year);
+            $query->whereMonth('data_solicitacao', $data->month)
+                  ->whereYear('data_solicitacao', $data->year);
         }
 
         $orcamentos = $query->paginate(200);
