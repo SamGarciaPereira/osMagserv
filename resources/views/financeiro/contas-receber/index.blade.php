@@ -16,7 +16,7 @@
 </div>
 
 <div class="bg-white p-6 rounded-lg shadow-sm mb-6 border border-gray-200">
-    <form method="GET" action="{{ route('financeiro.contas-receber.index') }}" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+    <form method="GET" action="{{ route('financeiro.contas-receber.index') }}" class="grid grid-cols-1 md:grid-cols-15 gap-4 items-end">
         
         <div class="md:col-span-5">
             <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Pesquisar</label>
@@ -47,7 +47,19 @@
                 <option value="antigos" {{ request('ordem') == 'antigos' ? 'selected' : '' }}>Antigos</option>
                 <option value="maior_valor" {{ request('ordem') == 'maior_valor' ? 'selected' : '' }}>Maior Valor</option>
             </select>
-        </div>  
+        </div> 
+        
+        <div class="md:col-span-3">
+            <label for="mes_ano" class="block text-sm font-medium text-gray-700 mb-1">Período</label>
+            <input 
+                type="month" 
+                name="mes_ano" 
+                id="mes_ano" 
+                value="{{ request('mes_ano') }}"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
+            >
+        </div>
+        
         <div class="md:col-span-1">
             <button type="submit" class="bg-blue-600 text-white w-full py-2 rounded-md text-sm hover:bg-blue-700 transition" title="Filtrar">
                 <i class="bi bi-filter"></i>
@@ -193,7 +205,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-4 text-center text-gray-900">
+                        <td colspan="9" class="px-6 py-4 text-center text-gray-500">
                             Nenhuma conta a receber encontrada.
                         </td>
                     </tr>

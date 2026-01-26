@@ -7,6 +7,7 @@ use App\Models\ContasReceber;
 use App\Models\Cliente;
 use App\Models\Processo;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class ContasReceberController extends Controller
 {
@@ -45,6 +46,12 @@ class ContasReceberController extends Controller
             default:
                 $query->orderBy('data_vencimento', 'asc');
                 break;
+        }
+
+        if ($request->filled('mes_ano')) {
+            $data = Carbon::createFromFormat('Y-m', $request->mes_ano);
+            $query->whereMonth('data_vencimento', $data->month)
+                  ->whereYear('data_vencimento', $data->year);
         }
 
         $contasReceber = $query->get();
