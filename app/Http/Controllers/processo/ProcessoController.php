@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Processo;
 use App\Models\ContasReceber;
+use App\Models\Orcamento;
 
 class ProcessoController extends Controller
 {
@@ -40,7 +41,7 @@ class ProcessoController extends Controller
 
         switch ($request->input('ordem')) {
             case 'antigos':
-                $query->orderBy('processos.created_at', 'asc');
+                $query->orderBy('orcamentos.data_aprovacao', 'asc');
                 break;
             case 'maior_valor':
                 $query->orderByDesc('orcamentos.valor');
@@ -50,8 +51,18 @@ class ProcessoController extends Controller
                 break;
             case 'recentes':
             default:
-                $query->orderBy('processos.created_at', 'desc');
+                $query->orderBy('orcamentos.data_aprovacao', 'desc');
                 break;
+        }
+
+        if ($request->filled('mes_ano')) {
+            try {
+                $data = \Carbon\Carbon::createFromFormat('Y-m', $request->input('mes_ano'));
+                
+                $query->whereMonth('orcamentos.data_aprovacao', $data->month)
+                      ->whereYear('orcamentos.data_aprovacao', $data->year);
+            } catch (\Exception $e) {
+            }
         }
 
         $processos = $query->paginate(200); 
