@@ -27,6 +27,12 @@ class Orcamento extends Model
         'revisao',
         'status',
         'last_user_id',
+        'cep_obra',
+        'cidade_obra',
+        'uf_obra',
+        'logradouro_obra',
+        'bairro_obra',
+        'numero_obra',
     ];
 
     protected $casts = [

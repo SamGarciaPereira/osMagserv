@@ -13,7 +13,7 @@ class OrcamentoObserver
 {
 
    public function creating(Orcamento $orcamento): void
-    {
+   {
         if (!empty($orcamento->numero_proposta)) {
             return;
         }
@@ -28,9 +28,10 @@ class OrcamentoObserver
         $orcamento->numero_proposta = $generator->gerarCodigoOrcamento(
             $cliente,
             $orcamento->numero_manual,
-            $dataReferencia
+            $dataReferencia,
+            $orcamento->uf_obra 
         );
-}
+    }
 
     /**
      * Handle the Orcamento "created" event.
