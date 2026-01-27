@@ -9,7 +9,13 @@ trait HasLastUser
 {
     public static function bootHasLastUser()
     {
-        static::saving(function ($model) {
+        static::creating(function ($model) {
+            if (Auth::check()) {
+                $model->last_user_id = Auth::id();
+            }
+        });
+
+        static::updating(function ($model) {
             if (Auth::check()) {
                 $model->last_user_id = Auth::id();
             }
