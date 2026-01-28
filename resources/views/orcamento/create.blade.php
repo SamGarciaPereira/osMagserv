@@ -61,8 +61,7 @@
                 </div>
 
                 <div>
-                    <label for="data_aprovacao" class="block text-sm font-medium text-gray-700 mb-2">Data de
-                        Aprovação</label>
+                    <label for="data_aprovacao" class="block text-sm font-medium text-gray-700 mb-2">Data de Aprovação</label>
                     <input type="date" id="data_aprovacao" name="data_aprovacao" value="{{ old('data_aprovacao') }}"    
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                     @error('data_aprovacao') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
@@ -113,7 +112,7 @@
                         </label>
                     </div>
 
-                    <div id="endereco_obra_container" class="hidden grid grid-cols-1 md:grid-cols-12 gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <div id="endereco_obra_container" class="grid grid-cols-1 md:grid-cols-12 gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
                         
                         <div class="md:col-span-3">
                             <label for="cep_obra" class="block text-sm font-medium text-gray-700">CEP</label>
