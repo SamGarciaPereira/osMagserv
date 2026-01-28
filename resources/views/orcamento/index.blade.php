@@ -143,32 +143,41 @@
                                         <p><strong>Data de Aprovação:</strong> {{ $orcamento->data_aprovacao ? \Carbon\Carbon::parse($orcamento->data_aprovacao)->format('d/m/Y') : 'Não definida' }}</p>
                                         <p><strong>Revisão:</strong> {{ $orcamento->revisao }}</p>
                                         @if($orcamento->cliente && $orcamento->cep_obra == null && $orcamento->status == 'Aprovado')
-                                        <p><strong>Local da Obra:</strong> {{ $cliente->logradouro ?? 'N/A' }},
-                                            {{ $cliente->numero ?? 'N/A' }}, {{ $cliente->bairro ?? 'N/A' }}, {{ $cliente->cidade ?? 'N/A' }},
-                                            {{ $cliente->estado ?? 'N/A' }}</p>
+                                            <p><strong>Local da Obra:</strong> 
+                                                {{ $orcamento->cliente->logradouro ?? 'N/A' }},
+                                                {{ $orcamento->cliente->numero ?? 'N/A' }}, 
+                                                {{ $orcamento->cliente->bairro ?? 'N/A' }}, 
+                                                {{ $orcamento->cliente->cidade ?? 'N/A' }},
+                                                {{ $orcamento->cliente->estado ?? 'N/A' }}
+                                            </p>
+
                                         @elseif($orcamento->cep_obra && $orcamento->status == 'Aprovado')
-                                        <p><strong>Local da Obra:</strong> {{ $orcamento->logradouro_obra ?? 'N/A' }},
-                                            {{ $orcamento->numero_obra ?? 'N/A' }}, {{ $orcamento->bairro_obra ?? 'N/A' }}, {{ $orcamento->cidade_obra ?? 'N/A' }},
-                                            {{ $orcamento->uf_obra ?? 'N/A' }}</p>
+                                            <p><strong>Local da Obra:</strong> 
+                                                {{ $orcamento->logradouro_obra ?? 'N/A' }},
+                                                {{ $orcamento->numero_obra ?? 'N/A' }}, 
+                                                {{ $orcamento->bairro_obra ?? 'N/A' }}, 
+                                                {{ $orcamento->cidade_obra ?? 'N/A' }},
+                                                {{ $orcamento->uf_obra ?? 'N/A' }}
+                                            </p>
                                         @endif
                                         <p><strong>Comentários:</strong></p>
                                         <p class="whitespace-pre-line {{ $orcamento->comentario ? 'text-blue-800 font-bold' : 'text-gray-500 italic' }}">{{ $orcamento->comentario ?: 'Nenhum comentário adicionado.' }}
                                         </p>
                                         @if($orcamento->status == 'Pendente' || $orcamento->status == 'Em Andamento')
-                                        <p><strong>Checklist:</strong></p>
-                                        <ul>
-                                            @php
-                                                $tarefas = collect($orcamento->checklist ?? [])->where('completed', false);
-                                            @endphp
+                                            <p><strong>Checklist:</strong></p>
+                                            <ul>
+                                                @php
+                                                    $tarefas = collect($orcamento->checklist ?? [])->where('completed', false);
+                                                @endphp
 
-                                            @forelse($tarefas as $tarefa)
-                                                <li class="text-orange-700 font-bold">- {{ $tarefa['text'] }}</li>
-                                            @empty
-                                                <li class="text-green-600 font-bold">
-                                                    <i class="bi bi-check-all"></i> Tudo em dia!
-                                                </li>
-                                            @endforelse
-                                        </ul>
+                                                @forelse($tarefas as $tarefa)
+                                                    <li class="text-orange-700 font-bold">- {{ $tarefa['text'] }}</li>
+                                                @empty
+                                                    <li class="text-green-600 font-bold">
+                                                        <i class="bi bi-check-all"></i> Tudo em dia!
+                                                    </li>
+                                                @endforelse
+                                            </ul>
                                         @endif
                                     </div>
                                     <div class="flex flex-col gap-2 md:w-1/3">
