@@ -108,7 +108,7 @@
             @yield('content')
         </div>
         <footer class="text-center p-4 text-gray-500 text-sm">
-            <p>Magserv Manutenção e Serviços LTDA &copy; 2025 | Samuel Software Developer</p>
+            <p>Magserv Manutenção e Serviços LTDA &copy; {{ date('Y') }} | Samuel Software Developer</p>
         </footer>
     </main>
     @vite('resources/js/app.js')
