@@ -10,8 +10,12 @@ document.addEventListener('DOMContentLoaded', function() {
     function toggleEndereco() {
         if (radioObra.checked) {
             containerObra.classList.remove('hidden');
+            containerObra.classList.add('grid');
+            containerObra.setAttribute('aria-hidden', 'false');
         } else {
             containerObra.classList.add('hidden');
+            containerObra.classList.remove('grid');
+            containerObra.setAttribute('aria-hidden', 'true');
             limparCamposObra();
         }
     }
@@ -54,4 +58,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const inputs = containerObra.querySelectorAll('input');
         inputs.forEach(input => input.value = '');
     }
+    
+    toggleEndereco();
 });
