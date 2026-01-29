@@ -72,6 +72,7 @@
                     <a href="{{ route('financeiro.contas-receber.index') }}" class="sidebar-text text-sm text-gray-300 p-1 rounded-md hover:bg-gray-700 w-full opacity-0">Contas a receber</a>
                 </div>
             </div>
+            <!--
             <div>
                 <button id="dropdown-btn-rh" class="w-full p-2.5 pl-3.5 flex items-center justify-between rounded-md hover:bg-blue-600 group">
                     <div class="flex items-center">
