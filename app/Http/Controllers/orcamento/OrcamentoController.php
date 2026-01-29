@@ -62,7 +62,7 @@ class OrcamentoController extends Controller
                   ->whereYear('data_solicitacao', $data->year);
         }
 
-        $orcamentos = $query->paginate(200);
+        $orcamentos = $query->paginate(2000);
         return view('orcamento.index', compact('orcamentos'));
     }
 
