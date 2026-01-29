@@ -80,11 +80,12 @@
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NF</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Vencimento</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Recebimento</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Venc.</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Receb.</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
                 </tr>
@@ -98,20 +99,21 @@
                                 <i class="bi bi-chevron-down toggle-arrow inline-block transition-transform duration-300"></i>
                             </button>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $conta->cliente->nome ?? 'N/A' }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $conta->processo->nf ?? $conta->nf ?? 'N/A' }}</td>
+                        <td class="max-w-[226px] truncate py-4 whitespace-nowrap text-sm text-gray-900" title="{{ $conta->cliente->nome ?? 'N/A' }}">{{ $conta->cliente->nome ?? 'N/A' }}</td>
+                        <td class="max-w-[290px] truncate px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" title="{{ $conta->processo->orcamento->numero_proposta ?? $conta->descricao }}">
                             @if ($conta->processo && $conta->processo->orcamento)
-                                Faturamento do orçamento: {{ $conta->processo->orcamento->numero_proposta }} 
+                                Faturamento de: {{ $conta->processo->orcamento->numero_proposta }} 
                             @else
                                 {{ $conta->descricao }}
                             @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">R$ {{ number_format($conta->valor, 2, ',', '.') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {{ $conta->data_vencimento ? \Carbon\Carbon::parse($conta->data_vencimento)->format('d/m/Y') : 'Não definida' }}
+                            {{ $conta->data_vencimento ? \Carbon\Carbon::parse($conta->data_vencimento)->format('d/m/Y') : 'N/A' }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {{ $conta->data_recebimento ? \Carbon\Carbon::parse($conta->data_recebimento)->format('d/m/Y') : 'Não definida' }}
+                            {{ $conta->data_recebimento ? \Carbon\Carbon::parse($conta->data_recebimento)->format('d/m/Y') : 'N/A' }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <x-status-badge :status="$conta->status" />
