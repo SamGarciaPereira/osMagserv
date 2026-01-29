@@ -25,7 +25,7 @@
                     <i class="bi bi-search text-gray-400"></i>
                 </div>
                 <input type="text" name="search" id="search" value="{{ request('search') }}" 
-                       placeholder="Cliente, Descrição..."
+                       placeholder="NF, Cliente, Descrição..."
                        class="w-full pl-10 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
             </div>
         </div>

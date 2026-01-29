@@ -23,6 +23,9 @@ class ContasReceberController extends Controller
             $query->where(function($q) use ($search) {
                  $q->where('descricao', 'like', "%{$search}%")
                   ->orWhere('nf', 'like', "%{$search}%")
+                  ->orWhereHas('processo', function($q1) use ($search) {
+                        $q1->where('nf', 'like', "%{$search}%");
+                  })
                   ->orWhereHas('cliente', function($q2) use ($search) {
                         $q2->where('nome', 'like', "%{$search}%");
                   });
