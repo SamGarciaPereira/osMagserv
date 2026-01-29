@@ -99,11 +99,11 @@
                                 <i class="bi bi-chevron-down toggle-arrow inline-block transition-transform duration-300"></i>
                             </button>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $conta->processo->nf ?? $conta->nf ?? 'N/A' }}</td>
-                        <td class="max-w-[226px] truncate py-4 whitespace-nowrap text-sm text-gray-900" title="{{ $conta->cliente->nome ?? 'N/A' }}">{{ $conta->cliente->nome ?? 'N/A' }}</td>
-                        <td class="max-w-[290px] truncate px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" title="{{ $conta->processo->orcamento->numero_proposta ?? $conta->descricao }}">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">{{ $conta->processo->nf ?? $conta->nf ?? 'N/A' }}</td>
+                        <td class="max-w-[150px] truncate py-4 whitespace-nowrap text-sm text-gray-900" title="{{ $conta->cliente->nome ?? 'N/A' }}">{{ $conta->cliente->nome ?? 'N/A' }}</td>
+                        <td class="max-w-[295px] truncate px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" title="{{ $conta->processo->orcamento->numero_proposta ?? $conta->descricao }}">
                             @if ($conta->processo && $conta->processo->orcamento)
-                                Faturamento de: {{ $conta->processo->orcamento->numero_proposta }} 
+                                Faturamento de: <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-mono font-bold border border-gray-300 select-all">{{ $conta->processo->orcamento->numero_proposta }} </span>
                             @else
                                 {{ $conta->descricao }}
                             @endif
