@@ -36,13 +36,6 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div>
-                    <label for="nf" class="block text-sm font-medium text-gray-700 mb-2">Número da NF (Opcional/Geral)</label>
-                    <input type="text" id="nf" name="nf" value="{{ old('nf', $processo->nf) }}"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
-                    @error('nf') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
-
-                <div>
                     <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Status <span class="text-red-500">*</span></label>
                     <div class="flex gap-2">
                         <select id="status" name="status"
@@ -101,10 +94,10 @@
                                             <table class="min-w-full divide-y divide-gray-200">
                                                 <thead class="bg-gray-50">
                                                     <tr>
+                                                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NF</th>
                                                         <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição</th>
                                                         <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor (R$)</th>
                                                         <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vencimento</th>
-                                                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NF</th>
                                                         <th scope="col" class="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ação</th>
                                                     </tr>
                                                 </thead>
@@ -113,6 +106,9 @@
                                                     <tr>
                                                         <input type="hidden" name="parcelas[{{ $index }}][id]" value="{{ $conta->id }}">
                                                         <td class="px-3 py-2">
+                                                            <input type="text" name="parcelas[{{ $index }}][nf]" value="{{ $conta->nf }}" class="block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                                                        </td>
+                                                        <td class="px-3 py-2">
                                                             <input type="text" name="parcelas[{{ $index }}][descricao]" value="{{ $conta->descricao }}" class="block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                                                         </td>
                                                         <td class="px-3 py-2">
@@ -120,9 +116,6 @@
                                                         </td>
                                                         <td class="px-3 py-2">
                                                             <input type="date" name="parcelas[{{ $index }}][data_vencimento]" value="{{ $conta->data_vencimento?->format('Y-m-d') }}" class="block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                                                        </td>
-                                                        <td class="px-3 py-2">
-                                                            <input type="text" name="parcelas[{{ $index }}][nf]" value="{{ $conta->nf }}" class="block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                                                         </td>
                                                         <td class="px-3 py-2 text-center">
                                                             <button type="button" class="text-red-500 hover:text-red-700 btn-remove-parcela">

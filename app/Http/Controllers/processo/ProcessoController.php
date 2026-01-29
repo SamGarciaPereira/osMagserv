@@ -10,9 +10,6 @@ use App\Models\Orcamento;
 
 class ProcessoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
        $query = Processo::with('orcamento.cliente', 'orcamento.anexos', 'anexos', 'contasReceber')
@@ -69,57 +66,56 @@ class ProcessoController extends Controller
         return view('processo.index', compact('processos'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Processo $processo)
     {
         $processo->load(['orcamento', 'contasReceber']);
         return view('processo.edit', compact('processo'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Processo $processo)
     {
         $validatedData = $request->validate([
             'status' => 'required|in:Em Aberto,Finalizado,Faturado',
             'nf' => 'nullable|string|max:255',
             'parcelas' => 'nullable|array',
+            'parcelas.*.id' => 'nullable|integer|exists:contas_recebers,id',
             'parcelas.*.descricao' => 'required|string',
             'parcelas.*.valor' => 'required|numeric|min:0',
             'parcelas.*.data_vencimento' => 'nullable|date',
-            'parcelas.*.nf' => 'nullable|string',
+            'parcelas.*.nf' => [
+                'nullable',
+                'string',
+                'distinct', 
+                function ($attribute, $value, $fail) use ($request) {
+                    $index = explode('.', $attribute)[1];
+                    $currentId = $request->input("parcelas.{$index}.id");
+
+                    $query = ContasReceber::where('nf', $value);
+
+                    if ($currentId) {
+                        $query->where('id', '!=', $currentId);
+                    }
+
+                    if ($query->exists()) {
+                        $fail("A NF {$value} já está cadastrada em outro processo.");
+                    }
+                },
+            ],
         ]);
 
-        $parcelasIdsMantidos = [];
         $totalParcelas = 0;
-
         if ($request->has('parcelas')) {
             foreach ($request->parcelas as $dadosParcela) {
                 $totalParcelas += $dadosParcela['valor'];
@@ -127,11 +123,27 @@ class ProcessoController extends Controller
         }
 
         $valorOrcamento = $processo->orcamento->valor;
+
         if ($totalParcelas > ($valorOrcamento + 0.01)) {
             return back()->withInput()->withErrors([
-                'status' => "O valor total das parcelas (R$ " . number_format($totalParcelas, 2, ',', '.') . ") excede o valor do orçamento (R$ " . number_format($valorOrcamento, 2, ',', '.') . ")."
+                'status' => "O valor total das parcelas excede o valor do orçamento."
             ]);
         }
+
+        $nfsColetadas = [];
+        if ($request->has('parcelas')) {
+            foreach ($request->parcelas as $parcela) {
+                if (!empty($parcela['nf'])) {
+                    $nfsColetadas[] = trim($parcela['nf']);
+                }
+            }
+        }
+
+        if (count($nfsColetadas) > 0) {
+            $validatedData['nf'] = implode(', ', array_unique($nfsColetadas));
+        }
+
+        $parcelasIdsMantidos = [];
 
         if ($request->has('parcelas')) {
             foreach ($request->parcelas as $dadosParcela) {
@@ -145,13 +157,12 @@ class ProcessoController extends Controller
                     'status' => isset($dadosParcela['id']) 
                                 ? ContasReceber::find($dadosParcela['id'])->status 
                                 : 'Pendente',
+                    'last_user_id' => auth()->id(),
                 ];
 
-                $totalParcelas += $data['valor'];
-
                 if (isset($dadosParcela['id'])) {
-                    $conta = ContasReceber::find($dadosParcela['id']);
-                    if ($conta && $conta->processo_id == $processo->id) {
+                    $conta = $processo->contasReceber()->find($dadosParcela['id']);
+                    if ($conta) {
                         $conta->update($data);
                         $parcelasIdsMantidos[] = $conta->id;
                     }
@@ -164,28 +175,17 @@ class ProcessoController extends Controller
 
         $processo->contasReceber()->whereNotIn('id', $parcelasIdsMantidos)->delete();
 
-        if ($validatedData['status'] === 'Faturado') {
-            $valorOrcamento = $processo->orcamento->valor;
-            
-            if (empty($valorOrcamento) || $valorOrcamento <= 0) {
-                 return back()->withInput()->withErrors(['status' => 'O orçamento não possui valor definido.']);
-            }
-        }
-
         $processo->update([
             'status' => $validatedData['status'],
-            'nf' => $validatedData['nf']
+            'nf' => $validatedData['nf'],
+            'last_user_id' => auth()->id()
         ]);
 
         return redirect()->route('processos.index')
             ->with('success', 'Processo atualizado com sucesso!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
     }
 }

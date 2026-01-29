@@ -12,11 +12,56 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const valorOrcamento = parseFloat(formProcesso.getAttribute('data-valor-orcamento')) || 0;
     
-    let parcelasIndex = containerParcelas.querySelectorAll('tr').length;
     let previousStatus = statusSelect.getAttribute('data-original');
 
     function formatCurrency(value) {
         return value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function verificarDuplicidadeNF() {
+        const inputsNF = document.querySelectorAll('input[name*="[nf]"]');
+        const valoresVistos = {};
+        let temDuplicidade = false;
+
+        inputsNF.forEach(input => {
+            input.classList.remove('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
+            input.classList.add('border-gray-300', 'focus:border-blue-500', 'focus:ring-blue-500');
+            
+            const parent = input.closest('td');
+            const msgErro = parent.querySelector('.nf-error-msg');
+            if (msgErro) msgErro.remove();
+        });
+
+        inputsNF.forEach(input => {
+            const valor = input.value.trim();
+            if (valor !== "") {
+                if (valoresVistos[valor]) {
+                    temDuplicidade = true;
+                    [input, valoresVistos[valor]].forEach(el => {
+                        el.classList.remove('border-gray-300', 'focus:border-blue-500', 'focus:ring-blue-500');
+                        el.classList.add('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
+                    });
+                    if (!input.closest('td').querySelector('.nf-error-msg')) {
+                        input.closest('td').insertAdjacentHTML('beforeend', 
+                            `<span class="nf-error-msg text-xs text-red-600 font-bold block mt-1">NF Duplicada</span>`
+                        );
+                    }
+                } else {
+                    valoresVistos[valor] = input;
+                }
+            }
+        });
+
+        if (btnConfirm) {
+            btnConfirm.disabled = temDuplicidade;
+            if (temDuplicidade) {
+                btnConfirm.classList.add('opacity-50', 'cursor-not-allowed');
+                btnConfirm.title = "Corrija as NFs duplicadas antes de confirmar";
+            } else {
+                btnConfirm.classList.remove('opacity-50', 'cursor-not-allowed');
+                btnConfirm.title = "";
+            }
+        }
     }
 
     function atualizarTotal() {
@@ -47,9 +92,12 @@ document.addEventListener('DOMContentLoaded', function() {
     window.openFaturamentoModal = function() {
         modal.classList.remove('hidden');
         atualizarTotal();
+        verificarDuplicidadeNF();
     }
 
     window.closeFaturamentoModal = function(save = false) {
+        if (save && btnConfirm.disabled) return;
+
         modal.classList.add('hidden');
         if (!save) {
             if (statusSelect.value === 'Faturado' && previousStatus !== 'Faturado') {
@@ -72,19 +120,21 @@ document.addEventListener('DOMContentLoaded', function() {
     if(btnConfirm) btnConfirm.addEventListener('click', () => window.closeFaturamentoModal(true));
 
     btnAddParcela.addEventListener('click', function() {
+        const uniqueIndex = Date.now(); 
+
         const row = `
             <tr>
                 <td class="px-3 py-2">
-                    <input type="text" name="parcelas[${parcelasIndex}][descricao]" required class="block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                    <input type="text" name="parcelas[${uniqueIndex}][nf]" class="input-nf block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                 </td>
                 <td class="px-3 py-2">
-                    <input type="number" step="0.01" name="parcelas[${parcelasIndex}][valor]" required class="parcela-valor block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                    <input type="text" name="parcelas[${uniqueIndex}][descricao]" required class="block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                 </td>
                 <td class="px-3 py-2">
-                    <input type="date" name="parcelas[${parcelasIndex}][data_vencimento]" class="block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                    <input type="number" step="0.01" name="parcelas[${uniqueIndex}][valor]" required class="parcela-valor block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                 </td>
                 <td class="px-3 py-2">
-                    <input type="text" name="parcelas[${parcelasIndex}][nf]" class="block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                    <input type="date" name="parcelas[${uniqueIndex}][data_vencimento]" class="block w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                 </td>
                 <td class="px-3 py-2 text-center">
                     <button type="button" class="text-red-500 hover:text-red-700 btn-remove-parcela">
@@ -94,7 +144,6 @@ document.addEventListener('DOMContentLoaded', function() {
             </tr>
         `;
         containerParcelas.insertAdjacentHTML('beforeend', row);
-        parcelasIndex++;
         atualizarTotal();
     });
 
@@ -102,6 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target.closest('.btn-remove-parcela')) {
             e.target.closest('tr').remove();
             atualizarTotal();
+            verificarDuplicidadeNF();
         }
     });
 
@@ -109,7 +159,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target.classList.contains('parcela-valor')) {
             atualizarTotal();
         }
+        if (e.target.name && e.target.name.includes('[nf]')) {
+            verificarDuplicidadeNF();
+        }
     });
 
     atualizarTotal();
+    setTimeout(verificarDuplicidadeNF, 100);
 });
