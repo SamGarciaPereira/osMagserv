@@ -54,8 +54,8 @@ class ContasPagarController extends Controller
                   ->whereYear('data_vencimento', $data->year);
         }
 
-        $contasFixas = $query->clone()->where('fixa', true)->paginate(100, ['*'], 'page_fixas');
-        $contasVariaveis = $query->clone()->where('fixa', false)->paginate(100, ['*'], 'page_variaveis');
+        $contasFixas = $query->clone()->where('fixa', true)->paginate(1000, ['*'], 'page_fixas');
+        $contasVariaveis = $query->clone()->where('fixa', false)->paginate(1000, ['*'], 'page_variaveis');
 
         return view('financeiro.contas-pagar.index', compact('contasFixas', 'contasVariaveis'));
     }
