@@ -65,7 +65,7 @@ class ProcessoController extends Controller
             }
         }
 
-        $processos = $query->paginate(200); 
+        $processos = $query->paginate(1000); 
         return view('processo.index', compact('processos'));
     }
 
