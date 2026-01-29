@@ -126,8 +126,31 @@ class DashboardController extends Controller
             'Inativo' => $inativosCount
         ], fn($valor) => $valor > 0);
 
-        $receberStats = $getSumStats(ContasReceber::whereMonth('data_vencimento', $mes)->whereYear('data_vencimento', $ano));
-        $pagarStats = $getSumStats(ContasPagar::whereMonth('data_vencimento', $mes)->whereYear('data_vencimento', $ano));
+        $receberStats = $getSumStats(ContasReceber::where(function($query) use ($mes, $ano) {
+            $query->where(function($q) use ($mes, $ano) {
+                $q->where('status', 'Pago')
+                  ->whereMonth('data_recebimento', $mes)
+                  ->whereYear('data_recebimento', $ano);
+            })
+            ->orWhere(function($q) use ($mes, $ano) {
+                $q->where('status', '!=', 'Pago')
+                  ->whereMonth('data_vencimento', $mes)
+                  ->whereYear('data_vencimento', $ano);
+            });
+        }));
+        
+        $pagarStats = $getSumStats(ContasPagar::where(function($query) use ($mes, $ano) {
+            $query->where(function($q) use ($mes, $ano) {
+                $q->where('status', 'Pago')
+                  ->whereMonth('data_pagamento', $mes)
+                  ->whereYear('data_pagamento', $ano);
+            })
+            ->orWhere(function($q) use ($mes, $ano) {
+                $q->where('status', '!=', 'Pago')
+                  ->whereMonth('data_vencimento', $mes)
+                  ->whereYear('data_vencimento', $ano);
+            });
+        }));
         
         $solicitacoesStats = $getStats(Solicitacao::whereMonth('data_solicitacao', $mes)->whereYear('data_solicitacao', $ano));
 
