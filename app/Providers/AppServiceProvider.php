@@ -10,6 +10,8 @@ use App\Models\ContasReceber;
 use App\Models\Manutencao;
 use App\Models\Solicitacao;
 use App\Models\Contrato;
+use App\Models\Anexo;
+use App\Observers\AnexoObserver;
 use App\Observers\ClienteObserver;
 use App\Observers\OrcamentoObserver;
 use App\Observers\ProcessoObserver;
@@ -48,5 +50,6 @@ class AppServiceProvider extends ServiceProvider
         Manutencao::observe(ManutencaoObserver::class);
         Solicitacao::observe(SolicitacaoObserver::class);
         Contrato::observe(ContratoObserver::class);
+        Anexo::observe(AnexoObserver::class);
     }
 }

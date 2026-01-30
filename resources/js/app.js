@@ -8,6 +8,7 @@ import './components/contas-pagar-edit';
 import './components/checklist';
 import './components/cep';
 import './components/cep-obra';
+import './components/general-history'
 
 import { initDashboard } from "./components/dashboard";
 window.initDashboard = initDashboard;

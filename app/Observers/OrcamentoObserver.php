@@ -2,7 +2,6 @@
 
 namespace App\Observers;
 
-use App\Models\Activity;
 use App\Models\Orcamento;
 use App\Models\Processo;
 use App\Services\CodeGeneratorService;
@@ -37,11 +36,7 @@ class OrcamentoObserver
      * Handle the Orcamento "created" event.
      */
     public function created(Orcamento $orcamento): void
-    {
-        Activity::create([
-            'description' => "Orçamento '{$orcamento->numero_proposta}' foi cadastrado."
-        ]);
-
+    {        
         if($orcamento->status === 'Aprovado') {
             Processo::create([
                 'orcamento_id' => $orcamento->id,
@@ -55,10 +50,6 @@ class OrcamentoObserver
      */
     public function updated(Orcamento $orcamento): void
     {
-        Activity::create([
-            'description' => "Orçamento '{$orcamento->numero_proposta}' foi atualizado."
-        ]);
-
         if($orcamento->isDirty('status') && $orcamento->status === 'Aprovado') {
             Processo::create([
                 'orcamento_id' => $orcamento->id,
@@ -75,9 +66,7 @@ class OrcamentoObserver
      */
     public function deleted(Orcamento $orcamento): void
     {
-        Activity::create([
-            'description' => "Orçamento '{$orcamento->numero_proposta}' foi removido."
-        ]);
+        
     }
 
     /**

@@ -14,8 +14,9 @@ class OrcamentoController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Orcamento::with('cliente');
 
+        $query = Orcamento::with(['cliente', 'anexos', 'editor', 'history.user']);
+        
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
