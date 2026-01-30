@@ -183,17 +183,19 @@ class OrcamentoController extends Controller
         $validatedData['data_aprovacao'] = $validatedData['data_aprovacao'] ?? null;
         $validatedData['data_solicitacao'] = $validatedData['data_solicitacao'] ?? null;
 
-        if ($request->filled('checklist_data')) {
-            $validatedData['checklist'] = json_decode($request->checklist_data, true);
+        if ($request->has('checklist_data')) {
+            $validatedData['checklist'] = json_decode($request->checklist_data, true) ?? [];
         } else {
-            $validatedData['checklist'] = [];
+            unset($validatedData['checklist']);
         }
 
         unset($validatedData['checklist_data']);
 
-        $temPendencias = collect($validatedData['checklist'])->contains('completed', false);
+        $checklistParaVerificar = isset($validatedData['checklist']) ? $validatedData['checklist'] : $orcamento->checklist;
 
-        $statusProibidos = ['Em Validação', 'Validado', 'Enviado', 'Aprovado'];
+        $temPendencias = collect($checklistParaVerificar)->contains('completed', false);
+
+        $statusProibidos = ['Validado', 'Enviado', 'Aprovado'];
 
         if ($temPendencias && in_array($validatedData['status'], $statusProibidos)) {
             return back()

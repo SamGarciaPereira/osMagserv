@@ -200,9 +200,11 @@
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">{{ old('comentario', $orcamento->comentario) }}</textarea>
                     @error('comentario') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
-                @if($orcamento->status == 'Pendente' || $orcamento->status == 'Em Andamento')
+
+                @if(in_array($orcamento->status, ['Pendente', 'Em Andamento', 'Em Validação', 'Validado', 'Enviado', 'Aprovado']))
                 <div class="lg:col-span-3">
                     <label for="checklist" class="block text-sm font-medium text-gray-700 mb-2">Checklist</label>
+                    @if(in_array($orcamento->status, ['Pendente', 'Em Andamento', 'Em Validação']))
                     <div class="flex gap-2 mb-4">
                         <input type="text" id="new-task-input" 
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
@@ -212,6 +214,7 @@
                             <i class="bi bi-plus-lg"></i>
                         </button>
                     </div>
+                    @endif
                     <ul id="checklist-container" class="space-y-2"></ul>
                     <input type="hidden" name="checklist_data" id="checklist_data" 
                         value="{{ json_encode($orcamento->checklist ?? []) }}">

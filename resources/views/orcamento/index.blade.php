@@ -163,7 +163,7 @@
                                         <p><strong>Comentários:</strong></p>
                                         <p class="whitespace-pre-line {{ $orcamento->comentario ? 'text-blue-800 font-bold' : 'text-gray-500 italic' }}">{{ $orcamento->comentario ?: 'Nenhum comentário adicionado.' }}
                                         </p>
-                                        @if($orcamento->status == 'Pendente' || $orcamento->status == 'Em Andamento')
+                                        @if($orcamento->status == 'Pendente' || $orcamento->status == 'Em Andamento' || $orcamento->status == 'Em Validação' || $orcamento->status == 'Validado')
                                             <p><strong>Checklist:</strong></p>
                                             <ul>
                                                 @php
