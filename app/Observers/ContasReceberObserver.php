@@ -3,7 +3,6 @@
 namespace App\Observers;
 
 use App\Models\ContasReceber;
-use App\Models\Activity;
 use App\Models\Processo;
 use App\Models\Orcamento;
 
