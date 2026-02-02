@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\HasLastUser;
+use App\Traits\TracksHistory;
 
 class Processo extends Model
 {
     use HasFactory;
     use HasLastUser;
+    use TracksHistory;
 
     protected $fillable = [
         'orcamento_id',

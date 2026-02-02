@@ -14,7 +14,7 @@ class ContasReceberObserver
      */
     public function created(ContasReceber $contasReceber): void
     {
-         if ($contasReceber->processo_id) {
+        if ($contasReceber->processo_id) {
             $contasReceber->load('processo.orcamento');
 
             if ($contasReceber->processo && $contasReceber->processo->orcamento) {
@@ -23,16 +23,8 @@ class ContasReceberObserver
                 $identificador = $contasReceber->nf 
                     ? "da NF {$contasReceber->nf}" 
                     : "do orçamento {$orcamento->numero_proposta}";
-
-                Activity::create([
-                    'description' => "Processo {$identificador} foi faturado e uma nova conta a receber foi gerada."
-                ]);
             }
-        } else {
-            Activity::create([
-                'description' => "Uma nova conta a receber foi cadastrada: '{$contasReceber->descricao}'."
-            ]);
-        }   
+        }  
     }
 
     /**
@@ -41,17 +33,6 @@ class ContasReceberObserver
     public function updated(ContasReceber $contasReceber): void
     {
         $contasReceber->load('processo.orcamento');
-
-        if ($contasReceber->processo && $contasReceber->processo->orcamento) {
-            $orcamento = $contasReceber->processo->orcamento;
-            Activity::create([
-                'description' => "A conta a receber do orçamento '{$orcamento->numero_proposta}' foi atualizada."
-            ]);
-        } else {
-            Activity::create([
-                'description' => "A conta a receber '{$contasReceber->descricao}' foi atualizada."
-            ]);
-        }
     }
 
     /**
@@ -60,17 +41,6 @@ class ContasReceberObserver
     public function deleted(ContasReceber $contasReceber): void
     {
         $contasReceber->load('processo.orcamento');
-
-        if ($contasReceber->processo && $contasReceber->processo->orcamento) {
-            $orcamento = $contasReceber->processo->orcamento;
-            Activity::create([
-                'description' => "A conta a receber do orçamento '{$orcamento->numero_proposta}' foi deletada."
-            ]);
-        } else {
-            Activity::create([
-                'description' => "A conta a receber '{$contasReceber->descricao}' foi deletada."
-            ]);
-        }
     }
 
     /**

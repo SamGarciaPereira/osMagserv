@@ -4,6 +4,16 @@
 
 @section('content')
 
+    @php
+        $labelsProcesso = [
+            'nf' => 'NF',
+            'status' => 'Status Atual',
+            'escopo' => 'Demanda',
+            'valor' => 'Valor',
+            'numero_proposta' => 'Nº Proposta',
+        ];
+    @endphp
+
     <div class="flex justify-between items-center mb-8">
         <div>
             <h1 class="text-3xl font-bold text-gray-900">Gestão de Processos</h1>
@@ -251,21 +261,51 @@
                                     @endif
                                 </div>
                                 <div class="p-2 border-t border-gray-100 flex flex-col gap-2 md:w-1/3">
-                                    @if($processo->last_user_id)
-                                        <div class="bg-blue-50 border border-blue-200 rounded-md p-3">
-                                            <div class="gap-2 mb-1">
-                                                <span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs font-bold border border-blue-200 mb-2 uppercase">
-                                                    <i class="bi bi-clock-history mr-1"></i> Última Alteração
-                                                </span>
-                                            </div>
-                                            <p class="text-sm mb-1 text-gray-600">
-                                                {{ $processo->updated_at->format('d/m/Y') }} às {{ $processo->updated_at->format('H:i') }}
-                                            </p>
-                                            <p class="text-sm text-gray-600">
-                                                Por: <strong class="text-blue-800">{{ $processo->editor->name ?? 'Sistema' }}</strong>
-                                            </p>
+                                    <div class="bg-blue-50 border border-blue-200 rounded-md p-3 h-full">
+                                        <div class="flex justify-between items-center mb-3 border-b border-blue-200 pb-2">
+                                            <span class="text-xs font-bold text-blue-800 uppercase flex items-center">
+                                                <i class="bi bi-clock-history mr-1"></i> Histórico
+                                            </span>
+                                            <button type="button" 
+                                                    onclick='openGeneralHistoryModal(@json($processo->history), @json($labelsProcesso))' 
+                                                    class="text-xs bg-white border border-blue-300 text-blue-700 hover:bg-blue-600 hover:text-white px-2 py-1 rounded transition shadow-sm">
+                                                Ver Completo
+                                            </button>
                                         </div>
-                                    @endif      
+
+                                        @if($processo->history && $processo->history->count() > 0)
+                                            <div class="space-y-3">
+                                                @foreach($processo->history->take(3) as $activity)
+                                                    <div class="flex flex-col text-xs text-gray-600 bg-white bg-opacity-60 p-1.5 rounded border border-blue-100">
+                                                        <div class="flex justify-between font-semibold text-gray-700">
+                                                            <span class="text-blue-900">
+                                                                {{ $activity->version }}ª Versão 
+                                                                ({{ $activity->event == 'created' ? 'Criação' : ($activity->event == 'updated' ? 'Edição' : 'Remoção') }})
+                                                            </span>
+                                                            <span class="text-gray-500 text-[10px]">
+                                                                {{ \Carbon\Carbon::parse($activity->created_at)->format('d/m H:i') }}
+                                                            </span>
+                                                        </div>
+                                                        <div class="mt-0.5 truncate">
+                                                            Por: <span class="font-medium text-gray-800">{{ $activity->user->name ?? 'Sistema' }}</span>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <div class="flex flex-col items-center justify-center h-20 text-gray-400">
+                                                <i class="bi bi-clock text-xl mb-1 opacity-50"></i>
+                                                <p class="text-xs italic">Nenhum histórico detalhado.</p>
+                                            </div>
+                                        @endif
+                                        @if($processo->last_user_id && (!$processo->history || $processo->history->count() == 0))
+                                            <div class="mt-2 pt-2 border-t border-blue-100 text-xs text-gray-500 text-center">
+                                                Última ação por: <strong>{{ $processo->editor->name ?? 'Sistema' }}</strong><br>
+                                                em {{ $processo->updated_at->format('d/m/Y H:i') }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
                                 </div>                 
                             </div>
                         </td>
@@ -278,6 +318,7 @@
         </div>
     </div>
 
-</div> <x-modal model-type="App\Models\Processo" />
+    <x-modal-history />
+    </div> <x-modal model-type="App\Models\Processo" />
 
 @endsection
