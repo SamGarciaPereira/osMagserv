@@ -185,6 +185,7 @@
         </div>
     </div>
     @endif
+    <!--
     <div class="bg-white p-6 rounded-lg shadow-md">
         <h3 class="font-bold text-lg mb-4 text-gray-800">Atividades Recentes</h3>
         <ul class="space-y-4 max-h-72 overflow-y-auto custom-scrollbar pr-2">
@@ -203,6 +204,7 @@
              @endforelse
         </ul>
     </div>
+    -->
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
