@@ -275,7 +275,7 @@
                                                         <div class="flex flex-col text-xs text-gray-600 bg-white bg-opacity-60 p-1.5 rounded border border-blue-100">
                                                             <div class="flex justify-between font-semibold text-gray-700">
                                                                 <span class="text-blue-900">
-                                                                    {{ $activity->version }}ª Edição 
+                                                                    {{ $activity->version }}ª Versão 
                                                                     ({{ $activity->event == 'created' ? 'Criação' : ($activity->event == 'updated' ? 'Edição' : 'Remoção') }})
                                                                 </span>
                                                                 <span class="text-gray-500 text-[10px]">
