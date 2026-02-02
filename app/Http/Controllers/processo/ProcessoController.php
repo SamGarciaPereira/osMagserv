@@ -12,7 +12,7 @@ class ProcessoController extends Controller
 {
     public function index(Request $request)
     {
-       $query = Processo::with('orcamento.cliente', 'orcamento.anexos', 'anexos', 'contasReceber')
+       $query = Processo::with('orcamento.cliente', 'orcamento.anexos', 'anexos', 'contasReceber', 'editor', 'history.user')
             ->join('orcamentos', 'processos.orcamento_id', '=', 'orcamentos.id')
             ->select('processos.*');
 
