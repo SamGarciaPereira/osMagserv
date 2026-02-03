@@ -91,7 +91,7 @@ class ProcessoController extends Controller
             'nf' => 'nullable|string|max:255',
             'parcelas' => 'nullable|array',
             'parcelas.*.id' => 'nullable|integer|exists:contas_recebers,id',
-            'parcelas.*.descricao' => 'required|string',
+            'parcelas.*.descricao' => 'nullable|string',
             'parcelas.*.valor' => 'required|numeric|min:0',
             'parcelas.*.data_vencimento' => 'nullable|date',
             'parcelas.*.nf' => [
@@ -99,6 +99,10 @@ class ProcessoController extends Controller
                 'string',
                 'distinct', 
                 function ($attribute, $value, $fail) use ($request) {
+                    if (empty($value)) {
+                        return;
+                    }
+
                     $index = explode('.', $attribute)[1];
                     $currentId = $request->input("parcelas.{$index}.id");
 
@@ -150,9 +154,9 @@ class ProcessoController extends Controller
                 $data = [
                     'processo_id' => $processo->id,
                     'cliente_id' => $processo->orcamento->cliente_id,
-                    'descricao' => $dadosParcela['descricao'],
+                    'descricao' => !empty($dadosParcela['descricao']) ? $dadosParcela['descricao'] : "",
                     'valor' => $dadosParcela['valor'],
-                    'data_vencimento' => $dadosParcela['data_vencimento'],
+                    'data_vencimento' => $dadosParcela['data_vencimento'] ?? null,
                     'nf' => $dadosParcela['nf'] ?? null,
                     'status' => isset($dadosParcela['id']) 
                                 ? ContasReceber::find($dadosParcela['id'])->status 
@@ -177,7 +181,7 @@ class ProcessoController extends Controller
 
         $processo->update([
             'status' => $validatedData['status'],
-            'nf' => $validatedData['nf'],
+            'nf' => $validatedData['nf'] ?? null,
             'last_user_id' => auth()->id()
         ]);
 
