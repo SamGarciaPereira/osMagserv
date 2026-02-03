@@ -134,7 +134,7 @@ function renderChangesGrid(properties, labels) {
     let hasChanges = false;
 
     for (const [key, newValue] of Object.entries(attributes)) {
-        if (key === 'updated_at') continue;
+        if (key === 'updated_at' || key === 'last_user_id' || key === 'user_id') continue;
 
         hasChanges = true;
         const label = labels[key] || key;
