@@ -25,8 +25,29 @@ trait TracksHistory
 
     protected function recordActivity(string $event)
     {
-        if ($event === 'updated' && count($this->getDirty()) === 0) {
-            return;
+        $properties = [];
+
+        if ($event === 'updated') {
+            $changes = $this->getChanges();
+
+            unset($changes['updated_at']);
+            unset($changes['last_user_id']);
+
+            if (empty($changes)) {
+                return;
+            }
+
+            $original = [];
+            foreach ($changes as $key => $value) {
+                $original[$key] = $this->getOriginal($key);
+            }
+
+            $properties['old'] = $original;
+            $properties['attributes'] = $changes;
+        } else {
+            $properties = [
+                'attributes' => $this->getAttributes(),
+            ];
         }
 
         $lastVersion = Activity::where('subject_type', get_class($this))
@@ -34,22 +55,6 @@ trait TracksHistory
             ->max('version');
 
         $newVersion = $lastVersion ? $lastVersion + 1 : 1;
-
-        $properties = [
-            'attributes' => $this->getAttributes(),
-        ];
-
-        if ($event === 'updated') {
-            $changes = $this->getChanges();
-            $original = [];
-            foreach ($changes as $key => $value) {
-                if ($key !== 'updated_at') {
-                    $original[$key] = $this->getOriginal($key);
-                }
-            }
-            $properties['old'] = $original;
-            $properties['attributes'] = $changes;
-        }
 
         Activity::create([
             'user_id'      => Auth::id(),
