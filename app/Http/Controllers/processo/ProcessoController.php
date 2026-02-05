@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Processo;
 use App\Models\ContasReceber;
 use App\Models\Orcamento;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 
 class ProcessoController extends Controller
 {
@@ -52,13 +54,34 @@ class ProcessoController extends Controller
                 break;
         }
 
-        if ($request->filled('mes_ano')) {
+        $inputInicio = $request->input('data_inicio');
+        $inputFim    = $request->input('data_fim');
+
+
+        if ($inputInicio) {
             try {
-                $data = \Carbon\Carbon::createFromFormat('Y-m', $request->input('mes_ano'));
-                
-                $query->whereMonth('orcamentos.data_aprovacao', $data->month)
-                      ->whereYear('orcamentos.data_aprovacao', $data->year);
+                $dataInicio = Carbon::parse($inputInicio)->startOfMonth();
+
+                if ($inputFim) {
+                    try {
+                        $dataFim = Carbon::parse($inputFim)->endOfMonth();
+                        
+                        if ($dataFim->lt($dataInicio)) {
+                            $dataFim = $dataInicio->copy()->endOfMonth();
+                            $inputFim = null; 
+                        }
+                    } catch (\Exception $e) {
+                        $dataFim = $dataInicio->copy()->endOfMonth();
+                        $inputFim = null;
+                    }
+                } else {
+                    $dataFim = $dataInicio->copy()->endOfMonth();
+                }
+
+                $query->whereBetween('data_solicitacao', [$dataInicio, $dataFim]);
+
             } catch (\Exception $e) {
+                
             }
         }
 

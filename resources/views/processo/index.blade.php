@@ -22,7 +22,7 @@
     </div>
 
     <div class="bg-white p-6 rounded-lg shadow-sm mb-6 border border-gray-200">
-        <form method="GET" action="{{ route('processos.index') }}" class="grid grid-cols-1 md:grid-cols-15 gap-4 items-end">
+        <form method="GET" action="{{ route('processos.index') }}" class="grid grid-cols-1 md:grid-cols-20 gap-4 items-end">
             
             <div class="md:col-span-5">
                 <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Pesquisar</label>
@@ -56,15 +56,16 @@
                 </select>
             </div>
 
-            <div class="md:col-span-3">
-                <label for="mes_ano" class="block text-sm font-medium text-gray-700 mb-1">Período</label>
-                <input 
-                    type="month" 
-                    name="mes_ano" 
-                    id="mes_ano" 
-                    value="{{ request('mes_ano') }}"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
-                >
+            <div class="md:col-span-4">
+                <label for="data_inicio" class="block text-sm font-medium text-gray-700 mb-1">De</label>
+                <input type="month" name="data_inicio" id="data_inicio" value="{{ request('data_inicio') }}" 
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <div class="md:col-span-4">
+                <label for="data_fim" class="block text-sm font-medium text-gray-700 mb-1">Até</label>
+                <input type="month" name="data_fim" id="data_fim" value="{{ request('data_fim') }}" 
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
             </div>
 
             <div class="md:col-span-1">
