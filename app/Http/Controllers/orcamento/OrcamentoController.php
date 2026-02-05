@@ -59,33 +59,36 @@ class OrcamentoController extends Controller
                 break;
         }
 
-        $inputInicio = $request->input('data_inicio', now()->format('Y-m'));
-        $inputFim = $request->input('data_fim');
+        $inputInicio = $request->input('data_inicio');
+        $inputFim    = $request->input('data_fim');
 
-        try {
-            $dataInicio = Carbon::parse($inputInicio)->startOfMonth();
-        } catch (\Exception $e) {
-            $dataInicio = now()->startOfMonth();
-            $inputInicio = $dataInicio->format('Y-m');
-        }
 
-        if ($inputFim) {
+        if ($inputInicio) {
             try {
-                $dataFim = Carbon::parse($inputFim)->endOfMonth();
-                
-                if ($dataFim->lt($dataInicio)) {
-                    $dataFim = $dataInicio->copy()->endOfMonth();
-                    $inputFim = null;
-                }
-            } catch (\Exception $e) {
-                $dataFim = $dataInicio->copy()->endOfMonth();
-                $inputFim = null;
-            }
-        } else {
-            $dataFim = $dataInicio->copy()->endOfMonth();
-        }
+                $dataInicio = Carbon::parse($inputInicio)->startOfMonth();
 
-        $query->whereBetween('data_solicitacao', [$dataInicio, $dataFim]);
+                if ($inputFim) {
+                    try {
+                        $dataFim = Carbon::parse($inputFim)->endOfMonth();
+                        
+                        if ($dataFim->lt($dataInicio)) {
+                            $dataFim = $dataInicio->copy()->endOfMonth();
+                            $inputFim = null; 
+                        }
+                    } catch (\Exception $e) {
+                        $dataFim = $dataInicio->copy()->endOfMonth();
+                        $inputFim = null;
+                    }
+                } else {
+                    $dataFim = $dataInicio->copy()->endOfMonth();
+                }
+
+                $query->whereBetween('data_solicitacao', [$dataInicio, $dataFim]);
+
+            } catch (\Exception $e) {
+                
+            }
+        }
 
         $orcamentos = $query->paginate(2000);
         return view('orcamento.index', compact('orcamentos', 'inputInicio', 'inputFim'));
