@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Services\CodeGeneratorService;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 
 class OrcamentoController extends Controller
 {
@@ -57,14 +59,36 @@ class OrcamentoController extends Controller
                 break;
         }
 
-        if ($request->filled('mes_ano')) {
-            $data = \Carbon\Carbon::createFromFormat('Y-m', $request->mes_ano);
-            $query->whereMonth('data_solicitacao', $data->month)
-                  ->whereYear('data_solicitacao', $data->year);
+        $inputInicio = $request->input('data_inicio', now()->format('Y-m'));
+        $inputFim = $request->input('data_fim');
+
+        try {
+            $dataInicio = Carbon::parse($inputInicio)->startOfMonth();
+        } catch (\Exception $e) {
+            $dataInicio = now()->startOfMonth();
+            $inputInicio = $dataInicio->format('Y-m');
         }
 
+        if ($inputFim) {
+            try {
+                $dataFim = Carbon::parse($inputFim)->endOfMonth();
+                
+                if ($dataFim->lt($dataInicio)) {
+                    $dataFim = $dataInicio->copy()->endOfMonth();
+                    $inputFim = null;
+                }
+            } catch (\Exception $e) {
+                $dataFim = $dataInicio->copy()->endOfMonth();
+                $inputFim = null;
+            }
+        } else {
+            $dataFim = $dataInicio->copy()->endOfMonth();
+        }
+
+        $query->whereBetween('data_solicitacao', [$dataInicio, $dataFim]);
+
         $orcamentos = $query->paginate(2000);
-        return view('orcamento.index', compact('orcamentos'));
+        return view('orcamento.index', compact('orcamentos', 'inputInicio', 'inputFim'));
     }
 
     public function create()

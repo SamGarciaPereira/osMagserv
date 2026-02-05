@@ -24,7 +24,6 @@ class DashboardController extends Controller
         $inputFim    = $request->input('data_fim');
 
         try {
-            // CORREÇÃO: Usamos parse para aceitar Y-m ou Y-m-d sem erro de Trailing Data
             $dataInicio = Carbon::parse($inputInicio)->startOfMonth();
         } catch (\Exception $e) {
             $dataInicio = now()->startOfMonth();
