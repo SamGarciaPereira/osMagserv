@@ -78,10 +78,10 @@ class ProcessoController extends Controller
                     $dataFim = $dataInicio->copy()->endOfMonth();
                 }
 
-                $query->whereBetween('data_solicitacao', [$dataInicio, $dataFim]);
+                $query->whereBetween('data_aprovacao', [$dataInicio, $dataFim]);
 
             } catch (\Exception $e) {
-                
+
             }
         }
 
