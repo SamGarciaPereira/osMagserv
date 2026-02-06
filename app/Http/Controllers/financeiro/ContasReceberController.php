@@ -8,6 +8,7 @@ use App\Models\Cliente;
 use App\Models\Processo;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 
 class ContasReceberController extends Controller
 {
@@ -51,10 +52,35 @@ class ContasReceberController extends Controller
                 break;
         }
 
-        if ($request->filled('mes_ano')) {
-            $data = Carbon::createFromFormat('Y-m', $request->mes_ano);
-            $query->whereMonth('data_vencimento', $data->month)
-                  ->whereYear('data_vencimento', $data->year);
+        $inputInicio = $request->input('data_inicio');
+        $inputFim    = $request->input('data_fim');
+
+
+        if ($inputInicio) {
+            try {
+                $dataInicio = Carbon::parse($inputInicio)->startOfMonth();
+
+                if ($inputFim) {
+                    try {
+                        $dataFim = Carbon::parse($inputFim)->endOfMonth();
+                        
+                        if ($dataFim->lt($dataInicio)) {
+                            $dataFim = $dataInicio->copy()->endOfMonth();
+                            $inputFim = null; 
+                        }
+                    } catch (\Exception $e) {
+                        $dataFim = $dataInicio->copy()->endOfMonth();
+                        $inputFim = null;
+                    }
+                } else {
+                    $dataFim = $dataInicio->copy()->endOfMonth();
+                }
+
+                $query->whereBetween('data_vencimento', [$dataInicio, $dataFim]);
+
+            } catch (\Exception $e) {
+                
+            }
         }
 
         $contasReceber = $query->get();
