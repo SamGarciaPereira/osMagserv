@@ -15,7 +15,7 @@ class ContasPagarController extends Controller
      */
     public function index(Request $request)
     {
-      $query = ContasPagar::query();
+      $query = ContasPagar::with(['anexos', 'history.user', 'editor']);
 
       if ($request->filled('search')) {
         $search = $request->input('search');
