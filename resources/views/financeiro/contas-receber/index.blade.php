@@ -101,7 +101,6 @@
                             </button>
                         </td>
                         
-                        {{-- CORREÇÃO AQUI: Exibe apenas a NF da conta ($conta->nf), removendo a referência ao processo --}}
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
                             {{ $conta->nf ?? '-' }}
                         </td>
