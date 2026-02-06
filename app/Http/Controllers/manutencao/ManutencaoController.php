@@ -8,6 +8,8 @@ use App\Models\Manutencao;
 use App\Models\Orcamento;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 
 class ManutencaoController extends Controller
 {
@@ -97,7 +99,6 @@ class ManutencaoController extends Controller
                 $q->where('descricao', 'like', "%{$search}%")
                   ->orWhere('solicitante', 'like', "%{$search}%")
                   ->orWhere('chamado', 'like', "%{$search}%")
-                  // Busca no nome do cliente também
                   ->orWhereHas('cliente', function($q2) use ($search) {
                       $q2->where('nome', 'like', "%{$search}%");
                   });
@@ -122,6 +123,36 @@ class ManutencaoController extends Controller
             default: 
                 $query->latest(); 
                 break;
+        }
+
+        $inputInicio = $request->input('data_inicio_filtro');
+        $inputFim    = $request->input('data_fim_filtro');
+
+        if ($inputInicio) {
+            try {
+                $dataInicio = Carbon::parse($inputInicio)->startOfMonth();
+
+                if ($inputFim) {
+                    try {
+                        $dataFim = Carbon::parse($inputFim)->endOfMonth();
+                        
+                        if ($dataFim->lt($dataInicio)) {
+                            $dataFim = $dataInicio->copy()->endOfMonth();
+                            $inputFim = null; 
+                        }
+                    } catch (\Exception $e) {
+                        $dataFim = $dataInicio->copy()->endOfMonth();
+                        $inputFim = null;
+                    }
+                } else {
+                    $dataFim = $dataInicio->copy()->endOfMonth();
+                }
+
+                $query->whereBetween('data_inicio_atendimento', [$dataInicio, $dataFim]);
+
+            } catch (\Exception $e) {
+                
+            }
         }
 
         return $query->where('tipo', $tipo)
