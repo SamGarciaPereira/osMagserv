@@ -17,8 +17,8 @@
     </div>
 
     <div class="bg-white p-6 rounded-lg shadow-sm mb-6 border border-gray-200">
-        <form method="GET" action="{{ route('manutencoes.preventiva.index') }}" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-            <div class="md:col-span-5">
+        <form method="GET" action="{{ route('manutencoes.preventiva.index') }}" class="grid grid-cols-1 md:grid-cols-16 gap-4 items-end">
+            <div class="md:col-span-4">
                 <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Pesquisar</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -29,7 +29,7 @@
                            class="w-full pl-10 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
                 </div>
             </div>
-            <div class="md:col-span-3">
+            <div class="md:col-span-2">
                 <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                 <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
                     <option value="">Todos</option>
@@ -45,9 +45,20 @@
                 <select name="ordem" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
                     <option value="recentes" {{ request('ordem') == 'recentes' ? 'selected' : '' }}>Recentes</option>
                     <option value="antigos" {{ request('ordem') == 'antigos' ? 'selected' : '' }}>Antigos</option>
-                    <option value="data_inicio" {{ request('ordem') == 'data_inicio' ? 'selected' : '' }}>Data Início</option>
-                    <option value="data_fim" {{ request('ordem') == 'data_fim' ? 'selected' : '' }}>Data Fim</option>
+                    <option value="data_inicio" {{ request('ordem') == 'data_inicio' ? 'selected' : '' }}>Data Início Atendimento</option>
+                    <option value="data_fim" {{ request('ordem') == 'data_fim' ? 'selected' : '' }}>Data Fim Atendimento</option>
                 </select>
+            </div>
+            <div class="md:col-span-3">
+                <label for="data_inicio_filtro" class="block text-sm font-medium text-gray-700 mb-1">De</label>
+                <input type="month" name="data_inicio_filtro" id="data_inicio_filtro" value="{{ request('data_inicio_filtro') }}" 
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <div class="md:col-span-3">
+                <label for="data_fim_filtro" class="block text-sm font-medium text-gray-700 mb-1">Até</label>
+                <input type="month" name="data_fim_filtro" id="data_fim_filtro" value="{{ request('data_fim_filtro') }}" 
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
             </div>
             <div class="md:col-span-1">
                 <button type="submit" class="bg-blue-600 text-white w-full py-2 rounded-md text-sm hover:bg-blue-700 transition" title="Filtrar">
