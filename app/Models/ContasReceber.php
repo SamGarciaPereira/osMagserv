@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\HasLastUser;
+use App\Traits\TracksHistory;
 
 class ContasReceber extends Model
 {
     use HasLastUser;
+    use TracksHistory;
 
     protected $fillable = [
         'processo_id',

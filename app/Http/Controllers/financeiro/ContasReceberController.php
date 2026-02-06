@@ -17,7 +17,7 @@ class ContasReceberController extends Controller
      */
     public function index(Request $request)
     {
-       $query = ContasReceber::query();
+       $query = ContasReceber::with(['cliente', 'processo.orcamento', 'anexos', 'history.user', 'editor']);
 
         if ($request->filled('search')) {
             $search = $request->input('search');
