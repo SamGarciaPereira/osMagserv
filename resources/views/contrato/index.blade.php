@@ -60,8 +60,8 @@
                         <th class="px-6 py-3"></th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contrato</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Início Contrato</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Fim Contrato</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Início</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Fim</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ativo</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
                     </tr>
@@ -74,7 +74,7 @@
                                 <i class="bi bi-chevron-down toggle-arrow inline-block transition-transform duration-300"></i>
                             </button>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="max-w-[226px] truncate py-4 whitespace-nowrap" title="{{ $contrato->clientes->pluck('nome')->join(', ') ?? 'N/A' }}">
                             <div class="flex flex-col gap-1">
                                 @foreach($contrato->clientes as $cli)
                                     <div class="text-sm font-bold text-purple-700 flex items-center">
@@ -91,7 +91,9 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">{{ $contrato->numero_contrato ?? "N/A" }}</div>
+                            <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-mono font-bold border border-gray-300 select-all">
+                                    {{ $contrato->numero_contrato ?? "N/A" }}
+                            </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">
