@@ -8,7 +8,7 @@
         $labelsmanutencao = [
             'descricao' => 'Descrição',
             'solicitante' => 'Solicitante',
-            'chamado' => 'Chamado',
+            'chamado' => 'OS',
             'data_inicio_atendimento' => 'Data Início Atendimento',
             'data_fim_atendimento' => 'Data Fim Atendimento',
             'status' => 'Status',
@@ -35,7 +35,7 @@
                         <i class="bi bi-search text-gray-400"></i>
                     </div>
                     <input type="text" name="search" id="search" value="{{ request('search') }}" 
-                           placeholder="Cliente, Chamado ou Solicitante..."
+                           placeholder="Cliente, OS ou Solicitante..."
                            class="w-full pl-10 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
                 </div>
             </div>
