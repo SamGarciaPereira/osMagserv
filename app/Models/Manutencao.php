@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\HasLastUser;
+use App\Traits\TracksHistory;
 
 class Manutencao extends Model
 {
     use HasLastUser;
+    use TracksHistory;
 
     protected $table = 'manutencoes';
 

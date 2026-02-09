@@ -91,7 +91,13 @@ class ManutencaoController extends Controller
 
     private function filtrarManutencoes(Request $request, $tipo)
     {
-        $query = Manutencao::query(); 
+        $query = Manutencao::with([
+            'cliente.contratos', 
+            'cliente.matriz.contratos', 
+            'anexos', 
+            'editor', 
+            'history.user',
+        ]); 
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -156,12 +162,7 @@ class ManutencaoController extends Controller
         }
 
         return $query->where('tipo', $tipo)
-                     ->with([
-                        'cliente.contratos',       
-                        'cliente.matriz.contratos', 
-                        'anexos'
-                     ]) 
-                     ->paginate(100);
+                     ->paginate(1000);
     }
 
     public function createOrcamento(Manutencao $manutencao)
