@@ -13,7 +13,7 @@ class FuncionarioController extends Controller
      */
     public function index()
     {
-        //
+        return view('rh.funcionario.index');
     }
 
     /**
@@ -21,7 +21,7 @@ class FuncionarioController extends Controller
      */
     public function create()
     {
-        //
+        return view('rh.funcionario.create');
     }
 
     /**
@@ -29,7 +29,7 @@ class FuncionarioController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
     }
 
     /**
@@ -45,7 +45,7 @@ class FuncionarioController extends Controller
      */
     public function edit(Funcionario $funcionario)
     {
-        //
+        return view('rh.funcionario.edit', compact('funcionario'));
     }
 
     /**

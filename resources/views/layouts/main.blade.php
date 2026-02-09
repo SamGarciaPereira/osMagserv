@@ -76,7 +76,7 @@
                 <div>
                     <button id="dropdown-btn-rh" class="w-full p-2.5 pl-3.5 flex items-center justify-between rounded-md hover:bg-blue-600 group">
                         <div class="flex items-center">
-                            <i class="bi bi-people-fill text-lg"></i>
+                            <i class="bi bi-person-fill-gear text-lg"></i>
                             <span class="sidebar-text text-sm font-semibold ml-4 w-0 opacity-0">RH</span>
                         </div>
                         <i class="sidebar-text bi bi-chevron-down text-xs w-0 opacity-0" id="arrow-rh"></i>
