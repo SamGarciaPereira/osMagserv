@@ -94,7 +94,6 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">OS</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Início Atendimento</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Fim Atendimento</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Solicitante</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
                     </tr>
@@ -108,7 +107,7 @@
                                 <i class="bi bi-chevron-down toggle-arrow inline-block transition-transform duration-300"></i>
                             </button>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="max-w-[226px] truncate py-4 whitespace-nowrap" title="{{ $manutencao->cliente->nome ?? 'N/A' }}">
                             <div class="text-sm font-medium text-gray-900">{{ $manutencao->cliente->nome }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -125,9 +124,6 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">{{ $manutencao->data_fim_atendimento ? $manutencao->data_fim_atendimento->format('d/m/Y') : 'Não definido' }}</div>
-                        </td>
-                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">{{ $manutencao->solicitante }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                             <x-status-badge :status="$manutencao->status" />
@@ -159,6 +155,11 @@
                                     <div>
                                         <p class="font-bold text-gray-700 mb-1">Descrição:</p>
                                         <p>{{ $manutencao->descricao ?: 'Não definido' }}</p>
+                                    </div>
+
+                                    <div>
+                                        <p class="font-bold text-gray-700 mb-1">Solicitante:</p>
+                                        <p>{{ $manutencao->solicitante ?: 'Não definido' }}</p>
                                     </div>
 
                                     @php
