@@ -106,7 +106,7 @@
                             </button>
                         </td>
 
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="max-w-[226px] truncate py-4 whitespace-nowrap" title="{{ $manutencao->cliente->nome ?? 'N/A' }}">
                             <div class="text-sm font-medium text-gray-900">{{ $manutencao->cliente->nome ?? 'N/A' }}</div>
                         </td>
 
