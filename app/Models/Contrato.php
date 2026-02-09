@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\HasLastUser;
+use App\Traits\TracksHistory;
 
 class Contrato extends Model
 {
     use HasLastUser;
+    use TracksHistory;
 
     protected $fillable = [
         'numero_contrato',

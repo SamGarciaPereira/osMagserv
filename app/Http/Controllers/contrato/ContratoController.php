@@ -19,9 +19,9 @@ class ContratoController extends Controller
                 $q->where('nome', 'like', "%{$search}%");
             })->orWhere('numero_contrato', 'like', "%{$search}%");    
         }
-        $contratos = $query->with(['clientes.filiais', 'anexos'])
+        $contratos = $query->with(['clientes.filiais', 'anexos', 'editor', 'history.user'])
                            ->latest()
-                           ->paginate(100);
+                           ->paginate(1000);
         return view('contrato.index', compact('contratos'));
     }
 

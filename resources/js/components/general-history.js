@@ -19,7 +19,8 @@ const defaultLabels = {
     'logradouro_obra': 'Logradouro',
     'bairro_obra': 'Bairro',
     'numero_obra': 'Número',
-    'anexo': 'Arquivo Anexo'
+    'anexo': 'Arquivo Anexo',
+    'ativo': 'Ativo',
 };
 
 const fieldIcons = {
@@ -33,6 +34,7 @@ const fieldIcons = {
     'escopo': 'bi-file-text',
     'revisao': 'bi-arrow-repeat',
     'anexo': 'bi-paperclip',
+    'ativo': 'bi-toggle-on',
     'default': 'bi-pencil-square'
 };
 
@@ -234,6 +236,29 @@ function formatValues(key, valOld, valNew) {
     if (displayNew === null || displayNew === '' || displayNew === undefined) 
         displayNew = '<span class="text-gray-400 italic text-xs">Vazio</span>';
 
+    // 1. Lógica para Booleanos (Sim/Não)
+    const boolKeys = ['ativo', 'renovacao_automatica', 'assinado', 'pago', 'is_fixa'];
+    
+    if (boolKeys.includes(key) || typeof valNew === 'boolean' || typeof valOld === 'boolean') {
+        const formatBool = (val) => {
+            if (val === null || val === '') return null;
+            const isTrue = (val === true || val === 1 || val === '1' || val === 'true');
+            
+            return isTrue 
+                ? '<span class="text-green-600 font-bold flex items-center gap-1"><i class="bi bi-check-circle-fill"></i> Sim</span>' 
+                : '<span class="text-red-500 font-bold flex items-center gap-1"><i class="bi bi-x-circle-fill"></i> Não</span>';
+        };
+
+        const formattedOld = formatBool(valOld);
+        const formattedNew = formatBool(valNew);
+
+        if (formattedOld !== null) displayOld = formattedOld;
+        if (formattedNew !== null) displayNew = formattedNew;
+        
+        return { displayOld, displayNew };
+    }
+
+    // 2. Lógica para Datas
     const dateRegex = /^(\d{4})-(\d{2})-(\d{2})/;
     
     if (typeof valNew === 'string') {
@@ -250,11 +275,13 @@ function formatValues(key, valOld, valNew) {
         }
     }
 
+    // 3. Lógica para Moeda
     if (key.toLowerCase().includes('valor') || key.toLowerCase().includes('preco')) {
         if (!isNaN(parseFloat(valOld))) displayOld = parseFloat(valOld).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         if (!isNaN(parseFloat(valNew))) displayNew = parseFloat(valNew).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
 
+    // 4. Lógica para Objetos
     if (typeof valNew === 'object' && valNew !== null) displayNew = '<span class="text-xs bg-gray-200 px-1 rounded">Objeto/Dados</span>';
     if (typeof valOld === 'object' && valOld !== null) displayOld = '<span class="text-xs bg-gray-200 px-1 rounded">Objeto/Dados</span>';
 
