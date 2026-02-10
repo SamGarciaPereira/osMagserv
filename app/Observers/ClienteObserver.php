@@ -12,9 +12,7 @@ class ClienteObserver
      */
     public function created(Cliente $cliente): void
     {
-        Activity::create([
-            'description' => "Cliente '{$cliente->nome}' foi cadastrado."
-        ]);
+        
     }
 
     /**
@@ -22,9 +20,7 @@ class ClienteObserver
      */
     public function updated(Cliente $cliente): void
     {
-        Activity::create([
-            'description' => "Cliente '{$cliente->nome}' foi atualizado."
-        ]);
+        
     }
 
     /**
@@ -32,8 +28,6 @@ class ClienteObserver
      */
     public function deleted(Cliente $cliente): void
     {
-        Activity::create([
-            'description' => "Cliente '{$cliente->nome}' foi removido."
-        ]);
+        
     }
 }
