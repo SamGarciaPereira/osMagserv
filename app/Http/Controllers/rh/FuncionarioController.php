@@ -5,15 +5,20 @@ namespace App\Http\Controllers\rh;
 use App\Models\Funcionario;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 
 class FuncionarioController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('rh.funcionario.index');
+        $query = Funcionario::with(['anexos', 'editor', 'history.user']);
+
+        $funcionarios = $query->paginate(100);
+        return view('rh.funcionario.index', compact('funcionarios'));
     }
 
     /**
@@ -29,7 +34,55 @@ class FuncionarioController extends Controller
      */
     public function store(Request $request)
     {
-        
+        $validatedData = $request->validate([
+            'nome' => 'required|string|max:255',
+            'cpf' => 'nullable|string|max:20|unique:funcionarios,cpf',
+            'rg' => 'nullable|string|max:20|unique:funcionarios,rg',
+            'data_nascimento' => 'nullable|date',
+            'estado_nascimento' => 'nullable|string|max:255',
+            'cidade_nascimento' => 'nullable|string|max:255',
+            'estado_civil' => 'nullable|string|max:255',
+            'sexo' => 'nullable|string|max:10',
+            'numero_filhos' => 'nullable|integer|min:0',
+            'foto_perfil' => 'nullable|image|max:2048',
+            'email' => 'nullable|email|max:255|unique:funcionarios,email',
+            'telefone' => 'nullable|string|max:20|unique:funcionarios,telefone',
+            'cep' => 'nullable|string|max:20',
+            'logradouro' => 'nullable|string|max:255',
+            'numero' => 'nullable|string|max:20',
+            'bairro' => 'nullable|string|max:255',
+            'cidade' => 'nullable|string|max:255',
+            'estado' => 'nullable|string|max:255',
+            'cargo' => 'nullable|string|max:255',
+            'tipo_contrato' => ['required', Rule::in(['Fixo', 'Intermitente', 'PJ', 'Estagio'])],
+            'data_admissao' => 'nullable|date',
+            'data_demissao' => 'nullable|date|after_or_equal:data_admissao',
+            'ativo' => 'boolean',
+            'observacoes' => 'nullable|string'
+        ],
+        [
+            'cpf.unique' => 'O CPF informado já está em uso por outro funcionário.',
+            'rg.unique' => 'O RG informado já está em uso por outro funcionário.',
+            'email.unique' => 'O email informado já está em uso por outro funcionário.',
+            'telefone.unique' => 'O telefone informado já está em uso por outro funcionário.',
+            'data_demissao.after_or_equal' => 'A data de demissão deve ser igual ou posterior à data de admissão.'
+        ]);
+
+        if ($request->hasFile('foto_perfil')) {
+            $path = $request->file('foto_perfil')->store('fotos_funcionarios', 'public');
+            $validatedData['foto_perfil'] = $path;
+        }
+
+        if(isset($validatedData['cpf'])) {
+            $validatedData['cpf'] = preg_replace('/[^0-9]/', '', $validatedData['cpf']);
+        }
+        if(isset($validatedData['telefone'])) {
+            $validatedData['telefone'] = preg_replace('/[^0-9]/', '', $validatedData['telefone']);
+        }
+
+        Funcionario::create($validatedData);
+
+        return redirect()->route('rh.funcionarios.index')->with('success', 'Funcionário criado com sucesso.');
     }
 
     /**
@@ -45,7 +98,10 @@ class FuncionarioController extends Controller
      */
     public function edit(Funcionario $funcionario)
     {
-        return view('rh.funcionario.edit', compact('funcionario'));
+        $funcionarios = Funcionario::findOrFail($funcionario->id)
+                                    ->orderBy('nome')
+                                    ->get();
+        return view('rh.funcionario.edit', compact('funcionarios'));
     }
 
     /**
@@ -53,7 +109,53 @@ class FuncionarioController extends Controller
      */
     public function update(Request $request, Funcionario $funcionario)
     {
-        //
+        $validatedData = $request->validate([
+            'nome' => 'required|string|max:255',
+            'cpf' => 'nullable|string|max:20|unique:funcionarios,cpf,' . $funcionario->id,
+            'rg' => 'nullable|string|max:20|unique:funcionarios,rg,' . $funcionario->id,
+            'data_nascimento' => 'nullable|date',
+            'estado_nascimento' => 'nullable|string|max:255',
+            'cidade_nascimento' => 'nullable|string|max:255',
+            'estado_civil' => 'nullable|string|max:255',
+            'sexo' => 'nullable|string|max:10',
+            'numero_filhos' => 'nullable|integer|min:0',
+            'foto_perfil' => 'nullable|image|max:2048',
+            'email' => 'nullable|email|max:255|unique:funcionarios,email,' . $funcionario->id,
+            'telefone' => 'nullable|string|max:20|unique:funcionarios,telefone,' . $funcionario->id,
+            'cep' => 'nullable|string|max:20',
+            'logradouro' => 'nullable|string|max:255',
+            'numero' => 'nullable|string|max:20',
+            'bairro' => 'nullable|string|max:255',
+            'cidade' => 'nullable|string|max:255',
+            'estado' => 'nullable|string|max:255',
+            'cargo' => 'nullable|string|max:255',
+            'tipo_contrato' => ['required', Rule::in(['Fixo', 'Intermitente', 'PJ', 'Estagio'])],
+            'data_admissao' => 'nullable|date',
+            'data_demissao' => 'nullable|date|after_or_equal:data_admissao',
+            'ativo' => 'boolean',
+            'observacoes' => 'nullable|string'
+        ],
+        [
+            'cpf.unique' => 'O CPF informado já está em uso por outro funcionário.',
+            'rg.unique' => 'O RG informado já está em uso por outro funcionário.',
+            'email.unique' => 'O email informado já está em uso por outro funcionário.',
+            'telefone.unique' => 'O telefone informado já está em uso por outro funcionário.',
+            'data_demissao.after_or_equal' => 'A data de demissão deve ser igual ou posterior à data de admissão.'
+        ]);
+
+        if ($request->hasFile('foto_perfil')) {
+            $path = $request->file('foto_perfil')->store('fotos_funcionarios', 'public');
+            $validatedData['foto_perfil'] = $path;
+        }
+        if(isset($validatedData['cpf'])) {
+            $validatedData['cpf'] = preg_replace('/[^0-9]/', '', $validatedData['cpf']);
+        }
+        if(isset($validatedData['telefone'])) {
+            $validatedData['telefone'] = preg_replace('/[^0-9]/', '', $validatedData['telefone']);
+        }
+        $funcionario->update($validatedData);
+
+        return redirect()->route('rh.funcionarios.index')->with('success', 'Funcionário atualizado com sucesso.');
     }
 
     /**
@@ -61,6 +163,8 @@ class FuncionarioController extends Controller
      */
     public function destroy(Funcionario $funcionario)
     {
-        //
+        $funcionario->delete();
+
+        return redirect()->route('rh.funcionarios.index')->with('success', 'Funcionário removido com sucesso.');
     }
 }
