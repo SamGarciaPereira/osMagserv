@@ -11,6 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('funcionarios');
+
         Schema::create('funcionarios', function (Blueprint $table) {
             $table->id();
             //dados pessoais
@@ -20,8 +22,8 @@ return new class extends Migration
             $table->date('data_nascimento')->nullable();
             $table->string('estado_nascimento')->nullable();
             $table->string('cidade_nascimento')->nullable();
-            $table->string('estado_civil')->nullable();
-            $table->string('sexo')->nullable(); 
+            $table->enum('estado_civil', ['Solteiro', 'Casado', 'Divorciado', 'Viúvo'])->nullable();
+            $table->enum('sexo', ['Masculino', 'Feminino'])->nullable(); 
             $table->integer('numero_filhos')->nullable();
             $table->string('foto_perfil')->nullable();
 

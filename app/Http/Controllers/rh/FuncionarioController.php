@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Illuminate\Validation\Rule;
 
 class FuncionarioController extends Controller
 {
@@ -73,12 +74,21 @@ class FuncionarioController extends Controller
             $validatedData['foto_perfil'] = $path;
         }
 
-        if(isset($validatedData['cpf'])) {
-            $validatedData['cpf'] = preg_replace('/[^0-9]/', '', $validatedData['cpf']);
-        }
-        if(isset($validatedData['telefone'])) {
-            $validatedData['telefone'] = preg_replace('/[^0-9]/', '', $validatedData['telefone']);
-        }
+        $validatedData['cpf'] = $request->filled('cpf') 
+        ? preg_replace('/[^0-9]/', '', $request->cpf) 
+        : null;
+
+        $validatedData['rg'] = $request->filled('rg') 
+            ? $request->rg 
+            : null;
+
+        $validatedData['telefone'] = $request->filled('telefone') 
+            ? preg_replace('/[^0-9]/', '', $request->telefone) 
+            : null;
+
+        $validatedData['email'] = $request->filled('email') 
+            ? $request->email 
+            : null;
 
         Funcionario::create($validatedData);
 
