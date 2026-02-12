@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Validation\Rule;
+use Illuminate\Database\Eloquent\Collection;
 
 class FuncionarioController extends Controller
 {
@@ -18,8 +19,11 @@ class FuncionarioController extends Controller
     {
         $query = Funcionario::with(['anexos', 'editor', 'history.user']);
 
-        $funcionarios = $query->paginate(100);
-        return view('rh.funcionario.index', compact('funcionarios'));
+        $funcionariosFixos = $query->clone()->where('tipo_contrato', 'Fixo')->orderBy('nome')->paginate(1000, ['*'], 'page_fixos');
+        $funcionariosIntermitentes = $query->clone()->where('tipo_contrato', 'Intermitente')->orderBy('nome')->paginate(1000, ['*'], 'page_intermitentes');
+        $funcionariosPJ = $query->clone()->where('tipo_contrato', 'PJ')->orderBy('nome')->paginate(1000, ['*'], 'page_pj');
+        $funcionariosEstagio = $query->clone()->where('tipo_contrato', 'Estagio')->orderBy('nome')->paginate(1000, ['*'], 'page_estagio');
+        return view('rh.funcionario.index', compact('funcionariosFixos', 'funcionariosIntermitentes', 'funcionariosPJ', 'funcionariosEstagio'));
     }
 
     /**
