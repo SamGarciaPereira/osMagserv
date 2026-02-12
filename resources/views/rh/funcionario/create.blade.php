@@ -184,11 +184,6 @@
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                 </div>
             </div>
-
-            
-
-
-            
             <div class="flex justify-end mt-10 pt-6">
                 <a href="{{ route('rh.funcionarios.index') }}" class="bg-gray-200 text-gray-700 hover:bg-gray-300 font-medium py-2 px-6 rounded-lg mr-4">
                     Cancelar

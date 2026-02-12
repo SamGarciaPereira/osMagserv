@@ -29,7 +29,17 @@
             'data_admissao'     => 'Data de Admissão',
             'data_demissao'     => 'Data de Demissão',
             'ativo'             => 'Status (Ativo/Inativo)',
-            'observacoes'       => 'Observações'
+            'observacoes'       => 'Observações',
+            'doc_aso'           => 'Data de Emissão ASO',
+            'doc_ordem_servico' => 'Data de Emissão Ordem de Serviço',
+            'doc_ficha_epi'     => 'Data de Emissão Ficha EPI',
+            'doc_nr06'          => 'Data de Emissão NR06',
+            'doc_nr10'          => 'Data de Emissão NR10',
+            'doc_nr12'          => 'Data de Emissão NR12',
+            'doc_nr18'          => 'Data de Emissão NR18',
+            'doc_nr35'          => 'Data de Emissão NR35',
+            'doc_contrato_intermitente' => 'Data de Emissão Contrato Intermitente',
+            'status_documentos' => 'Status dos Documentos',
         ];
     @endphp
 
