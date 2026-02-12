@@ -112,10 +112,8 @@ class FuncionarioController extends Controller
      */
     public function edit(Funcionario $funcionario)
     {
-        $funcionarios = Funcionario::findOrFail($funcionario->id)
-                                    ->orderBy('nome')
-                                    ->get();
-        return view('rh.funcionario.edit', compact('funcionarios'));
+        $funcionario->load(['anexos', 'editor', 'history.user']);
+        return view('rh.funcionario.edit', compact('funcionario'));
     }
 
     /**
