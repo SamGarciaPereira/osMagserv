@@ -59,7 +59,7 @@
                 <div>
                     <label for="data_nascimento" class="block text-sm font-medium text-gray-700 mb-2">Data de Nascimento</label>
                     <input type="date" id="data_nascimento" name="data_nascimento"
-                        value="{{ old('data_nascimento', $funcionario->data_nascimento ?? '') }}"
+                        value="{{ old('data_nascimento', $funcionario->data_nascimento ? $funcionario->data_nascimento->format('Y-m-d') : '') }}"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                 </div>
 
@@ -85,13 +85,13 @@
                 <div>
                     <label for="data_admissao" class="block text-sm font-medium text-gray-700 mb-2">Data de Admissão</label>
                     <input type="date" id="data_admissao" name="data_admissao"
-                        value="{{ old('data_admissao', $funcionario->data_admissao ?? '') }}"
+                        value="{{ old('data_admissao', $funcionario->data_admissao ? $funcionario->data_admissao->format('Y-m-d') : '') }}"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
                     <label for="data_demissao" class="block text-sm font-medium text-gray-700 mb-2">Data de Demissão</label>
                     <input type="date" id="data_demissao" name="data_demissao"
-                        value="{{ old('data_demissao', $funcionario->data_demissao ?? '') }}"
+                        value="{{ old('data_demissao', $funcionario->data_demissao ? $funcionario->data_demissao->format('Y-m-d') : '') }}"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                 </div>
 
@@ -106,14 +106,14 @@
                         <div id="field-contrato-intermitente" class="hidden">
                             <label for="doc_contrato_intermitente" class="block text-sm font-medium text-gray-700 mb-2">Contrato Intermitente</label>
                             <input type="date" id="doc_contrato_intermitente" name="doc_contrato_intermitente"
-                                value="{{ old('doc_contrato_intermitente', $funcionario->doc_contrato_intermitente ?? '') }}"
+                                value="{{ old('doc_contrato_intermitente', $funcionario->doc_contrato_intermitente ? $funcionario->doc_contrato_intermitente->format('Y-m-d') : '') }}"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                         </div>
 
                         <div>
                             <label for="doc_aso" class="block text-sm font-medium text-gray-700 mb-2">ASO (Atestado Saúde Ocup.)</label>
                             <input type="date" id="doc_aso" name="doc_aso"
-                                value="{{ old('doc_aso', $funcionario->doc_aso ?? '') }}"
+                                value="{{ old('doc_aso', $funcionario->doc_aso ? $funcionario->doc_aso->format('Y-m-d') : '') }}"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                             <p class="text-xs text-blue-600 font-semibold mt-1">Validade: 1 ano</p>
                         </div>
@@ -121,7 +121,7 @@
                         <div>
                             <label for="doc_ordem_servico" class="block text-sm font-medium text-gray-700 mb-2">Ordem de Serviço</label>
                             <input type="date" id="doc_ordem_servico" name="doc_ordem_servico"
-                                value="{{ old('doc_ordem_servico', $funcionario->doc_ordem_servico ?? '') }}"
+                                value="{{ old('doc_ordem_servico', $funcionario->doc_ordem_servico ? $funcionario->doc_ordem_servico->format('Y-m-d') : '') }}"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                             <p class="text-xs text-blue-600 font-semibold mt-1">Validade: 1 ano</p>
                         </div>
@@ -129,7 +129,7 @@
                         <div>
                             <label for="doc_ficha_epi" class="block text-sm font-medium text-gray-700 mb-2">Ficha de EPI</label>
                             <input type="date" id="doc_ficha_epi" name="doc_ficha_epi"
-                                value="{{ old('doc_ficha_epi', $funcionario->doc_ficha_epi ?? '') }}"
+                                value="{{ old('doc_ficha_epi', $funcionario->doc_ficha_epi ? $funcionario->doc_ficha_epi->format('Y-m-d') : '') }}"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                             <p class="text-xs text-blue-600 font-semibold mt-1">Validade: 1 ano</p>
                         </div>
@@ -137,7 +137,7 @@
                         <div>
                             <label for="doc_nr06" class="block text-sm font-medium text-gray-700 mb-2">NR 06</label>
                             <input type="date" id="doc_nr06" name="doc_nr06"
-                                value="{{ old('doc_nr06', $funcionario->doc_nr06 ?? '') }}"
+                                value="{{ old('doc_nr06', $funcionario->doc_nr06 ? $funcionario->doc_nr06->format('Y-m-d') : '') }}"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                             <p class="text-xs text-blue-600 font-semibold mt-1">Validade: 1 ano</p>
                         </div>
@@ -145,7 +145,7 @@
                         <div>
                             <label for="doc_nr10" class="block text-sm font-medium text-gray-700 mb-2">NR 10</label>
                             <input type="date" id="doc_nr10" name="doc_nr10"
-                                value="{{ old('doc_nr10', $funcionario->doc_nr10 ?? '') }}"
+                                value="{{ old('doc_nr10', $funcionario->doc_nr10 ? $funcionario->doc_nr10->format('Y-m-d') : '') }}"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                             <p class="text-xs text-blue-600 font-semibold mt-1">Validade: 2 anos</p>
                         </div>
@@ -153,7 +153,7 @@
                         <div>
                             <label for="doc_nr12" class="block text-sm font-medium text-gray-700 mb-2">NR 12</label>
                             <input type="date" id="doc_nr12" name="doc_nr12"
-                                value="{{ old('doc_nr12', $funcionario->doc_nr12 ?? '') }}"
+                                value="{{ old('doc_nr12', $funcionario->doc_nr12 ? $funcionario->doc_nr12->format('Y-m-d') : '') }}"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                             <p class="text-xs text-blue-600 font-semibold mt-1">Validade: 1 ano</p>
                         </div>
@@ -161,7 +161,7 @@
                         <div>
                             <label for="doc_nr18" class="block text-sm font-medium text-gray-700 mb-2">NR 18</label>
                             <input type="date" id="doc_nr18" name="doc_nr18"
-                                value="{{ old('doc_nr18', $funcionario->doc_nr18 ?? '') }}"
+                                value="{{ old('doc_nr18', $funcionario->doc_nr18 ? $funcionario->doc_nr18->format('Y-m-d') : '') }}"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                             <p class="text-xs text-blue-600 font-semibold mt-1">Validade: 2 anos</p>
                         </div>
@@ -169,7 +169,7 @@
                         <div>
                             <label for="doc_nr35" class="block text-sm font-medium text-gray-700 mb-2">NR 35</label>
                             <input type="date" id="doc_nr35" name="doc_nr35"
-                                value="{{ old('doc_nr35', $funcionario->doc_nr35 ?? '') }}"
+                                value="{{ old('doc_nr35', $funcionario->doc_nr35 ? $funcionario->doc_nr35->format('Y-m-d') : '') }}"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                             <p class="text-xs text-blue-600 font-semibold mt-1">Validade: 2 anos</p>
                         </div>
@@ -292,7 +292,5 @@
                 </button>
             </div>
         </form>
-
-    
-
+    </div>
 @endsection
