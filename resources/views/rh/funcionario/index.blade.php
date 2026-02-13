@@ -138,7 +138,9 @@
                                             <p><strong>E-mail:</strong> {{ $funcionario->email ?? 'Não informado' }}</p>
                                             <p><strong>Data de Nascimento:</strong>
                                                 {{ $funcionario->data_nascimento ? $funcionario->data_nascimento->format('d/m/Y') : 'Não informado' }}
-                                            </p>
+                                            </p>                                            
+                                        </div>
+                                        <div class="space-y-1">
                                             <p><strong>Endereço:</strong> {{ $funcionario->logradouro ?? 'N/A' }},
                                             {{ $funcionario->numero ?? 'N/A' }}, {{ $funcionario->bairro ?? 'N/A' }}, {{ $funcionario->cidade ?? 'N/A' }},
                                             {{ $funcionario->estado ?? 'N/A' }}</p>
@@ -146,58 +148,102 @@
                                             <p><strong>Data de Demissão:</strong>
                                                 {{ $funcionario->data_demissao ? $funcionario->data_demissao->format('d/m/Y') : 'Não informado' }}
                                             </p>
-                                            
                                         </div>
                                         <div class="space-y-1">
-                                            <p>
-                                                <strong>Data Venc. Contr. Intermitente:</strong>
-                                                {{ $funcionario->doc_contrato_intermitente ? \Carbon\Carbon::parse($funcionario->doc_contrato_intermitente)->addYears(1)->format('d/m/Y') : 'Não informado' }}
-                                            </p>
-                                            <p>
-                                                <strong>Data Venc. ASO:</strong>
-                                                {{ $funcionario->doc_aso ? \Carbon\Carbon::parse($funcionario->doc_aso)->addYears(1)->format('d/m/Y') : 'Não informado' }}
-                                            </p>
-                                            <p>
-                                                <strong>Data Venc. Ordem de Serviço:</strong>
-                                                {{ $funcionario->doc_ordem_servico ? \Carbon\Carbon::parse($funcionario->doc_ordem_servico)->addYears(1)->format('d/m/Y') : 'Não informado' }}
-                                            </p>
-
-                                            <p>
-                                                <strong>Data Venc. Ficha de EPI:</strong>
-                                                {{ $funcionario->doc_ficha_epi ? \Carbon\Carbon::parse($funcionario->doc_ficha_epi)->addYears(1)->format('d/m/Y') : 'Não informado' }}
-                                            </p>
-
-                                            <p>
-                                                <strong>Data Venc. NR 06:</strong>
-                                                {{ $funcionario->doc_nr06 ? \Carbon\Carbon::parse($funcionario->doc_nr06)->addYears(1)->format('d/m/Y') : 'Não informado' }}
-                                            </p>
-
-                                            <p>
-                                                <strong>Data Venc. NR 12:</strong>
-                                                {{ $funcionario->doc_nr12 ? \Carbon\Carbon::parse($funcionario->doc_nr12)->addYears(1)->format('d/m/Y') : 'Não informado' }}
-                                            </p>
-
-                                            <p>
-                                                <strong>Data Venc. NR 10:</strong>
-                                                {{ $funcionario->doc_nr10 ? \Carbon\Carbon::parse($funcionario->doc_nr10)->addYears(2)->format('d/m/Y') : 'Não informado' }}
-                                            </p>
-                                        </div>
-                                        <div class="space-y-1">
-                                            <p>
-                                                <strong>Data Venc. NR 18:</strong>
-                                                {{ $funcionario->doc_nr18 ? \Carbon\Carbon::parse($funcionario->doc_nr18)->addYears(2)->format('d/m/Y') : 'Não informado' }}
-                                            </p>
-
-                                            <p>
-                                                <strong>Data Venc. NR 35:</strong>
-                                                {{ $funcionario->doc_nr35 ? \Carbon\Carbon::parse($funcionario->doc_nr35)->addYears(2)->format('d/m/Y') : 'Não informado' }}
-                                            </p>
                                             <p><strong>Sexo:</strong> {{ $funcionario->sexo ?? 'Não informado' }}</p>
                                             <p><strong>Estado Civil:</strong> {{ $funcionario->estado_civil ?? 'Não informado' }}</p>
                                             <p><strong>Nº Filhos:</strong> {{ $funcionario->numero_filhos ?? 'Não informado' }}</p>
                                             <p><strong>Observações:</strong> {{ $funcionario->observacoes ?? 'Nenhuma' }}</p>
                                         </div>
                                     </div>
+
+                                    @if(in_array($funcionario->tipo_contrato, ['Fixo', 'Intermitente']))
+                                        <div class="px-2 py-3 border-b border-gray-200">
+                                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
+                                                <i class="bi bi-file-earmark-check mr-1"></i> Situação dos Documentos
+                                            </h4>
+
+                                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                                                @php
+                                                    $docsConfig = [
+                                                        'ASO' => ['campo' => 'doc_aso', 'anos' => 1],
+                                                        'Ordem de Serviço' => ['campo' => 'doc_ordem_servico', 'anos' => 1],
+                                                        'Ficha de EPI' => ['campo' => 'doc_ficha_epi', 'anos' => 1],
+                                                        'NR 06' => ['campo' => 'doc_nr06', 'anos' => 1],
+                                                        'NR 12' => ['campo' => 'doc_nr12', 'anos' => 1],
+                                                        'NR 10' => ['campo' => 'doc_nr10', 'anos' => 2],
+                                                        'NR 18' => ['campo' => 'doc_nr18', 'anos' => 2],
+                                                        'NR 35' => ['campo' => 'doc_nr35', 'anos' => 2],
+                                                    ];
+
+                                                    if($funcionario->tipo_contrato === 'Intermitente') {
+                                                        $docsConfig['Contrato Intermitente'] = ['campo' => 'doc_contrato_intermitente', 'anos' => 1];
+                                                    }
+                                                @endphp
+
+                                                @foreach($docsConfig as $nomeDoc => $config)
+                                                    @php
+                                                        $dataEmissao = $funcionario->{$config['campo']};
+                                                        
+                                                        if ($dataEmissao) {
+                                                            $emissao = \Carbon\Carbon::parse($dataEmissao);
+                                                            $vencimento = $emissao->copy()->addYears($config['anos']);
+                                                            $hoje = \Carbon\Carbon::now();
+                                                            $faltaUmMes = $vencimento->copy()->subMonth();
+
+                                                            if ($hoje->gt($vencimento)) {
+                                                                $statusLabel = 'VENCIDO';
+                                                                $corClass = 'bg-red-50 text-red-800 border-red-200';
+                                                                $icon = 'bi-x-circle-fill';
+                                                            } elseif ($hoje->gte($faltaUmMes)) {
+                                                                $statusLabel = 'ATENÇÃO';
+                                                                $corClass = 'bg-yellow-50 text-yellow-800 border-yellow-200';
+                                                                $icon = 'bi-exclamation-triangle-fill';
+                                                            } else {
+                                                                $statusLabel = 'EM DIA';
+                                                                $corClass = 'bg-green-50 text-green-800 border-green-200';
+                                                                $icon = 'bi-check-circle-fill';
+                                                            }
+                                                        } else {
+                                                            $vencimento = null;
+                                                            $statusLabel = 'PENDENTE';
+                                                            $corClass = 'bg-gray-50 text-gray-500 border-gray-200';
+                                                            $icon = 'bi-dash-circle';
+                                                        }
+                                                    @endphp
+
+                                                    <div class="border rounded p-2 flex flex-col justify-between {{ $corClass }}">
+                                                        <div class="flex justify-between items-start mb-1">
+                                                            <span class="text-[10px] font-bold uppercase tracking-wide truncate pr-1" title="{{ $nomeDoc }}">{{ $nomeDoc }}</span>
+                                                            <i class="bi {{ $icon }}"></i>
+                                                        </div>
+                                                        
+                                                        <div class="text-[10px] space-y-0.5">
+                                                            @if($vencimento)
+                                                                <div class="flex justify-between">
+                                                                    <span class="opacity-75">Emissão:</span>
+                                                                    <span>{{ $emissao->format('d/m/Y') }}</span>
+                                                                </div>
+                                                                <div class="flex justify-between font-bold">
+                                                                    <span>Vence:</span>
+                                                                    <span>{{ $vencimento->format('d/m/Y') }}</span>
+                                                                </div>
+                                                            @else
+                                                                <span class="italic opacity-75">Não informado</span>
+                                                            @endif
+                                                        </div>
+                                                        
+                                                        @if($vencimento)
+                                                            <div class="mt-1 pt-1 border-t border-black/10 text-[9px] text-center font-bold">
+                                                                {{ $statusLabel }}
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endif
+
                                     <div class="p-2 text-sm text-gray-700 grid grid-cols-1 md:grid-cols-2 gap-2 max-h-40 overflow-auto">
                                         <div class="space-y-1">
                                             <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
@@ -399,7 +445,9 @@
                                             <p><strong>E-mail:</strong> {{ $funcionario->email ?? 'Não informado' }}</p>
                                             <p><strong>Data de Nascimento:</strong>
                                                 {{ $funcionario->data_nascimento ? $funcionario->data_nascimento->format('d/m/Y') : 'Não informado' }}
-                                            </p>
+                                            </p>                                            
+                                        </div>
+                                        <div class="space-y-1">
                                             <p><strong>Endereço:</strong> {{ $funcionario->logradouro ?? 'N/A' }},
                                             {{ $funcionario->numero ?? 'N/A' }}, {{ $funcionario->bairro ?? 'N/A' }}, {{ $funcionario->cidade ?? 'N/A' }},
                                             {{ $funcionario->estado ?? 'N/A' }}</p>
@@ -407,58 +455,101 @@
                                             <p><strong>Data de Demissão:</strong>
                                                 {{ $funcionario->data_demissao ? $funcionario->data_demissao->format('d/m/Y') : 'Não informado' }}
                                             </p>
-                                            
                                         </div>
                                         <div class="space-y-1">
-                                            <p>
-                                                <strong>Data Venc. Contr. Intermitente:</strong>
-                                                {{ $funcionario->doc_contrato_intermitente ? \Carbon\Carbon::parse($funcionario->doc_contrato_intermitente)->addYears(1)->format('d/m/Y') : 'Não informado' }}
-                                            </p>
-                                            <p>
-                                                <strong>Data Venc. ASO:</strong>
-                                                {{ $funcionario->doc_aso ? \Carbon\Carbon::parse($funcionario->doc_aso)->addYears(1)->format('d/m/Y') : 'Não informado' }}
-                                            </p>
-                                            <p>
-                                                <strong>Data Venc. Ordem de Serviço:</strong>
-                                                {{ $funcionario->doc_ordem_servico ? \Carbon\Carbon::parse($funcionario->doc_ordem_servico)->addYears(1)->format('d/m/Y') : 'Não informado' }}
-                                            </p>
-
-                                            <p>
-                                                <strong>Data Venc. Ficha de EPI:</strong>
-                                                {{ $funcionario->doc_ficha_epi ? \Carbon\Carbon::parse($funcionario->doc_ficha_epi)->addYears(1)->format('d/m/Y') : 'Não informado' }}
-                                            </p>
-
-                                            <p>
-                                                <strong>Data Venc. NR 06:</strong>
-                                                {{ $funcionario->doc_nr06 ? \Carbon\Carbon::parse($funcionario->doc_nr06)->addYears(1)->format('d/m/Y') : 'Não informado' }}
-                                            </p>
-
-                                            <p>
-                                                <strong>Data Venc. NR 12:</strong>
-                                                {{ $funcionario->doc_nr12 ? \Carbon\Carbon::parse($funcionario->doc_nr12)->addYears(1)->format('d/m/Y') : 'Não informado' }}
-                                            </p>
-
-                                            <p>
-                                                <strong>Data Venc. NR 10:</strong>
-                                                {{ $funcionario->doc_nr10 ? \Carbon\Carbon::parse($funcionario->doc_nr10)->addYears(2)->format('d/m/Y') : 'Não informado' }}
-                                            </p>
-                                        </div>
-                                        <div class="space-y-1">
-                                            <p>
-                                                <strong>Data Venc. NR 18:</strong>
-                                                {{ $funcionario->doc_nr18 ? \Carbon\Carbon::parse($funcionario->doc_nr18)->addYears(2)->format('d/m/Y') : 'Não informado' }}
-                                            </p>
-
-                                            <p>
-                                                <strong>Data Venc. NR 35:</strong>
-                                                {{ $funcionario->doc_nr35 ? \Carbon\Carbon::parse($funcionario->doc_nr35)->addYears(2)->format('d/m/Y') : 'Não informado' }}
-                                            </p>
                                             <p><strong>Sexo:</strong> {{ $funcionario->sexo ?? 'Não informado' }}</p>
                                             <p><strong>Estado Civil:</strong> {{ $funcionario->estado_civil ?? 'Não informado' }}</p>
                                             <p><strong>Nº Filhos:</strong> {{ $funcionario->numero_filhos ?? 'Não informado' }}</p>
                                             <p><strong>Observações:</strong> {{ $funcionario->observacoes ?? 'Nenhuma' }}</p>
                                         </div>
                                     </div>
+
+                                    @if(in_array($funcionario->tipo_contrato, ['Fixo', 'Intermitente']))
+                                        <div class="px-2 py-3 border-b border-gray-200">
+                                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
+                                                <i class="bi bi-file-earmark-check mr-1"></i> Situação dos Documentos
+                                            </h4>
+
+                                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                                                @php
+                                                    $docsConfig = [
+                                                        'ASO' => ['campo' => 'doc_aso', 'anos' => 1],
+                                                        'Ordem de Serviço' => ['campo' => 'doc_ordem_servico', 'anos' => 1],
+                                                        'Ficha de EPI' => ['campo' => 'doc_ficha_epi', 'anos' => 1],
+                                                        'NR 06' => ['campo' => 'doc_nr06', 'anos' => 1],
+                                                        'NR 12' => ['campo' => 'doc_nr12', 'anos' => 1],
+                                                        'NR 10' => ['campo' => 'doc_nr10', 'anos' => 2],
+                                                        'NR 18' => ['campo' => 'doc_nr18', 'anos' => 2],
+                                                        'NR 35' => ['campo' => 'doc_nr35', 'anos' => 2],
+                                                    ];
+
+                                                    if($funcionario->tipo_contrato === 'Intermitente') {
+                                                        $docsConfig['Contrato Intermitente'] = ['campo' => 'doc_contrato_intermitente', 'anos' => 1];
+                                                    }
+                                                @endphp
+
+                                                @foreach($docsConfig as $nomeDoc => $config)
+                                                    @php
+                                                        $dataEmissao = $funcionario->{$config['campo']};
+                                                        
+                                                        if ($dataEmissao) {
+                                                            $emissao = \Carbon\Carbon::parse($dataEmissao);
+                                                            $vencimento = $emissao->copy()->addYears($config['anos']);
+                                                            $hoje = \Carbon\Carbon::now();
+                                                            $faltaUmMes = $vencimento->copy()->subMonth();
+
+                                                            if ($hoje->gt($vencimento)) {
+                                                                $statusLabel = 'VENCIDO';
+                                                                $corClass = 'bg-red-50 text-red-800 border-red-200';
+                                                                $icon = 'bi-x-circle-fill';
+                                                            } elseif ($hoje->gte($faltaUmMes)) {
+                                                                $statusLabel = 'ATENÇÃO';
+                                                                $corClass = 'bg-yellow-50 text-yellow-800 border-yellow-200';
+                                                                $icon = 'bi-exclamation-triangle-fill';
+                                                            } else {
+                                                                $statusLabel = 'EM DIA';
+                                                                $corClass = 'bg-green-50 text-green-800 border-green-200';
+                                                                $icon = 'bi-check-circle-fill';
+                                                            }
+                                                        } else {
+                                                            $vencimento = null;
+                                                            $statusLabel = 'PENDENTE';
+                                                            $corClass = 'bg-gray-50 text-gray-500 border-gray-200';
+                                                            $icon = 'bi-dash-circle';
+                                                        }
+                                                    @endphp
+
+                                                    <div class="border rounded p-2 flex flex-col justify-between {{ $corClass }}">
+                                                        <div class="flex justify-between items-start mb-1">
+                                                            <span class="text-[10px] font-bold uppercase tracking-wide truncate pr-1" title="{{ $nomeDoc }}">{{ $nomeDoc }}</span>
+                                                            <i class="bi {{ $icon }}"></i>
+                                                        </div>
+                                                        
+                                                        <div class="text-[10px] space-y-0.5">
+                                                            @if($vencimento)
+                                                                <div class="flex justify-between">
+                                                                    <span class="opacity-75">Emissão:</span>
+                                                                    <span>{{ $emissao->format('d/m/Y') }}</span>
+                                                                </div>
+                                                                <div class="flex justify-between font-bold">
+                                                                    <span>Vence:</span>
+                                                                    <span>{{ $vencimento->format('d/m/Y') }}</span>
+                                                                </div>
+                                                            @else
+                                                                <span class="italic opacity-75">Não informado</span>
+                                                            @endif
+                                                        </div>
+                                                        
+                                                        @if($vencimento)
+                                                            <div class="mt-1 pt-1 border-t border-black/10 text-[9px] text-center font-bold">
+                                                                {{ $statusLabel }}
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endif
                                     <div class="p-2 text-sm text-gray-700 grid grid-cols-1 md:grid-cols-2 gap-2 max-h-40 overflow-auto">
                                         <div class="space-y-1">
                                             <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">

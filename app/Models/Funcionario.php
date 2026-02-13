@@ -73,45 +73,12 @@ class Funcionario extends Model
         return null;
     }
 
-    public function getVencimentoOrdemServicoAttribute(){
-        return $this->doc_ordem_servico ? $this->doc_ordem_servico->addYears(1) : null;
+    public function getStatusFormatadoAttribute(){
+        return match ($this->status_documentos) {
+            'Atencao' => 'Atenção',
+            default => $this->status_documentos,
+        };
     }
-
-    public function getVencimentoFichaEpiAttribute(){
-        return $this->doc_ficha_epi ? $this->doc_ficha_epi->addYears(1) : null;
-    }
-
-    public function getVencimentoNr06Attribute(){
-        return $this->doc_nr06 ? $this->doc_nr06->addYears(1) : null;
-    }
-
-    public function getVencimentoNr10Attribute()
-    {
-        return $this->doc_nr10 ? $this->doc_nr10->addYears(2) : null;
-    }
-
-    public function getVencimentoNr12Attribute(){
-        return $this->doc_nr12 ? $this->doc_nr12->addYears(1) : null;
-    }
-
-    public function getVencimentoNr18Attribute()
-    {
-        return $this->doc_nr18 ? $this->doc_nr18->addYears(2) : null;
-    }
-
-    public function getVencimentoNr35Attribute()
-    {
-        return $this->doc_nr35 ? $this->doc_nr35->addYears(2) : null;
-    }
-
-    public function getVencimentoAsoAttribute(){
-        return $this->doc_aso ? $this->doc_aso->addYears(1) : null;
-    }
-
-    public function getVencimentoContratoIntermitenteAttribute(){
-        return $this->doc_contrato_intermitente ? $this->doc_contrato_intermitente->addYears(1) : null;
-    }
-
 
     public function anexos()
     {
