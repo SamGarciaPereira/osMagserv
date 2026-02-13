@@ -135,21 +135,63 @@
                                         <div class="space-y-1">
                                             <p><strong>CPF:</strong> {{ $funcionario->cpf ?? 'Não informado' }}</p>
                                             <p><strong>RG:</strong> {{ $funcionario->rg ?? 'Não informado' }}</p>
+                                            <p><strong>E-mail:</strong> {{ $funcionario->email ?? 'Não informado' }}</p>
                                             <p><strong>Data de Nascimento:</strong>
                                                 {{ $funcionario->data_nascimento ? $funcionario->data_nascimento->format('d/m/Y') : 'Não informado' }}
                                             </p>
                                             <p><strong>Endereço:</strong> {{ $funcionario->logradouro ?? 'N/A' }},
                                             {{ $funcionario->numero ?? 'N/A' }}, {{ $funcionario->bairro ?? 'N/A' }}, {{ $funcionario->cidade ?? 'N/A' }},
                                             {{ $funcionario->estado ?? 'N/A' }}</p>
-                                        </div>
-                                        <div class="space-y-1">
-                                            <p><strong>E-mail:</strong> {{ $funcionario->email ?? 'Não informado' }}</p>
                                             <p><strong>Tipo de Contrato:</strong> {{ $funcionario->tipo_contrato ?? 'Não informado' }}</p>
                                             <p><strong>Data de Demissão:</strong>
                                                 {{ $funcionario->data_demissao ? $funcionario->data_demissao->format('d/m/Y') : 'Não informado' }}
                                             </p>
+                                            
                                         </div>
                                         <div class="space-y-1">
+                                            <p>
+                                                <strong>Data Venc. Contr. Intermitente:</strong>
+                                                {{ $funcionario->doc_contrato_intermitente ? \Carbon\Carbon::parse($funcionario->doc_contrato_intermitente)->addYears(1)->format('d/m/Y') : 'Não informado' }}
+                                            </p>
+                                            <p>
+                                                <strong>Data Venc. ASO:</strong>
+                                                {{ $funcionario->doc_aso ? \Carbon\Carbon::parse($funcionario->doc_aso)->addYears(1)->format('d/m/Y') : 'Não informado' }}
+                                            </p>
+                                            <p>
+                                                <strong>Data Venc. Ordem de Serviço:</strong>
+                                                {{ $funcionario->doc_ordem_servico ? \Carbon\Carbon::parse($funcionario->doc_ordem_servico)->addYears(1)->format('d/m/Y') : 'Não informado' }}
+                                            </p>
+
+                                            <p>
+                                                <strong>Data Venc. Ficha de EPI:</strong>
+                                                {{ $funcionario->doc_ficha_epi ? \Carbon\Carbon::parse($funcionario->doc_ficha_epi)->addYears(1)->format('d/m/Y') : 'Não informado' }}
+                                            </p>
+
+                                            <p>
+                                                <strong>Data Venc. NR 06:</strong>
+                                                {{ $funcionario->doc_nr06 ? \Carbon\Carbon::parse($funcionario->doc_nr06)->addYears(1)->format('d/m/Y') : 'Não informado' }}
+                                            </p>
+
+                                            <p>
+                                                <strong>Data Venc. NR 12:</strong>
+                                                {{ $funcionario->doc_nr12 ? \Carbon\Carbon::parse($funcionario->doc_nr12)->addYears(1)->format('d/m/Y') : 'Não informado' }}
+                                            </p>
+
+                                            <p>
+                                                <strong>Data Venc. NR 10:</strong>
+                                                {{ $funcionario->doc_nr10 ? \Carbon\Carbon::parse($funcionario->doc_nr10)->addYears(2)->format('d/m/Y') : 'Não informado' }}
+                                            </p>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <p>
+                                                <strong>Data Venc. NR 18:</strong>
+                                                {{ $funcionario->doc_nr18 ? \Carbon\Carbon::parse($funcionario->doc_nr18)->addYears(2)->format('d/m/Y') : 'Não informado' }}
+                                            </p>
+
+                                            <p>
+                                                <strong>Data Venc. NR 35:</strong>
+                                                {{ $funcionario->doc_nr35 ? \Carbon\Carbon::parse($funcionario->doc_nr35)->addYears(2)->format('d/m/Y') : 'Não informado' }}
+                                            </p>
                                             <p><strong>Sexo:</strong> {{ $funcionario->sexo ?? 'Não informado' }}</p>
                                             <p><strong>Estado Civil:</strong> {{ $funcionario->estado_civil ?? 'Não informado' }}</p>
                                             <p><strong>Nº Filhos:</strong> {{ $funcionario->numero_filhos ?? 'Não informado' }}</p>
@@ -354,21 +396,63 @@
                                         <div class="space-y-1">
                                             <p><strong>CPF:</strong> {{ $funcionario->cpf ?? 'Não informado' }}</p>
                                             <p><strong>RG:</strong> {{ $funcionario->rg ?? 'Não informado' }}</p>
+                                            <p><strong>E-mail:</strong> {{ $funcionario->email ?? 'Não informado' }}</p>
                                             <p><strong>Data de Nascimento:</strong>
                                                 {{ $funcionario->data_nascimento ? $funcionario->data_nascimento->format('d/m/Y') : 'Não informado' }}
                                             </p>
                                             <p><strong>Endereço:</strong> {{ $funcionario->logradouro ?? 'N/A' }},
                                             {{ $funcionario->numero ?? 'N/A' }}, {{ $funcionario->bairro ?? 'N/A' }}, {{ $funcionario->cidade ?? 'N/A' }},
                                             {{ $funcionario->estado ?? 'N/A' }}</p>
-                                        </div>
-                                        <div class="space-y-1">
-                                            <p><strong>E-mail:</strong> {{ $funcionario->email ?? 'Não informado' }}</p>
                                             <p><strong>Tipo de Contrato:</strong> {{ $funcionario->tipo_contrato ?? 'Não informado' }}</p>
                                             <p><strong>Data de Demissão:</strong>
                                                 {{ $funcionario->data_demissao ? $funcionario->data_demissao->format('d/m/Y') : 'Não informado' }}
                                             </p>
+                                            
                                         </div>
                                         <div class="space-y-1">
+                                            <p>
+                                                <strong>Data Venc. Contr. Intermitente:</strong>
+                                                {{ $funcionario->doc_contrato_intermitente ? \Carbon\Carbon::parse($funcionario->doc_contrato_intermitente)->addYears(1)->format('d/m/Y') : 'Não informado' }}
+                                            </p>
+                                            <p>
+                                                <strong>Data Venc. ASO:</strong>
+                                                {{ $funcionario->doc_aso ? \Carbon\Carbon::parse($funcionario->doc_aso)->addYears(1)->format('d/m/Y') : 'Não informado' }}
+                                            </p>
+                                            <p>
+                                                <strong>Data Venc. Ordem de Serviço:</strong>
+                                                {{ $funcionario->doc_ordem_servico ? \Carbon\Carbon::parse($funcionario->doc_ordem_servico)->addYears(1)->format('d/m/Y') : 'Não informado' }}
+                                            </p>
+
+                                            <p>
+                                                <strong>Data Venc. Ficha de EPI:</strong>
+                                                {{ $funcionario->doc_ficha_epi ? \Carbon\Carbon::parse($funcionario->doc_ficha_epi)->addYears(1)->format('d/m/Y') : 'Não informado' }}
+                                            </p>
+
+                                            <p>
+                                                <strong>Data Venc. NR 06:</strong>
+                                                {{ $funcionario->doc_nr06 ? \Carbon\Carbon::parse($funcionario->doc_nr06)->addYears(1)->format('d/m/Y') : 'Não informado' }}
+                                            </p>
+
+                                            <p>
+                                                <strong>Data Venc. NR 12:</strong>
+                                                {{ $funcionario->doc_nr12 ? \Carbon\Carbon::parse($funcionario->doc_nr12)->addYears(1)->format('d/m/Y') : 'Não informado' }}
+                                            </p>
+
+                                            <p>
+                                                <strong>Data Venc. NR 10:</strong>
+                                                {{ $funcionario->doc_nr10 ? \Carbon\Carbon::parse($funcionario->doc_nr10)->addYears(2)->format('d/m/Y') : 'Não informado' }}
+                                            </p>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <p>
+                                                <strong>Data Venc. NR 18:</strong>
+                                                {{ $funcionario->doc_nr18 ? \Carbon\Carbon::parse($funcionario->doc_nr18)->addYears(2)->format('d/m/Y') : 'Não informado' }}
+                                            </p>
+
+                                            <p>
+                                                <strong>Data Venc. NR 35:</strong>
+                                                {{ $funcionario->doc_nr35 ? \Carbon\Carbon::parse($funcionario->doc_nr35)->addYears(2)->format('d/m/Y') : 'Não informado' }}
+                                            </p>
                                             <p><strong>Sexo:</strong> {{ $funcionario->sexo ?? 'Não informado' }}</p>
                                             <p><strong>Estado Civil:</strong> {{ $funcionario->estado_civil ?? 'Não informado' }}</p>
                                             <p><strong>Nº Filhos:</strong> {{ $funcionario->numero_filhos ?? 'Não informado' }}</p>
