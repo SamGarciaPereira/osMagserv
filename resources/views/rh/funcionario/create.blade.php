@@ -86,6 +86,78 @@
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                 </div>
 
+                <div id="section-documentos" class="col-span-full hidden transition-all duration-300 ease-in-out">
+    
+                    <h2 class="text-xl font-semibold text-gray-800 mt-6 mb-4 pb-2">
+                        Documentos Funcionários Fixos/Intermit. (Data de Emissão)
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        
+                        <div id="field-contrato-intermitente" class="hidden">
+                            <label for="doc_contrato_intermitente" class="block text-sm font-medium text-gray-700 mb-2">Contrato Intermitente</label>
+                            <input type="date" id="doc_contrato_intermitente" name="doc_contrato_intermitente"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div>
+                            <label for="doc_aso" class="block text-sm font-medium text-gray-700 mb-2">ASO (Atestado Saúde Ocup.)</label>
+                            <input type="date" id="doc_aso" name="doc_aso"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            <p class="text-xs text-blue-600 font-semibold mt-1">Validade: 1 ano</p>
+                        </div>
+
+                        <div>
+                            <label for="doc_ordem_servico" class="block text-sm font-medium text-gray-700 mb-2">Ordem de Serviço</label>
+                            <input type="date" id="doc_ordem_servico" name="doc_ordem_servico"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            <p class="text-xs text-blue-600 font-semibold mt-1">Validade: 1 ano</p>
+                        </div>
+
+                        <div>
+                            <label for="doc_ficha_epi" class="block text-sm font-medium text-gray-700 mb-2">Ficha de EPI</label>
+                            <input type="date" id="doc_ficha_epi" name="doc_ficha_epi"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            <p class="text-xs text-blue-600 font-semibold mt-1">Validade: 1 ano</p>
+                        </div>
+
+                        <div>
+                            <label for="doc_nr06" class="block text-sm font-medium text-gray-700 mb-2">NR 06</label>
+                            <input type="date" id="doc_nr06" name="doc_nr06"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            <p class="text-xs text-blue-600 font-semibold mt-1">Validade: 1 ano</p>
+                        </div>
+
+                        <div>
+                            <label for="doc_nr10" class="block text-sm font-medium text-gray-700 mb-2">NR 10</label>
+                            <input type="date" id="doc_nr10" name="doc_nr10"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            <p class="text-xs text-blue-600 font-semibold mt-1">Validade: 2 anos</p>
+                        </div>
+
+                        <div>
+                            <label for="doc_nr12" class="block text-sm font-medium text-gray-700 mb-2">NR 12</label>
+                            <input type="date" id="doc_nr12" name="doc_nr12"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            <p class="text-xs text-blue-600 font-semibold mt-1">Validade: 1 ano</p>
+                        </div>
+
+                        <div>
+                            <label for="doc_nr18" class="block text-sm font-medium text-gray-700 mb-2">NR 18</label>
+                            <input type="date" id="doc_nr18" name="doc_nr18"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            <p class="text-xs text-blue-600 font-semibold mt-1">Validade: 2 anos</p>
+                        </div>
+
+                        <div>
+                            <label for="doc_nr35" class="block text-sm font-medium text-gray-700 mb-2">NR 35</label>
+                            <input type="date" id="doc_nr35" name="doc_nr35"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            <p class="text-xs text-blue-600 font-semibold mt-1">Validade: 2 anos</p>
+                        </div>
+                    </div>
+                </div>
+
                 <h2 class="col-span-full text-xl font-semibold text-gray-800 mt-6">Informações Adicionais</h2>
                 <div>
                     <label for="sexo" class="block text-sm font-medium text-gray-700 mb-2">Sexo</label>
