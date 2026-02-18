@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use App\Traits\HasLastUser;
+use App\Traits\TracksHistory;
 
 class Cliente extends Model
 {
-    use HasFactory;
-    use HasLastUser;
+    use HasFactory, HasLastUser, TracksHistory;
 
     /**
      * The attributes that are mass assignable.

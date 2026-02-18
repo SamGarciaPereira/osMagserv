@@ -11,7 +11,7 @@ class ClienteController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Cliente::with(['matriz','anexos','filiais']);
+        $query = Cliente::with(['matriz','anexos', 'contratos', 'editor','filiais', 'history.user']);
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function($q) use ($search) {
