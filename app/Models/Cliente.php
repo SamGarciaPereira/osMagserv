@@ -70,4 +70,9 @@ class Cliente extends Model
     {
         return $this->contratoAtivo();
     }
+
+    public function anexos()
+    {
+        return $this->morphMany(Anexo::class, 'anexable');
+    }
 }

@@ -108,6 +108,9 @@
                                             <i class="bi bi-trash-fill text-base"></i>
                                         </button>
                                     </form>
+                                    <button onclick="openAnexoModal({{ $cliente->id }}, {{ json_encode($cliente->anexos ?? '') }})"  class="text-gray-500 hover:text-blue-600 mr-3" title="Anexar Arquivo">
+                                        <i class="bi bi-paperclip text-lg"></i>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -123,8 +126,68 @@
                                         <p class="mb-0"><strong>E-mail:</strong> {{ $cliente->email ?? 'Não informado'}}</p>
                                     </div>
                                 </div>
-                                <div class="flex flex-col md:flex-row gap-4">
-                                    <div class="p-2 border-t border-gray-100">
+                                <div class="flex flex-col md:flex-row gap-6 items-start">
+                                    <div class="flex flex-col gap-2 md:w-1/3">
+                                        <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
+                                            <i class="bi bi-folder2-open mr-1"></i> Arquivos Anexados
+                                        </h4>
+                                        
+                                        @if($cliente->anexos && $cliente->anexos->count() > 0)
+                                            <div class="grid gap-3" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                                                @foreach($cliente->anexos as $anexo)
+                                                    <div class="bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between shadow-sm hover:shadow-md transition">
+                                                        <div class="flex items-center overflow-hidden">
+                                                            @php
+                                                                $ext = strtolower(pathinfo($anexo->nome_original, PATHINFO_EXTENSION));
+                                                            @endphp
+
+                                                            @if($ext === 'pdf')
+                                                                <i class="bi bi-file-earmark-pdf-fill text-red-500 text-xl mr-3 flex-shrink-0"></i>
+                                                            
+                                                            @elseif(in_array($ext, ['xls', 'xlsx', 'csv']))
+                                                                <i class="bi bi-file-earmark-excel-fill text-green-500 text-xl mr-3 flex-shrink-0"></i>
+                                                            
+                                                            @elseif(in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
+                                                                <i class="bi bi-file-earmark-image-fill text-blue-500 text-xl mr-3 flex-shrink-0"></i>
+                                                            
+                                                            @else
+                                                                <i class="bi bi-file-earmark-fill text-gray-500 text-xl mr-3 flex-shrink-0"></i>
+                                                            @endif
+                                                            
+                                                            <div class="truncate">
+                                                                <p class="text-sm font-medium text-gray-700 max-w-[226px] truncate" title="{{ $anexo->nome_original }}">
+                                                                    {{ $anexo->nome_original }}
+                                                                </p>
+                                                                <p class="text-xs text-gray-400">{{ $anexo->created_at->format('d/m/Y H:i') }}</p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="flex items-center gap-2 ml-2">
+                                                            <a href="{{ route('anexos.show', ['anexo' => $anexo->id, 'filename' => $anexo->nome_original]) }}" target="_blank" 
+                                                            class="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition" 
+                                                            title="Visualizar">
+                                                                <i class="bi bi-eye-fill"></i>
+                                                            </a>
+                                                            <a href="{{ route('anexos.download', $anexo->id) }}" 
+                                                            class="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition" 
+                                                            title="Baixar">
+                                                                <i class="bi bi-download"></i>
+                                                            </a>
+                                                            <form action="{{ route('anexos.destroy', $anexo->id) }}" method="POST" onsubmit="return confirm('Excluir arquivo?');" class="inline">
+                                                                @csrf @method('DELETE')
+                                                                <button type="submit" class="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition" title="Excluir">
+                                                                    <i class="bi bi-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <p class="text-sm text-gray-500 italic">Nenhum anexo encontrado para este funcionário.</p>
+                                        @endif
+                                    </div>
+                                    <div class="flex flex-col gap-2 md:w-1/3">
                                         @if($cliente->matriz)
                                             <div class="bg-blue-50 border border-blue-200 rounded-md p-3">
                                                 <div class="flex items-center gap-2 mb-1">
@@ -172,8 +235,8 @@
                                                 <span class="text-xs text-gray-400 italic">Não possui vínculos.</span>
                                             </div>
                                         @endif
-                                    </div>
-                                    <div class="p-2 border-t border-gray-100">
+                                    </div>    
+                                    <div class="flex flex-col gap-2 md:w-1/3">
                                         @if($cliente->last_user_id)
                                             <div class="bg-blue-50 border border-blue-200 rounded-md p-3">
                                                 <div class="gap-2 mb-1">
@@ -204,4 +267,6 @@
             </table>
         </div>
     </div>
+
+    </div> <x-modal model-type="App\Models\Cliente" />
 @endsection

@@ -11,7 +11,7 @@ class ClienteController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Cliente::with(['matriz', 'filiais']);
+        $query = Cliente::with(['matriz','anexos','filiais']);
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function($q) use ($search) {
@@ -34,7 +34,7 @@ class ClienteController extends Controller
                 break;
         }
 
-        $clientes = $query->orderBy('nome')->paginate(100);
+        $clientes = $query->orderBy('nome')->paginate(1000);
         return view('cliente.index', compact('clientes'));
 
         
