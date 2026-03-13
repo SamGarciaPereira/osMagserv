@@ -122,9 +122,29 @@ class DashboardController extends Controller
             'Inativo' => $inativosCount
         ], fn($valor) => $valor > 0);
 
-        $receberStats = $getSumStats(ContasReceber::whereBetween('data_vencimento', [$dataInicio, $dataFim]));
-        
-        $pagarStats = $getSumStats(ContasPagar::whereBetween('data_vencimento', [$dataInicio, $dataFim]));
+        $statusPagos = ['Pago', 'Concluída', 'Finalizado'];
+
+        $receberStats = $getSumStats(ContasReceber::where(function ($query) use ($dataInicio, $dataFim, $statusPagos) {
+            $query->where(function ($q) use ($dataInicio, $dataFim, $statusPagos) {
+                $q->whereIn('status', $statusPagos)
+                    ->whereBetween('data_recebimento', [$dataInicio, $dataFim]);
+            })
+                ->orWhere(function ($q) use ($dataInicio, $dataFim, $statusPagos) {
+                    $q->whereNotIn('status', $statusPagos)
+                        ->whereBetween('data_vencimento', [$dataInicio, $dataFim]);
+                });
+        }));
+
+        $pagarStats = $getSumStats(ContasPagar::where(function ($query) use ($dataInicio, $dataFim, $statusPagos) {
+            $query->where(function ($q) use ($dataInicio, $dataFim, $statusPagos) {
+                $q->whereIn('status', $statusPagos)
+                    ->whereBetween('data_pagamento', [$dataInicio, $dataFim]);
+            })
+                ->orWhere(function ($q) use ($dataInicio, $dataFim, $statusPagos) {
+                    $q->whereNotIn('status', $statusPagos)
+                        ->whereBetween('data_vencimento', [$dataInicio, $dataFim]);
+                });
+        }));
         
         $solicitacoesStats = $getStats(Solicitacao::whereBetween('data_solicitacao', [$dataInicio, $dataFim]));
 
