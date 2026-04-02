@@ -206,11 +206,24 @@ Route::post('/webhook', function (Request $request) {
                 Cache::put('conversation_' . $sender, $conversation, now()->addMinutes(10));
                 sendWhatsappMessage($instanceName, $sender, "Você selecionou *Solicitação de Orçamento*.\n\nPor favor, *descreva sua solicitação*:", $apiKey);
             
-            // --- RE-ADICIONADO (Pergunta a "Área") ---
+            // --- (Validação de Contrato de Manutenção) ---
             } elseif ($choice == '2') { // 2. Manutenção
-                $conversation['state'] = 'manutencao_awaiting_area'; 
-                Cache::put('conversation_' . $sender, $conversation, now()->addMinutes(10));
-                sendWhatsappMessage($instanceName, $sender, "Você selecionou *Abertura de Chamado Corretivo*.\n\nPor favor, *selecione a área de atuação* do problema:\n1- Civil\n2- Hidráulica\n3- Elétrica", $apiKey);
+                
+                // Busca o cliente no banco de dados para checar o status atual do contrato
+                $cliente = Cliente::find($conversation['data']['cliente_id']);
+                
+                // Verifica se o cliente existe e se possui um contrato ativo
+                if ($cliente && $cliente->contratoAtivo()) {
+                    $conversation['state'] = 'manutencao_awaiting_area'; 
+                    Cache::put('conversation_' . $sender, $conversation, now()->addMinutes(10));
+                    sendWhatsappMessage($instanceName, $sender, "Você selecionou *Abertura de Chamado Corretivo*.\n\nPor favor, *selecione a área de atuação* do problema:\n1- Civil\n2- Hidráulica\n3- Elétrica", $apiKey);
+                } else {
+                    // Mensagem de bloqueio caso não tenha contrato
+                    sendWhatsappMessage($instanceName, $sender, "⚠️ Desculpe, não localizamos um *contrato de manutenção ativo* vinculado ao seu cadastro.\n\nPara prosseguir com um chamado de manutenção, é necessário possuir um contrato vigente. Você pode selecionar a opção *1* para solicitar um *Orçamento avulso* ou digitar 'sair' para encerrar.", $apiKey);
+                    
+                    // Renova o cache mantendo o estado atual para que ele possa escolher a opção 1
+                    Cache::put('conversation_' . $sender, $conversation, now()->addMinutes(10));
+                }
             
             } else {
                 sendWhatsappMessage($instanceName, $sender, "Opção inválida. Digite *1* (Orçamento) ou *2* (Manutenção).", $apiKey);
@@ -218,7 +231,7 @@ Route::post('/webhook', function (Request $request) {
             }
             break;
         
-        // --- MODIFICADO (Orçamento -> Solicitação) ---
+        // --- (Orçamento -> Solicitação) ---
         case 'orcamento_awaiting_description':
             $conversation['data']['escopo'] = $message;
             try {
