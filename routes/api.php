@@ -209,19 +209,34 @@ Route::post('/webhook', function (Request $request) {
             // --- (Validação de Contrato de Manutenção) ---
             } elseif ($choice == '2') { // 2. Manutenção
                 
-                // Busca o cliente no banco de dados para checar o status atual do contrato
-                $cliente = Cliente::find($conversation['data']['cliente_id']);
+                // --- NÍVEL 2: Menu de Serviços (Pós-Login) ---
+            } elseif ($choice == '2') { // 2. Manutenção
                 
-                // Verifica se o cliente existe e se possui um contrato ativo
-                if ($cliente && $cliente->contratoAtivo()) {
+                $clienteId = $conversation['data']['cliente_id'] ?? null;
+                $cliente = null;
+
+                if ($clienteId) {
+                    $cliente = Cliente::find($clienteId);
+                }
+                
+                // Extrai o contrato para uma variável
+                $contrato = $cliente ? $cliente->contratoAtivo() : null;
+
+                Log::info('Checagem de contrato WhatsApp:', [
+                    'cliente_id' => $clienteId,
+                    'contrato_encontrado' => $contrato ? 'Sim' : 'Nao'
+                ]);
+
+                // Verificação estrita: o cliente e o contrato não podem ser nulos
+                if ($cliente !== null && $contrato !== null) {
+                    
                     $conversation['state'] = 'manutencao_awaiting_area'; 
                     Cache::put('conversation_' . $sender, $conversation, now()->addMinutes(10));
                     sendWhatsappMessage($instanceName, $sender, "Você selecionou *Abertura de Chamado Corretivo*.\n\nPor favor, *selecione a área de atuação* do problema:\n1- Civil\n2- Hidráulica\n3- Elétrica", $apiKey);
+                
                 } else {
-                    // Mensagem de bloqueio caso não tenha contrato
+                    // Mensagem de bloqueio
                     sendWhatsappMessage($instanceName, $sender, "⚠️ Desculpe, não localizamos um *contrato de manutenção ativo* vinculado ao seu cadastro.\n\nPara prosseguir com um chamado de manutenção, é necessário possuir um contrato vigente. Você pode selecionar a opção *1* para solicitar um *Orçamento avulso* ou digitar 'sair' para encerrar.", $apiKey);
-                    
-                    // Renova o cache mantendo o estado atual para que ele possa escolher a opção 1
                     Cache::put('conversation_' . $sender, $conversation, now()->addMinutes(10));
                 }
             

@@ -52,6 +52,10 @@ class Cliente extends Model
     {
         $contratoDireto = $this->belongsToMany(Contrato::class, 'cliente_contrato')
                     ->where('ativo', true)
+                    ->where(function ($query) {
+                        $query->whereNull('data_fim')
+                              ->orWhereDate('data_fim', '>=', now());
+                    })
                     ->latest()
                     ->first();
         
