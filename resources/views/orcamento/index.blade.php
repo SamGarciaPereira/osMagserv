@@ -56,6 +56,7 @@
           <option value="Validado" {{ request('status') == 'Validado' ? 'selected' : '' }}>Validado</option>
           <option value="Enviado" {{ request('status') == 'Enviado' ? 'selected' : '' }}>Enviado</option>
           <option value="Aprovado" {{ request('status') == 'Aprovado' ? 'selected' : '' }}>Aprovado</option>
+          <option value="Cancelado" {{ request('status') == 'Cancelado' ? 'selected' : '' }}>Cancelado</option>
         </select>
       </div>
 
