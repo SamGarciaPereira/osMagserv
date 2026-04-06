@@ -86,6 +86,7 @@
                         <option value="Validado" {{ old('status') == 'Validado' ? 'selected' : '' }}>Validado</option>
                         <option value="Enviado" {{ old('status') == 'Enviado' ? 'selected' : '' }}>Enviado</option>
                         <option value="Aprovado" {{ old('status') == 'Aprovado' ? 'selected' : '' }}>Aprovado</option>
+                        <option value="Cancelado" {{ old('status') == 'Cancelado' ? 'selected' : '' }}>Cancelado</option>
                     </select>
                     @error('status') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
