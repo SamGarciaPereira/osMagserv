@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('orcamentos', function (Blueprint $table) {
-            DB::statement("ALTER TABLE orcamentos MODIFY COLUMN status ENUM('Pendente', 'Em Andamento', 'Enviado', 'Aprovado', 'Cancelado') DEFAULT 'Pendente'");
-        });
+      Schema::table('orcamentos', function (Blueprint $table) {
+        DB::statement("ALTER TABLE orcamentos MODIFY COLUMN status ENUM('Pendente', 'Em Andamento', 'Em Validação', 'Validado', 'Enviado', 'Aprovado', 'Cancelado') NOT NULL DEFAULT 'Pendente'");
+      });
     }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
-{
-        Schema::table('orcamentos', function (Blueprint $table) {
-            DB::statement("ALTER TABLE orcamentos MODIFY COLUMN status ENUM('Pendente', 'Em Andamento', 'Enviado', 'Aprovado', 'Cancelado') DEFAULT 'Pendente'");
-        });
+    {
+      Schema::table('orcamentos', function (Blueprint $table) {
+        DB::statement("ALTER TABLE orcamentos MODIFY COLUMN status ENUM('Pendente', 'Em Andamento', 'Em Validação', 'Validado', 'Enviado', 'Aprovado', 'Cancelado') NOT NULL DEFAULT 'Pendente'");
+      });
     }
 };
