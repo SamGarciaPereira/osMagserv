@@ -205,11 +205,7 @@ Route::post('/webhook', function (Request $request) {
                 $conversation['state'] = 'orcamento_awaiting_description';
                 Cache::put('conversation_' . $sender, $conversation, now()->addMinutes(10));
                 sendWhatsappMessage($instanceName, $sender, "Você selecionou *Solicitação de Orçamento*.\n\nPor favor, *descreva sua solicitação*:", $apiKey);
-            
-            // --- (Validação de Contrato de Manutenção) ---
-            } elseif ($choice == '2') { // 2. Manutenção
                 
-                // --- NÍVEL 2: Menu de Serviços (Pós-Login) ---
             } elseif ($choice == '2') { // 2. Manutenção
                 
                 $clienteId = $conversation['data']['cliente_id'] ?? null;
