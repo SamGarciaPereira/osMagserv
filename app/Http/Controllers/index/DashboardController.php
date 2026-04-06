@@ -72,7 +72,7 @@ class DashboardController extends Controller
                   });
             })
             ->orWhere(function($q) use ($dataInicio, $dataFim) {
-                $q->whereIn('status', ['Em Andamento', 'Em Validação', 'Validado'])
+                $q->whereIn('status', ['Em Andamento', 'Em Validação', 'Validado', 'Cancelado'])
                   ->whereBetween('updated_at', [$dataInicio, $dataFim]);
             })
             ->orWhere(function($q) use ($dataInicio, $dataFim) {
