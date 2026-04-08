@@ -84,6 +84,12 @@ class DashboardController extends Controller
                   ->whereBetween('data_aprovacao', [$dataInicio, $dataFim]);
             });
         }));
+
+        $totalOrcamentos = array_sum(array_filter(
+            $orcamentosStats,
+            fn ($total, $status) => strtolower(trim((string) $status)) !== 'cancelado',
+            ARRAY_FILTER_USE_BOTH
+        ));
         
         $prevStats = $getStats(Manutencao::where('tipo', 'Preventiva')
             ->where(function($query) use ($dataInicio, $dataFim) {
@@ -216,7 +222,7 @@ class DashboardController extends Controller
             'atividades', 'processosStats', 'orcamentosStats', 'prevStats', 
             'corrStats', 'receberStats', 'pagarStats', 'solicitacoesStats', 'contratosStats',
             'labelsGrafico', 'dadosReceita', 'dadosDespesa',
-            'inputInicio', 'inputFim'
+            'inputInicio', 'inputFim', 'totalOrcamentos'
         ));
     }
 }
