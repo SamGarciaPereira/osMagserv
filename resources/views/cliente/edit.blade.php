@@ -4,7 +4,7 @@
 
 @section('content')
 
-  <div class="p-4 sm:p-6 lg:p-8">
+  <div class="p-2 sm:p-4 lg:p-6">
 
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
       <div>
@@ -16,7 +16,7 @@
       </a>
     </div>
 
-    <div class="bg-white p-4 sm:p-6 lg:p-8 rounded-lg shadow-md">
+    <div class="bg-white p-2 sm:p-4 lg:p-6 rounded-lg shadow-md">
       <form action="{{ route('clientes.update', $cliente->id) }}" method="POST">
         @csrf
         @method('PUT')

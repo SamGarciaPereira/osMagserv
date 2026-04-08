@@ -20,7 +20,7 @@
     ];
   @endphp
 
-  <div class="p-4 sm:p-6 lg:p-8">
+  <div class="p-2 sm:p-4 lg:p-6">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
       <div>
         <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Lista de Clientes</h1>
@@ -32,7 +32,7 @@
       </a>
     </div>
 
-    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-sm mb-6 border border-gray-200">
+    <div class="bg-white p-2 sm:p-4 lg:p-6 rounded-lg shadow-sm mb-6 border border-gray-200">
       <form method="GET" action="{{ route('clientes.index') }}" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
         <div class="md:col-span-7">
           <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Pesquisar</label>
@@ -66,7 +66,7 @@
       </div>
     @endif
 
-    <div class="bg-white p-4 sm:p-6 lg:p-8 rounded-lg shadow-md">
+    <div class="bg-white p-2 sm:p-4 lg:p-6 rounded-lg shadow-md">
       <div class="overflow-x-auto">
         <table class="w-full table-auto">
           <thead class="bg-gray-50 border-b border-gray-200">
