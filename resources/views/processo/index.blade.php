@@ -14,7 +14,7 @@
     ];
   @endphp
 
-  <div class="p-4 sm:p-6 lg:p-8">
+  <div class="p-2 sm:p-4 lg:p-6">
 
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
       <div>
@@ -130,7 +130,9 @@
                     <span class="text-xs text-gray-400 italic">N/A</span>
                   @endif
                 </td>
-                <td class="hidden md:table-cell px-4 py-4 whitespace-nowrap text-sm text-gray-700">{{ $processo->orcamento->cliente->nome ?? 'N/A' }} </td>
+                <td class="max-w-[226px] truncate hidden md:table-cell px-4 py-4 whitespace-nowrap text-sm text-gray-700" title="{{ $processo->orcamento->cliente->nome ?? 'N/A' }}">
+                  {{ $processo->orcamento->cliente->nome ?? 'N/A' }}
+                </td>
                 <td class="hidden sm:table-cell px-4 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">R$ {{ number_format($processo->orcamento->valor ?? 0, 2, ',', '.') }}</td>
 
                 <td class="px-4 py-4 whitespace-nowrap">
