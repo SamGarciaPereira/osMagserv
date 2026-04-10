@@ -24,9 +24,9 @@
     </div>
 
     <div class="bg-white p-4 sm:p-6 rounded-lg shadow-sm mb-6 border border-gray-200">
-      <form method="GET" action="{{ route('processos.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 items-end">
+      <form method="GET" action="{{ route('processos.index') }}" class="grid grid-cols-2 lg:grid-cols-12 gap-3 sm:gap-4 items-end">
 
-        <div class="sm:col-span-2 lg:col-span-4">
+        <div class="col-span-2 lg:col-span-4">
           <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Pesquisar</label>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -36,7 +36,7 @@
           </div>
         </div>
 
-        <div class="lg:col-span-2">
+        <div class="col-span-1 lg:col-span-2">
           <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
           <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
             <option value="">Todos</option>
@@ -46,7 +46,7 @@
           </select>
         </div>
 
-        <div class="lg:col-span-2">
+        <div class="col-span-1 lg:col-span-2">
           <label for="ordem" class="block text-sm font-medium text-gray-700 mb-1">Ordenar</label>
           <select name="ordem" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
             <option value="recentes" {{ request('ordem') == 'recentes' ? 'selected' : '' }}>Recentes</option>
@@ -56,21 +56,22 @@
           </select>
         </div>
 
-        <div class="lg:col-span-2">
+        <div class="col-span-1 lg:col-span-2">
           <label for="data_inicio" class="block text-sm font-medium text-gray-700 mb-1">De</label>
           <input type="month" name="data_inicio" id="data_inicio" value="{{ request('data_inicio') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
         </div>
 
-        <div class="lg:col-span-1">
+        <div class="col-span-1 lg:col-span-1">
           <label for="data_fim" class="block text-sm font-medium text-gray-700 mb-1">Até</label>
           <input type="month" name="data_fim" id="data_fim" value="{{ request('data_fim') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
         </div>
 
-        <div class="sm:col-span-2 lg:col-span-1 mt-2 sm:mt-0">
+        <div class="col-span-2 lg:col-span-1 mt-2 lg:mt-0">
           <button type="submit" class="bg-blue-600 text-white w-full py-2 rounded-md text-sm hover:bg-blue-700 transition flex items-center justify-center shadow-sm" title="Filtrar">
             <i class="bi bi-filter text-base"></i> <span class="ml-2 lg:hidden">Aplicar Filtros</span>
           </button>
         </div>
+
       </form>
     </div>
 
@@ -102,7 +103,24 @@
                     <i class="bi bi-chevron-down toggle-arrow inline-block transition-transform duration-300"></i>
                   </button>
                 </td>
-                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-blue-600">{{ $processo->nf ?? 'N/A' }}</td>
+                <td class="px-4 py-4 align-middle">
+                  @if ($processo->nf)
+                    @php
+                      // Divide as notas, remove espaços e vazios
+                      $notas = array_filter(array_map('trim', explode(',', $processo->nf)));
+                    @endphp
+
+                    <div class="grid grid-cols-2 xl:grid-cols-3 gap-2 min-w-[100px] xl:min-w-[140px]">
+                      @foreach ($notas as $nota)
+                        <span class="bg-white text-blue-700 px-1 py-1 rounded text-xs font-bold border border-blue-200 shadow-sm whitespace-nowrap text-center truncate" title="{{ $nota }}">
+                          {{ $nota }}
+                        </span>
+                      @endforeach
+                    </div>
+                  @else
+                    <span class="text-gray-400 italic text-xs">N/A</span>
+                  @endif
+                </td>
                 <td class="px-4 py-4 whitespace-nowrap">
                   @if ($processo->orcamento->numero_proposta)
                     <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-mono font-bold border border-gray-300 select-all">
