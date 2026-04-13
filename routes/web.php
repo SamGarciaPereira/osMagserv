@@ -12,64 +12,87 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\anexo\AnexoController;
 use App\Http\Controllers\contrato\ContratoController;
 use App\Http\Controllers\rh\FuncionarioController;
+use App\Http\Controllers\admin\SolicitacaoController;
 
-//ROTAS DE AUTENTICAÇÃO
+// ==========================================
+// ROTAS DE AUTENTICAÇÃO
+// ==========================================
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function() {
-    //ROTA PRINCIPAL
+    
+    // ROTA PRINCIPAL (DASHBOARD)
     Route::get('/', [DashboardController::class, 'index'])->name('home');
 
-    //ROTAS ADMIN
+    // 1. ROTAS ADMIN (Acesso Exclusivo)
     Route::middleware(['admin'])->group(function () {
-        //ROTAS DO MÓDULO FINANCEIRO 
+        // MÓDULO FINANCEIRO 
         Route::prefix('financeiro')->name('financeiro.')->group(function () {
             Route::resource('contas-pagar', ContasPagarController::class);
             Route::resource('contas-receber', ContasReceberController::class);
         });
-        //ROTAS DO MÓDULO DE RH
+        // MÓDULO DE RH
         Route::prefix('rh')->name('rh.')->group(function () {
             Route::resource('funcionarios', FuncionarioController::class);
         });
     });
 
-    //ROTA DE SOLICITAÇÕES 
-    Route::get('admin/solicitacoes', [App\Http\Controllers\admin\SolicitacaoController::class, 'index'])->name('admin.solicitacao.index');
+    // 2. ROTAS COMPARTILHADAS (Supervisor SÓ PODE LER - Index/Show)
+    
+    // Processos: Supervisor só pode ver (index e show)
+    Route::resource('processos', ProcessoController::class)->only(['index', 'edit', 'update', 'show']);
 
-    //APROVAR SOLICITAÇÃO
-    Route::post('admin/solicitacoes/{solicitacao}/aceitar', [App\Http\Controllers\admin\SolicitacaoController::class, 'accept'])->name('admin.solicitacoes.accept');
-
-    //RECUSAR SOLICITAÇÃO
-    Route::post('admin/solicitacoes/{solicitacao}/recusar', [App\Http\Controllers\admin\SolicitacaoController::class, 'reject'])->name('admin.solicitacoes.reject');
-
-    //ROTAS DOS MÓDULOS (CRUD)
-    Route::resource('clientes', ClienteController::class);
-    Route::resource('orcamentos', OrcamentoController::class);
-    Route::resource('processos', ProcessoController::class);
-    Route::resource('contratos', ContratoController::class);
+    // Manutenções Genéricas: Supervisor só acede à listagem
     Route::resource('manutencoes', ManutencaoController::class)
         ->parameters(['manutencoes' => 'manutencao'])
-        ->only(['index', 'store', 'update', 'destroy']);
+        ->only(['index']);
 
-    
-    //ROTAS DO MÓDULO DE MANUTENÇÃO
+    // Manutenção Corretiva: Supervisor só vê a listagem
     Route::prefix('manutencoes/corretiva')->name('manutencoes.corretiva.')->group(function () {
         Route::get('/', [ManutencaoController::class, 'indexCorretiva'])->name('index');
-        Route::get('/create', [ManutencaoController::class, 'createCorretiva'])->name('create');
-        Route::get('/{manutencao}/edit', [ManutencaoController::class, 'editCorretiva'])->name('edit');
     });
 
+    // Manutenção Preventiva: Supervisor só vê a listagem
     Route::prefix('manutencoes/preventiva')->name('manutencoes.preventiva.')->group(function () {
         Route::get('/', [ManutencaoController::class, 'indexPreventiva'])->name('index');
-        Route::get('/create', [ManutencaoController::class, 'createPreventiva'])->name('create');
-        Route::get('/{manutencao}/edit', [ManutencaoController::class, 'editPreventiva'])->name('edit');
     });
 
-    //ROTAS DE ANEXOS
+    // Anexos: Públicos para todos os utilizadores logados (para poderem anexar a processos/manutenções)
     Route::post('/anexos/upload', [AnexoController::class, 'store'])->name('anexos.store');
     Route::delete('/anexos/{anexo}', [AnexoController::class, 'destroy'])->name('anexos.destroy');
     Route::get('/anexos/{anexo}/download', [AnexoController::class, 'download'])->name('anexos.download');
     Route::get('/anexos/{anexo}/{filename}', [AnexoController::class, 'show'])->name('anexos.show');
+
+
+    // 3. ROTAS RESTRITAS (Bloqueadas para o Supervisor)
+    Route::middleware([\App\Http\Middleware\SupervisorMiddleware::class])->group(function () {
+        
+        // Módulos inteiros que o supervisor não pode ver nem mexer
+        Route::resource('clientes', ClienteController::class);
+        Route::resource('orcamentos', OrcamentoController::class);
+        Route::resource('contratos', ContratoController::class);
+        
+        // Processos: Tudo MENOS index e show fica bloqueado (create, edit, update, destroy)
+        Route::resource('processos', ProcessoController::class)->except(['index', 'edit', 'update', 'show']);
+        
+        // Manutenções: Tudo MENOS index fica bloqueado
+        Route::resource('manutencoes', ManutencaoController::class)
+            ->parameters(['manutencoes' => 'manutencao'])
+            ->except(['index']);
+
+        // Manutenções Específicas: Create e Edit bloqueados
+        Route::get('manutencoes/corretiva/create', [ManutencaoController::class, 'createCorretiva'])->name('manutencoes.corretiva.create');
+        Route::get('manutencoes/corretiva/{manutencao}/edit', [ManutencaoController::class, 'editCorretiva'])->name('manutencoes.corretiva.edit');
+        
+        Route::get('manutencoes/preventiva/create', [ManutencaoController::class, 'createPreventiva'])->name('manutencoes.preventiva.create');
+        Route::get('manutencoes/preventiva/{manutencao}/edit', [ManutencaoController::class, 'editPreventiva'])->name('manutencoes.preventiva.edit');
+
+        // Solicitações: O supervisor não aprova nem recusa solicitações
+        Route::get('admin/solicitacoes', [SolicitacaoController::class, 'index'])->name('admin.solicitacao.index');
+        Route::post('admin/solicitacoes/{solicitacao}/aceitar', [SolicitacaoController::class, 'accept'])->name('admin.solicitacoes.accept');
+        Route::post('admin/solicitacoes/{solicitacao}/recusar', [SolicitacaoController::class, 'reject'])->name('admin.solicitacoes.reject');
+        
+    });
 });

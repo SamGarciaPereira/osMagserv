@@ -9,6 +9,7 @@ use App\Models\ContasReceber;
 use App\Models\Orcamento;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Illuminate\Validation\Rule;
 
 class ProcessoController extends Controller
 {
@@ -110,7 +111,13 @@ class ProcessoController extends Controller
     public function update(Request $request, Processo $processo)
     {
         $validatedData = $request->validate([
-            'status' => 'required|in:Em Aberto,Finalizado,Faturado',
+            'status' => [
+                'required',
+                Rule::in(auth()->user()->isSupervisor()
+                    ? ['Em Aberto', 'Finalizado']
+                    : ['Em Aberto', 'Finalizado', 'Faturado']
+                ),
+            ],
             'nf' => 'nullable|string|max:255',
             'parcelas' => 'nullable|array',
             'parcelas.*.id' => 'nullable|integer|exists:contas_recebers,id',

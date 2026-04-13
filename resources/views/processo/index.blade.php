@@ -42,7 +42,9 @@
             <option value="">Todos</option>
             <option value="Em Aberto" {{ request('status') == 'Em Aberto' ? 'selected' : '' }}>Em Aberto</option>
             <option value="Finalizado" {{ request('status') == 'Finalizado' ? 'selected' : '' }}>Finalizado</option>
-            <option value="Faturado" {{ request('status') == 'Faturado' ? 'selected' : '' }}>Faturado</option>
+            @if (!auth()->user()->isSupervisor())
+              <option value="Faturado" {{ request('status') == 'Faturado' ? 'selected' : '' }}>Faturado</option>
+            @endif
           </select>
         </div>
 
@@ -51,8 +53,10 @@
           <select name="ordem" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
             <option value="recentes" {{ request('ordem') == 'recentes' ? 'selected' : '' }}>Recentes</option>
             <option value="antigos" {{ request('ordem') == 'antigos' ? 'selected' : '' }}>Antigos</option>
-            <option value="maior_valor" {{ request('ordem') == 'maior_valor' ? 'selected' : '' }}>Maior Valor</option>
-            <option value="menor_valor" {{ request('ordem') == 'menor_valor' ? 'selected' : '' }}>Menor Valor</option>
+            @if (!auth()->user()->isSupervisor())
+              <option value="maior_valor" {{ request('ordem') == 'maior_valor' ? 'selected' : '' }}>Maior Valor</option>
+              <option value="menor_valor" {{ request('ordem') == 'menor_valor' ? 'selected' : '' }}>Menor Valor</option>
+            @endif
           </select>
         </div>
 
@@ -87,10 +91,14 @@
           <thead class="bg-gray-50 border-b border-gray-200">
             <tr>
               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-10"></th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NF</th>
+              @if (!auth()->user()->isSupervisor())
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NF</th>
+              @endif
               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Proposta</th>
               <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
-              <th class="hidden sm:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
+              @if (!auth()->user()->isSupervisor())
+                <th class="hidden sm:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
+              @endif
               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
             </tr>
@@ -103,24 +111,25 @@
                     <i class="bi bi-chevron-down toggle-arrow inline-block transition-transform duration-300"></i>
                   </button>
                 </td>
-                <td class="px-4 py-4 align-middle">
-                  @if ($processo->nf)
-                    @php
-                      // Divide as notas, remove espaços e vazios
-                      $notas = array_filter(array_map('trim', explode(',', $processo->nf)));
-                    @endphp
+                @if (!auth()->user()->isSupervisor())
+                  <td class="px-4 py-4 align-middle">
+                    @if ($processo->nf)
+                      @php
+                        $notas = array_filter(array_map('trim', explode(',', $processo->nf)));
+                      @endphp
 
-                    <div class="grid grid-cols-2 xl:grid-cols-3 gap-2 min-w-[100px] xl:min-w-[140px]">
-                      @foreach ($notas as $nota)
-                        <span class="bg-white text-blue-700 px-1 py-1 rounded text-xs font-bold border border-blue-200 shadow-sm whitespace-nowrap text-center truncate" title="{{ $nota }}">
-                          {{ $nota }}
-                        </span>
-                      @endforeach
-                    </div>
-                  @else
-                    <span class="text-gray-400 italic text-xs">N/A</span>
-                  @endif
-                </td>
+                      <div class="grid grid-cols-2 xl:grid-cols-3 gap-2 min-w-[100px] xl:min-w-[140px]">
+                        @foreach ($notas as $nota)
+                          <span class="bg-white text-blue-700 px-1 py-1 rounded text-xs font-bold border border-blue-200 shadow-sm whitespace-nowrap text-center truncate" title="{{ $nota }}">
+                            {{ $nota }}
+                          </span>
+                        @endforeach
+                      </div>
+                    @else
+                      <span class="text-gray-400 italic text-xs">N/A</span>
+                    @endif
+                  </td>
+                @endif
                 <td class="px-4 py-4 whitespace-nowrap">
                   @if ($processo->orcamento->numero_proposta)
                     <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-mono font-bold border border-gray-300 select-all">
@@ -133,8 +142,9 @@
                 <td class="max-w-[226px] truncate hidden md:table-cell px-4 py-4 whitespace-nowrap text-sm text-gray-700" title="{{ $processo->orcamento->cliente->nome ?? 'N/A' }}">
                   {{ $processo->orcamento->cliente->nome ?? 'N/A' }}
                 </td>
-                <td class="hidden sm:table-cell px-4 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">R$ {{ number_format($processo->orcamento->valor ?? 0, 2, ',', '.') }}</td>
-
+                @if (!auth()->user()->isSupervisor())
+                  <td class="hidden sm:table-cell px-4 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">R$ {{ number_format($processo->orcamento->valor ?? 0, 2, ',', '.') }}</td>
+                @endif
                 <td class="px-4 py-4 whitespace-nowrap">
                   @php
                     $statusLabel = $processo->status;
@@ -165,10 +175,12 @@
                     <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusClass }}">
                       {{ $statusLabel }}
                     </span>
-                    @if ($detalheFinanceiro)
-                      <span class="text-[10px] text-gray-500 mt-1 ml-1" title="Valor Faturado">
-                        {{ $detalheFinanceiro }}
-                      </span>
+                    @if (!auth()->user()->isSupervisor())
+                      @if ($detalheFinanceiro)
+                        <span class="text-[10px] text-gray-500 mt-1 ml-1" title="Valor Faturado">
+                          {{ $detalheFinanceiro }}
+                        </span>
+                      @endif
                     @endif
                   </div>
                 </td>
@@ -189,7 +201,9 @@
 
                   <div class="md:hidden bg-white border border-gray-200 rounded p-3 mb-4 text-sm text-gray-700 shadow-sm flex flex-col gap-2">
                     <p class="m-0"><strong>Cliente:</strong> {{ $processo->orcamento->cliente->nome ?? 'N/A' }}</p>
-                    <p class="m-0 sm:hidden"><strong>Valor:</strong> R$ {{ number_format($processo->orcamento->valor ?? 0, 2, ',', '.') }}</p>
+                    @if (!auth()->user()->isSupervisor())
+                      <p class="m-0 sm:hidden"><strong>Valor:</strong> R$ {{ number_format($processo->orcamento->valor ?? 0, 2, ',', '.') }}</p>
+                    @endif
                   </div>
 
                   <div class="text-sm text-gray-700 bg-white border border-gray-200 rounded p-3 mb-4 shadow-sm">

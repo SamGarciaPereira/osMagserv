@@ -48,14 +48,18 @@
           <i class="bi bi-inboxes-fill text-lg min-w-[1.5rem]"></i>
           <span class="sidebar-text text-sm font-semibold ml-4 w-auto opacity-100 md:w-0 md:opacity-0 whitespace-nowrap transition-all">Processos</span>
         </a>
-        <a href="{{ route('orcamentos.index') }}" class="p-2.5 pl-3.5 flex items-center rounded-md hover:bg-blue-600 group">
-          <i class="bi bi-file-earmark-ruled-fill text-lg min-w-[1.5rem]"></i>
-          <span class="sidebar-text text-sm font-semibold ml-4 w-auto opacity-100 md:w-0 md:opacity-0 whitespace-nowrap transition-all">Orçamentos</span>
-        </a>
-        <a href="{{ route('clientes.index') }}" class="p-2.5 pl-3.5 flex items-center rounded-md hover:bg-blue-600 group">
-          <i class="bi bi-people-fill text-lg min-w-[1.5rem]"></i>
-          <span class="sidebar-text text-sm font-semibold ml-4 w-auto opacity-100 md:w-0 md:opacity-0 whitespace-nowrap transition-all">Clientes</span>
-        </a>
+        @if (!auth()->user()->isSupervisor())
+          <a href="{{ route('orcamentos.index') }}" class="p-2.5 pl-3.5 flex items-center rounded-md hover:bg-blue-600 group">
+            <i class="bi bi-file-earmark-ruled-fill text-lg min-w-[1.5rem]"></i>
+            <span class="sidebar-text text-sm font-semibold ml-4 w-auto opacity-100 md:w-0 md:opacity-0 whitespace-nowrap transition-all">Orçamentos</span>
+          </a>
+        @endif
+        @if (!auth()->user()->isSupervisor())
+          <a href="{{ route('clientes.index') }}" class="p-2.5 pl-3.5 flex items-center rounded-md hover:bg-blue-600 group">
+            <i class="bi bi-people-fill text-lg min-w-[1.5rem]"></i>
+            <span class="sidebar-text text-sm font-semibold ml-4 w-auto opacity-100 md:w-0 md:opacity-0 whitespace-nowrap transition-all">Clientes</span>
+          </a>
+        @endif
         <div>
           <button id="dropdown-btn-manutencao" class="w-full p-2.5 pl-3.5 flex items-center justify-between rounded-md hover:bg-blue-600 group">
             <div class="flex items-center">
@@ -65,7 +69,9 @@
             <i class="sidebar-text bi bi-chevron-down text-xs w-auto opacity-100 md:w-0 md:opacity-0 transition-all" id="arrow-manutencao"></i>
           </button>
           <div id="submenu-manutencao" class="hidden flex-col mt-1 pl-10">
-            <a href="{{ route('contratos.index') }}" class="sidebar-text text-sm text-gray-300 p-1 rounded-md hover:bg-gray-700 w-full opacity-100 md:opacity-0 transition-all">Contratos</a>
+            @if (!auth()->user()->isSupervisor())
+              <a href="{{ route('contratos.index') }}" class="sidebar-text text-sm text-gray-300 p-1 rounded-md hover:bg-gray-700 w-full opacity-100 md:opacity-0 transition-all">Contratos</a>
+            @endif
             <a href="{{ route('manutencoes.corretiva.index') }}" class="sidebar-text text-sm text-gray-300 p-1 rounded-md hover:bg-gray-700 w-full opacity-100 md:opacity-0 transition-all">Manutenções Corretivas</a>
             <a href="{{ route('manutencoes.preventiva.index') }}" class="sidebar-text text-sm text-gray-300 p-1 rounded-md hover:bg-gray-700 w-full opacity-100 md:opacity-0 transition-all">Manutenções Preventivas</a>
             <a href="{{ route('manutencoes.index') }}" class="sidebar-text text-sm text-gray-300 p-1 rounded-md hover:bg-gray-700 w-full opacity-100 md:opacity-0 transition-all">Relatórios</a>
@@ -98,10 +104,12 @@
             </div>
           </div>
         @endif
-        <a href="{{ route('admin.solicitacao.index') }}" class="p-2.5 pl-3.5 flex items-center rounded-md hover:bg-blue-600 group">
-          <i class="bi bi-chat-dots-fill text-lg min-w-[1.5rem]"></i>
-          <span class="sidebar-text text-sm font-semibold ml-4 w-auto opacity-100 md:w-0 md:opacity-0 whitespace-nowrap transition-all">Solicitações</span>
-        </a>
+        @if (!auth()->user()->isSupervisor())
+          <a href="{{ route('admin.solicitacao.index') }}" class="p-2.5 pl-3.5 flex items-center rounded-md hover:bg-blue-600 group">
+            <i class="bi bi-chat-dots-fill text-lg min-w-[1.5rem]"></i>
+            <span class="sidebar-text text-sm font-semibold ml-4 w-auto opacity-100 md:w-0 md:opacity-0 whitespace-nowrap transition-all">Solicitações</span>
+          </a>
+        @endif
       </nav>
 
       <div class="mt-auto">

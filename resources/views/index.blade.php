@@ -58,36 +58,38 @@
         <x-dashboard-list :stats="$processosStats" />
       </div>
     </div>
+    @if (!auth()->user()->isSupervisor())
+      <div class="bg-white p-4 rounded-lg shadow-md border-t-4 border-yellow-500 hover:shadow-lg transition">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <p class="text-md font-bold text-gray-500  tracking-wide">Orçamentos</p>
+            <h3 class="text-3xl font-bold text-gray-800">{{ $totalOrcamentos }}</h3>
+          </div>
+          <div class="bg-yellow-50 text-yellow-600 p-2 rounded-lg">
+            <i class="bi bi-file-earmark-text-fill text-xl"></i>
+          </div>
+        </div>
+        <div class="border-t border-gray-100 pt-2">
+          <x-dashboard-list :stats="$orcamentosStats" />
+        </div>
+      </div>
+    
 
-    <div class="bg-white p-4 rounded-lg shadow-md border-t-4 border-yellow-500 hover:shadow-lg transition">
-      <div class="flex justify-between items-start mb-2">
-        <div>
-          <p class="text-md font-bold text-gray-500  tracking-wide">Orçamentos</p>
-          <h3 class="text-3xl font-bold text-gray-800">{{ $totalOrcamentos }}</h3>
+      <div class="bg-white p-4 rounded-lg shadow-md border-t-4 border-black-500 hover:shadow-lg transition">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <p class="text-md font-bold text-gray-500 tracking-wide">Contratos</p>
+            <h3 class="text-3xl font-bold text-gray-800">{{ array_sum($contratosStats) }}</h3>
+          </div>
+          <div class="bg-indigo-50 text-black-600 p-2 rounded-lg">
+            <i class="bi bi-file-earmark-check-fill text-xl"></i>
+          </div>
         </div>
-        <div class="bg-yellow-50 text-yellow-600 p-2 rounded-lg">
-          <i class="bi bi-file-earmark-text-fill text-xl"></i>
-        </div>
-      </div>
-      <div class="border-t border-gray-100 pt-2">
-        <x-dashboard-list :stats="$orcamentosStats" />
-      </div>
-    </div>
-
-    <div class="bg-white p-4 rounded-lg shadow-md border-t-4 border-black-500 hover:shadow-lg transition">
-      <div class="flex justify-between items-start mb-2">
-        <div>
-          <p class="text-md font-bold text-gray-500 tracking-wide">Contratos</p>
-          <h3 class="text-3xl font-bold text-gray-800">{{ array_sum($contratosStats) }}</h3>
-        </div>
-        <div class="bg-indigo-50 text-black-600 p-2 rounded-lg">
-          <i class="bi bi-file-earmark-check-fill text-xl"></i>
+        <div class="border-t border-gray-100 pt-2">
+          <x-dashboard-list :stats="$contratosStats" />
         </div>
       </div>
-      <div class="border-t border-gray-100 pt-2">
-        <x-dashboard-list :stats="$contratosStats" />
-      </div>
-    </div>
+    @endif
 
     <div class="bg-white p-4 rounded-lg shadow-md border-t-4 border-blue-500 hover:shadow-lg transition">
       <div class="flex justify-between items-start mb-2">
@@ -118,21 +120,22 @@
         <x-dashboard-list :stats="$corrStats" />
       </div>
     </div>
-
-    <div class="bg-white p-4 rounded-lg shadow-md border-t-4 border-purple-500 hover:shadow-lg transition">
-      <div class="flex justify-between items-start mb-2">
-        <div>
-          <p class="text-md font-bold text-gray-500  tracking-wide">Solicitações</p>
-          <h3 class="text-3xl font-bold text-gray-800">{{ array_sum($solicitacoesStats) }}</h3>
+    @if (!auth()->user()->isSupervisor())
+      <div class="bg-white p-4 rounded-lg shadow-md border-t-4 border-purple-500 hover:shadow-lg transition">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <p class="text-md font-bold text-gray-500  tracking-wide">Solicitações</p>
+            <h3 class="text-3xl font-bold text-gray-800">{{ array_sum($solicitacoesStats) }}</h3>
+          </div>
+          <div class="bg-purple-50 text-purple-600 p-2 rounded-lg">
+            <i class="bi bi-chat-dots-fill text-xl"></i>
+          </div>
         </div>
-        <div class="bg-purple-50 text-purple-600 p-2 rounded-lg">
-          <i class="bi bi-chat-dots-fill text-xl"></i>
+        <div class="border-t border-gray-100 pt-2">
+          <x-dashboard-list :stats="$solicitacoesStats" />
         </div>
       </div>
-      <div class="border-t border-gray-100 pt-2">
-        <x-dashboard-list :stats="$solicitacoesStats" />
-      </div>
-    </div>
+    @endif
 
 
     @if (auth()->user()->isAdmin())
