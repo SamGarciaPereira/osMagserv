@@ -23,7 +23,7 @@ class ClassificarAnexosLegados extends Command
             'boleto', 'comprovante', 'recibo', 'fatura',
             'medição', 'contrato' , 'termo', 'quitação',
             'faturamento', 'autorização', 'art', 
-            '410690222141073890', 
+            '410690222141073890', 'entrada' , 'prop.',
         ];
 
         $this->info('Iniciando a varredura de arquivos antigos...');
