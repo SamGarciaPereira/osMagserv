@@ -11,6 +11,7 @@ class Anexo extends Model
         'caminho',
         'anexable_id',
         'anexable_type',
+        'is_confidencial',
     ];
 
     protected $touches = ['anexable'];
