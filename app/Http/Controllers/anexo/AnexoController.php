@@ -6,13 +6,16 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Anexo;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class AnexoController extends Controller{
     public function store(Request $request){
+
         $request->validate([
             'arquivo' => 'required|file|mimes:pdf,jpg,png,jpeg,xlsx,xls,csv|max:10240', 
             'model_id' => 'required|integer',
             'model_type' => 'required|string', 
+            'is_confidencial' => 'nullable|boolean',
         ]);
 
         if ($request->hasFile('arquivo')) {
@@ -26,6 +29,7 @@ class AnexoController extends Controller{
                 'caminho' => $path,
                 'anexable_id' => $request->model_id,
                 'anexable_type' => $request->model_type,
+                'is_confidencial' => $request->has('is_confidencial'),
             ]);
 
             return back()->with('success', 'Arquivo anexado com sucesso!');
@@ -35,6 +39,11 @@ class AnexoController extends Controller{
     }
 
     public function destroy(Anexo $anexo){
+
+        if ($anexo->is_confidencial && Auth::check() && Auth::user()->isSupervisor()) {
+            abort(403, 'Acesso negado. Não tem permissão para excluir arquivos confidenciais.');
+        }
+
         if (Storage::disk('public')->exists($anexo->caminho)) {
             Storage::disk('public')->delete($anexo->caminho);
         }
@@ -45,6 +54,11 @@ class AnexoController extends Controller{
     }
     
     public function download(Anexo $anexo){
+
+        if ($anexo->is_confidencial && Auth::check() && Auth::user()->isSupervisor()) {
+            abort(403, 'Acesso negado. Este arquivo é confidencial e restrito à administração.');
+        }
+
         if (Storage::disk('public')->exists($anexo->caminho)) {
             return Storage::disk('public')->download($anexo->caminho, $anexo->nome_original);
         }
@@ -52,6 +66,11 @@ class AnexoController extends Controller{
     }
 
     public function show(Request $request, Anexo $anexo, $filename){
+
+        if ($anexo->is_confidencial && Auth::check() && Auth::user()->isSupervisor()) {
+            abort(403, 'Acesso negado. Este arquivo é confidencial e restrito à administração.');
+        }
+
         if (!Storage::disk('public')->exists($anexo->caminho)) {
             return back()->with('error', 'Arquivo não encontrado.');
         }
