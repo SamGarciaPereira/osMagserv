@@ -212,14 +212,25 @@
 
                   <div class="flex flex-col lg:flex-row gap-6 items-start">
 
+                    @php
+                      $eSupervisor = auth()->user()->isSupervisor();
+                      $anexosProcesso = $processo->anexos ?? collect();
+                      $anexosOrcamento = $processo->orcamento ? $processo->orcamento->anexos : collect();
+
+                      if ($eSupervisor) {
+                          $anexosProcesso = $anexosProcesso->where('is_confidencial', false);
+                          $anexosOrcamento = $anexosOrcamento->where('is_confidencial', false);
+                      }
+                    @endphp
+
                     <div class="flex flex-col gap-2 w-full lg:w-1/3">
                       <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
                         <i class="bi bi-folder2-open mr-1"></i> Anexos do Processo
                       </h4>
 
-                      @if ($processo->anexos && $processo->anexos->count() > 0)
+                      @if ($anexosProcesso->count() > 0)
                         <div class="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-1">
-                          @foreach ($processo->anexos as $anexo)
+                          @foreach ($anexosProcesso as $anexo)
                             <div class="w-full bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between shadow-sm hover:shadow-md transition">
                               <div class="flex items-center gap-3 overflow-hidden">
                                 @if (Str::endsWith(strtolower($anexo->nome_original), '.pdf'))
@@ -243,18 +254,20 @@
                                 <a href="{{ route('anexos.download', $anexo->id) }}" class="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition" title="Baixar">
                                   <i class="bi bi-download"></i>
                                 </a>
-                                <form action="{{ route('anexos.destroy', $anexo->id) }}" method="POST" onsubmit="return confirm('Excluir arquivo?');" class="inline m-0">
-                                  @csrf @method('DELETE')
-                                  <button type="submit" class="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition" title="Excluir">
-                                    <i class="bi bi-trash"></i>
-                                  </button>
-                                </form>
+                                @if (!$eSupervisor)
+                                  <form action="{{ route('anexos.destroy', $anexo->id) }}" method="POST" onsubmit="return confirm('Excluir arquivo?');" class="inline m-0">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition" title="Excluir">
+                                      <i class="bi bi-trash"></i>
+                                    </button>
+                                  </form>
+                                @endif
                               </div>
                             </div>
                           @endforeach
                         </div>
                       @else
-                        <p class="text-sm text-gray-500 italic bg-white p-3 rounded border border-dashed border-gray-200 text-center">Nenhum anexo no processo.</p>
+                        <p class="text-sm text-gray-500 italic bg-white p-3 rounded border border-dashed border-gray-200 text-center">Nenhum anexo disponível.</p>
                       @endif
                     </div>
 
@@ -263,9 +276,9 @@
                         <i class="bi bi-paperclip mr-1"></i> Anexos do Orçamento
                       </h4>
 
-                      @if ($processo->orcamento && $processo->orcamento->anexos->count() > 0)
+                      @if ($anexosOrcamento->count() > 0)
                         <div class="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-1">
-                          @foreach ($processo->orcamento->anexos as $anexo)
+                          @foreach ($anexosOrcamento as $anexo)
                             <div class="bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between shadow-sm hover:shadow-md transition">
                               <div class="flex items-center overflow-hidden">
                                 @if (Str::endsWith(strtolower($anexo->nome_original), '.pdf'))
@@ -292,7 +305,7 @@
                           @endforeach
                         </div>
                       @else
-                        <p class="text-sm text-gray-500 italic bg-white p-3 rounded border border-dashed border-gray-200 text-center">Orçamento sem anexos.</p>
+                        <p class="text-sm text-gray-500 italic bg-white p-3 rounded border border-dashed border-gray-200 text-center">Nenhum anexo disponível.</p>
                       @endif
                     </div>
 
