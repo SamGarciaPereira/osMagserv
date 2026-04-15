@@ -82,7 +82,7 @@ class ContasPagarController extends Controller
 
         $contasFixas = $query->clone()->where('fixa', true)->paginate(1000, ['*'], 'page_fixas');
         $contasVariaveis = $query->clone()->where('fixa', false)->paginate(1000, ['*'], 'page_variaveis');
-
+        session(['url_retorno_contas_pagar' => $request->fullUrl()]);
         return view('financeiro.contas-pagar.index', compact('contasFixas', 'contasVariaveis'));
     }
 
@@ -246,10 +246,10 @@ class ContasPagarController extends Controller
             unset($validatedData['dia_fixo']); 
         }
 
-        // Atualiza
         $contasPagar->update($validatedData);
 
-        return redirect()->route('financeiro.contas-pagar.index')
+        $urlRedirecionamento = session('url_retorno_contas_pagar', route('financeiro.contas-pagar.index'));
+        return redirect($urlRedirecionamento)
                          ->with('success', 'Conta atualizada com sucesso!');
     }
 
