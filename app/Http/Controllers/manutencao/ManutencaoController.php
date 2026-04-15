@@ -69,10 +69,12 @@ class ManutencaoController extends Controller
         $manutencao->update($validatedData);
 
         if ($validatedData['tipo'] === 'Corretiva') {
-             return redirect()->route('manutencoes.corretiva.index')
+            $urlRedirecionamento = session('url_retorno_manutencao_corretiva', route('manutencoes.corretiva.index'));
+             return redirect($urlRedirecionamento)
                  ->with('success', 'Manutenção corretiva atualizada com sucesso!');
         } else {
-             return redirect()->route('manutencoes.preventiva.index')
+            $urlRedirecionamento = session('url_retorno_manutencao_preventiva', route('manutencoes.preventiva.index'));
+             return redirect($urlRedirecionamento)
                  ->with('success', 'Manutenção preventiva atualizada com sucesso!');
         }
     }
@@ -184,6 +186,7 @@ class ManutencaoController extends Controller
     public function indexCorretiva(Request $request)
     {
         $manutencoes = $this->filtrarManutencoes($request, 'Corretiva');
+        session(['url_retorno_manutencao_corretiva' => $request->fullUrl()]);
         return view('manutencao.manutencao-corretiva.index', compact('manutencoes'));
     }
 
@@ -206,6 +209,7 @@ class ManutencaoController extends Controller
     public function indexPreventiva(Request $request)
     {
         $manutencoes = $this->filtrarManutencoes($request, 'Preventiva');
+        session(['url_retorno_manutencao_preventiva' => $request->fullUrl()]);
         return view('manutencao.manutencao-preventiva.index', compact('manutencoes'));
     }
 
