@@ -84,7 +84,7 @@ class ContasReceberController extends Controller
         }
 
         $contasReceber = $query->get();
-
+        session(['url_retorno_contas_receber' => $request->fullUrl()]);
         return view('financeiro.contas-receber.index', compact('contasReceber'));
     }
 
@@ -161,8 +161,8 @@ class ContasReceberController extends Controller
         }
 
         $contasReceber->update($validatedData);
-
-        return redirect()->route('financeiro.contas-receber.index')
+        $urlRedirecionamento = session('url_retorno_contas_receber', route('financeiro.contas-receber.index'));
+        return redirect($urlRedirecionamento)
                          ->with('success', 'Conta a receber atualizada com sucesso!');
     }
 
