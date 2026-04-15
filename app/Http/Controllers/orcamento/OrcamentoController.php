@@ -91,6 +91,9 @@ class OrcamentoController extends Controller
         }
 
         $orcamentos = $query->paginate(2000);
+
+        session(['url_retorno_orcamentos' => $request->fullUrl()]);
+
         return view('orcamento.index', compact('orcamentos', 'inputInicio', 'inputFim'));
     }
 
@@ -235,7 +238,9 @@ class OrcamentoController extends Controller
 
         $orcamento->update($validatedData);
 
-        return redirect()->route('orcamentos.index')
+        $urlRedirecionamento = session('url_retorno_orcamentos', route('orcamentos.index'));
+
+        return redirect($urlRedirecionamento)
             ->with('success', 'Orçamento atualizado com sucesso!');
     }
 
