@@ -198,6 +198,14 @@
 
               <tr id="details-{{ $processo->id }}" class="hidden details-row bg-gray-50">
                 <td colspan="7" class="px-4 sm:px-6 py-4">
+
+                  <div class="md:hidden bg-white border border-gray-200 rounded p-3 mb-4 text-sm text-gray-700 shadow-sm flex flex-col gap-2">
+                    <p class="m-0"><strong>Cliente:</strong> {{ $processo->orcamento->cliente->nome ?? 'N/A' }}</p>
+                    @if (!auth()->user()->isSupervisor())
+                      <p class="m-0 sm:hidden"><strong>Valor:</strong> R$ {{ number_format($processo->orcamento->valor ?? 0, 2, ',', '.') }}</p>
+                    @endif
+                  </div>
+
                   <div class="text-sm text-gray-700 bg-white border border-gray-200 rounded p-3 mb-4 shadow-sm w-full overflow-hidden">
                     <p class="m-0">
                       <strong><i class="bi bi-card-text mr-1 text-gray-400"></i> Demanda:</strong><br>
@@ -296,41 +304,42 @@
                         <p class="text-sm text-gray-500 italic bg-white p-3 rounded border border-dashed border-gray-200 text-center">Sem anexos.</p>
                       @endif
                     </div>
-
-                    <div class="flex flex-col gap-2 min-w-0 w-full">
-                      <div class="bg-blue-50 border border-blue-200 rounded-md p-3 h-full overflow-hidden">
-                        <div class="flex justify-between items-center mb-3 border-b border-blue-200 pb-2">
-                          <span class="text-xs font-bold text-blue-800 uppercase flex items-center">
-                            <i class="bi bi-clock-history mr-1"></i> Histórico
-                          </span>
-                          <button type="button" onclick='openGeneralHistoryModal(@json($processo->history), @json($labelsProcesso))' class="text-[10px] bg-white border border-blue-300 text-blue-700 hover:bg-blue-600 hover:text-white px-2 py-1 rounded transition shadow-sm flex-shrink-0">
-                            Ver Tudo
-                          </button>
-                        </div>
-
-                        @if ($processo->history && $processo->history->count() > 0)
-                          <div class="space-y-3">
-                            @foreach ($processo->history->take(3) as $activity)
-                              <div class="flex flex-col text-xs text-gray-600 bg-white bg-opacity-60 p-1.5 rounded border border-blue-100 min-w-0">
-                                <div class="flex justify-between font-semibold text-gray-700">
-                                  <span class="text-blue-900 truncate pr-1">
-                                    {{ $activity->version }}ª Edição
-                                  </span>
-                                  <span class="text-gray-500 text-[9px] flex-shrink-0">
-                                    {{ \Carbon\Carbon::parse($activity->created_at)->format('d/m H:i') }}
-                                  </span>
-                                </div>
-                                <div class="mt-0.5 truncate italic">
-                                  Por: {{ $activity->user->name ?? 'Sistema' }}
-                                </div>
-                              </div>
-                            @endforeach
+                    @if (!auth()->user()->isSupervisor())
+                      <div class="flex flex-col gap-2 min-w-0 w-full">
+                        <div class="bg-blue-50 border border-blue-200 rounded-md p-3 h-full overflow-hidden">
+                          <div class="flex justify-between items-center mb-3 border-b border-blue-200 pb-2">
+                            <span class="text-xs font-bold text-blue-800 uppercase flex items-center">
+                              <i class="bi bi-clock-history mr-1"></i> Histórico
+                            </span>
+                            <button type="button" onclick='openGeneralHistoryModal(@json($processo->history), @json($labelsProcesso))' class="text-[10px] bg-white border border-blue-300 text-blue-700 hover:bg-blue-600 hover:text-white px-2 py-1 rounded transition shadow-sm flex-shrink-0">
+                              Ver Tudo
+                            </button>
                           </div>
-                        @else
-                          <p class="text-xs italic text-gray-400 text-center py-4">Sem histórico.</p>
-                        @endif
+
+                          @if ($processo->history && $processo->history->count() > 0)
+                            <div class="space-y-3">
+                              @foreach ($processo->history->take(3) as $activity)
+                                <div class="flex flex-col text-xs text-gray-600 bg-white bg-opacity-60 p-1.5 rounded border border-blue-100 min-w-0">
+                                  <div class="flex justify-between font-semibold text-gray-700">
+                                    <span class="text-blue-900 truncate pr-1">
+                                      {{ $activity->version }}ª Edição
+                                    </span>
+                                    <span class="text-gray-500 text-[9px] flex-shrink-0">
+                                      {{ \Carbon\Carbon::parse($activity->created_at)->format('d/m H:i') }}
+                                    </span>
+                                  </div>
+                                  <div class="mt-0.5 truncate italic">
+                                    Por: {{ $activity->user->name ?? 'Sistema' }}
+                                  </div>
+                                </div>
+                              @endforeach
+                            </div>
+                          @else
+                            <p class="text-xs italic text-gray-400 text-center py-4">Sem histórico.</p>
+                          @endif
+                        </div>
                       </div>
-                    </div>
+                    @endif
                   </div>
                 </td>
               </tr>
