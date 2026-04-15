@@ -87,6 +87,9 @@ class ProcessoController extends Controller
         }
 
         $processos = $query->paginate(1000); 
+
+        session(['url_retorno_processos' => $request->fullUrl()]);
+
         return view('processo.index', compact('processos'));
     }
 
@@ -215,7 +218,9 @@ class ProcessoController extends Controller
             'last_user_id' => auth()->id()
         ]);
 
-        return redirect()->route('processos.index')
+        $urlRedirecionamento = session('url_retorno_processos', route('processos.index'));
+
+        return redirect($urlRedirecionamento)
             ->with('success', 'Processo atualizado com sucesso!');
     }
 
