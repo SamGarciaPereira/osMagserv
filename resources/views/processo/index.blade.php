@@ -198,66 +198,57 @@
 
               <tr id="details-{{ $processo->id }}" class="hidden details-row bg-gray-50">
                 <td colspan="7" class="px-4 sm:px-6 py-4">
-
-                  <div class="md:hidden bg-white border border-gray-200 rounded p-3 mb-4 text-sm text-gray-700 shadow-sm flex flex-col gap-2">
-                    <p class="m-0"><strong>Cliente:</strong> {{ $processo->orcamento->cliente->nome ?? 'N/A' }}</p>
-                    @if (!auth()->user()->isSupervisor())
-                      <p class="m-0 sm:hidden"><strong>Valor:</strong> R$ {{ number_format($processo->orcamento->valor ?? 0, 2, ',', '.') }}</p>
-                    @endif
+                  <div class="text-sm text-gray-700 bg-white border border-gray-200 rounded p-3 mb-4 shadow-sm w-full overflow-hidden">
+                    <p class="m-0">
+                      <strong><i class="bi bi-card-text mr-1 text-gray-400"></i> Demanda:</strong><br>
+                      <span class="mt-1 block break-words whitespace-normal text-justify">{{ $processo->orcamento->escopo ?: 'Não definido' }}</span>
+                    </p>
                   </div>
 
-                  <div class="text-sm text-gray-700 bg-white border border-gray-200 rounded p-3 mb-4 shadow-sm">
-                    <p class="m-0"><strong><i class="bi bi-card-text mr-1 text-gray-400"></i> Demanda:</strong><br><span class="mt-1 block">{{ $processo->orcamento->escopo ?: 'Não definido' }}</span></p>
-                  </div>
-
-                  <div class="flex flex-col lg:flex-row gap-6 items-start">
+                  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start w-full">
 
                     @php
                       $eSupervisor = auth()->user()->isSupervisor();
-                      $anexosProcesso = $processo->anexos ?? collect();
-                      $anexosOrcamento = $processo->orcamento ? $processo->orcamento->anexos : collect();
 
-                      if ($eSupervisor) {
-                          $anexosProcesso = $anexosProcesso->where('is_confidencial', false);
-                          $anexosOrcamento = $anexosOrcamento->where('is_confidencial', false);
-                      }
+                      $anexosProcesso = ($processo->anexos ?? collect())->when($eSupervisor, function ($query) {
+                          return $query->where('is_confidencial', false);
+                      });
+
+                      $anexosOrcamento = ($processo->orcamento ? $processo->orcamento->anexos : collect())->when($eSupervisor, function ($query) {
+                          return $query->where('is_confidencial', false);
+                      });
                     @endphp
 
-                    <div class="flex flex-col gap-2 w-full lg:w-1/3">
+                    <div class="flex flex-col gap-2 min-w-0 w-full">
                       <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
                         <i class="bi bi-folder2-open mr-1"></i> Anexos do Processo
                       </h4>
 
                       @if ($anexosProcesso->count() > 0)
-                        <div class="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-1">
+                        <div class="grid gap-3 grid-cols-1">
                           @foreach ($anexosProcesso as $anexo)
-                            <div class="w-full bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between shadow-sm hover:shadow-md transition">
-                              <div class="flex items-center gap-3 overflow-hidden">
+                            <div class="w-full bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between shadow-sm hover:shadow-md transition min-w-0 overflow-hidden">
+                              <div class="flex items-center gap-3 min-w-0 flex-1">
                                 @if (Str::endsWith(strtolower($anexo->nome_original), '.pdf'))
                                   <i class="bi bi-file-earmark-pdf-fill text-red-500 text-2xl flex-shrink-0"></i>
                                 @else
                                   <i class="bi bi-file-earmark-image-fill text-blue-500 text-2xl flex-shrink-0"></i>
                                 @endif
-
-                                <div class="min-w-0">
+                                <div class="min-w-0 flex-1">
                                   <p class="text-sm font-medium text-gray-700 truncate" title="{{ $anexo->nome_original }}">
                                     {{ $anexo->nome_original }}
                                   </p>
                                   <p class="text-xs text-gray-400">{{ $anexo->created_at->format('d/m/Y H:i') }}</p>
                                 </div>
                               </div>
-
-                              <div class="flex items-center gap-1 sm:gap-2 ml-2 flex-shrink-0">
-                                <a href="{{ route('anexos.show', ['anexo' => $anexo->id, 'filename' => $anexo->nome_original]) }}" target="_blank" class="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition" title="Visualizar">
+                              <div class="flex items-center gap-1 ml-2 flex-shrink-0">
+                                <a href="{{ route('anexos.show', ['anexo' => $anexo->id, 'filename' => $anexo->nome_original]) }}" target="_blank" class="p-1.5 text-gray-500 hover:text-blue-600 rounded transition">
                                   <i class="bi bi-eye-fill"></i>
-                                </a>
-                                <a href="{{ route('anexos.download', $anexo->id) }}" class="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition" title="Baixar">
-                                  <i class="bi bi-download"></i>
                                 </a>
                                 @if (!$eSupervisor)
                                   <form action="{{ route('anexos.destroy', $anexo->id) }}" method="POST" onsubmit="return confirm('Excluir arquivo?');" class="inline m-0">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition" title="Excluir">
+                                    <button type="submit" class="p-1.5 text-gray-500 hover:text-red-600 rounded transition">
                                       <i class="bi bi-trash"></i>
                                     </button>
                                   </form>
@@ -267,93 +258,79 @@
                           @endforeach
                         </div>
                       @else
-                        <p class="text-sm text-gray-500 italic bg-white p-3 rounded border border-dashed border-gray-200 text-center">Nenhum anexo disponível.</p>
+                        <p class="text-sm text-gray-500 italic bg-white p-3 rounded border border-dashed border-gray-200 text-center">Sem anexos.</p>
                       @endif
                     </div>
 
-                    <div class="flex flex-col gap-2 w-full lg:w-1/3">
+                    <div class="flex flex-col gap-2 min-w-0 w-full">
                       <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
                         <i class="bi bi-paperclip mr-1"></i> Anexos do Orçamento
                       </h4>
 
                       @if ($anexosOrcamento->count() > 0)
-                        <div class="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-1">
+                        <div class="grid gap-3 grid-cols-1">
                           @foreach ($anexosOrcamento as $anexo)
-                            <div class="bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between shadow-sm hover:shadow-md transition">
-                              <div class="flex items-center overflow-hidden">
+                            <div class="w-full bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between shadow-sm hover:shadow-md transition min-w-0 overflow-hidden">
+                              <div class="flex items-center gap-3 min-w-0 flex-1">
                                 @if (Str::endsWith(strtolower($anexo->nome_original), '.pdf'))
-                                  <i class="bi bi-file-earmark-pdf-fill text-red-500 text-xl mr-3 flex-shrink-0"></i>
+                                  <i class="bi bi-file-earmark-pdf-fill text-red-500 text-xl flex-shrink-0"></i>
                                 @else
-                                  <i class="bi bi-file-earmark-image-fill text-blue-500 text-xl mr-3 flex-shrink-0"></i>
+                                  <i class="bi bi-file-earmark-image-fill text-blue-500 text-xl flex-shrink-0"></i>
                                 @endif
-                                <div class="truncate">
+                                <div class="min-w-0 flex-1">
                                   <p class="text-sm font-medium text-gray-700 truncate" title="{{ $anexo->nome_original }}">
                                     {{ $anexo->nome_original }}
                                   </p>
                                   <p class="text-xs text-gray-400">{{ $anexo->created_at->format('d/m/Y H:i') }}</p>
                                 </div>
                               </div>
-                              <div class="flex items-center gap-1 sm:gap-2 ml-2 flex-shrink-0">
-                                <a href="{{ route('anexos.show', ['anexo' => $anexo->id, 'filename' => $anexo->nome_original]) }}" target="_blank" class="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition" title="Visualizar">
+                              <div class="flex items-center gap-1 ml-2 flex-shrink-0">
+                                <a href="{{ route('anexos.show', ['anexo' => $anexo->id, 'filename' => $anexo->nome_original]) }}" target="_blank" class="p-1.5 text-gray-500 hover:text-blue-600 rounded transition">
                                   <i class="bi bi-eye-fill"></i>
-                                </a>
-                                <a href="{{ route('anexos.download', $anexo->id) }}" class="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition" title="Baixar">
-                                  <i class="bi bi-download"></i>
                                 </a>
                               </div>
                             </div>
                           @endforeach
                         </div>
                       @else
-                        <p class="text-sm text-gray-500 italic bg-white p-3 rounded border border-dashed border-gray-200 text-center">Nenhum anexo disponível.</p>
+                        <p class="text-sm text-gray-500 italic bg-white p-3 rounded border border-dashed border-gray-200 text-center">Sem anexos.</p>
                       @endif
                     </div>
 
-                    <div class="flex flex-col gap-2 w-full lg:w-1/3">
-                      <div class="bg-blue-50 border border-blue-200 rounded-md p-3 h-full">
+                    <div class="flex flex-col gap-2 min-w-0 w-full">
+                      <div class="bg-blue-50 border border-blue-200 rounded-md p-3 h-full overflow-hidden">
                         <div class="flex justify-between items-center mb-3 border-b border-blue-200 pb-2">
                           <span class="text-xs font-bold text-blue-800 uppercase flex items-center">
                             <i class="bi bi-clock-history mr-1"></i> Histórico
                           </span>
-                          <button type="button" onclick='openGeneralHistoryModal(@json($processo->history), @json($labelsProcesso))' class="text-xs bg-white border border-blue-300 text-blue-700 hover:bg-blue-600 hover:text-white px-2 py-1 rounded transition shadow-sm">
-                            Ver Completo
+                          <button type="button" onclick='openGeneralHistoryModal(@json($processo->history), @json($labelsProcesso))' class="text-[10px] bg-white border border-blue-300 text-blue-700 hover:bg-blue-600 hover:text-white px-2 py-1 rounded transition shadow-sm flex-shrink-0">
+                            Ver Tudo
                           </button>
                         </div>
 
                         @if ($processo->history && $processo->history->count() > 0)
                           <div class="space-y-3">
                             @foreach ($processo->history->take(3) as $activity)
-                              <div class="flex flex-col text-xs text-gray-600 bg-white bg-opacity-60 p-1.5 rounded border border-blue-100">
+                              <div class="flex flex-col text-xs text-gray-600 bg-white bg-opacity-60 p-1.5 rounded border border-blue-100 min-w-0">
                                 <div class="flex justify-between font-semibold text-gray-700">
-                                  <span class="text-blue-900">
-                                    {{ $activity->version }}ª Versão
-                                    ({{ $activity->event == 'created' ? 'Criação' : ($activity->event == 'updated' ? 'Edição' : 'Remoção') }})
+                                  <span class="text-blue-900 truncate pr-1">
+                                    {{ $activity->version }}ª Edição
                                   </span>
-                                  <span class="text-gray-500 text-[10px]">
+                                  <span class="text-gray-500 text-[9px] flex-shrink-0">
                                     {{ \Carbon\Carbon::parse($activity->created_at)->format('d/m H:i') }}
                                   </span>
                                 </div>
-                                <div class="mt-0.5 truncate">
-                                  Por: <span class="font-medium text-gray-800">{{ $activity->user->name ?? 'Sistema' }}</span>
+                                <div class="mt-0.5 truncate italic">
+                                  Por: {{ $activity->user->name ?? 'Sistema' }}
                                 </div>
                               </div>
                             @endforeach
                           </div>
                         @else
-                          <div class="flex flex-col items-center justify-center h-20 text-gray-400">
-                            <i class="bi bi-clock text-xl mb-1 opacity-50"></i>
-                            <p class="text-xs italic">Nenhum histórico detalhado.</p>
-                          </div>
-                        @endif
-                        @if ($processo->last_user_id && (!$processo->history || $processo->history->count() == 0))
-                          <div class="mt-3 pt-2 border-t border-blue-100 text-xs text-gray-500 text-center">
-                            Última ação por: <strong>{{ $processo->editor->name ?? 'Sistema' }}</strong><br>
-                            em {{ $processo->updated_at->format('d/m/Y H:i') }}
-                          </div>
+                          <p class="text-xs italic text-gray-400 text-center py-4">Sem histórico.</p>
                         @endif
                       </div>
                     </div>
-
                   </div>
                 </td>
               </tr>
