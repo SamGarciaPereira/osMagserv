@@ -146,7 +146,7 @@
                                         <i class="bi bi-trash-fill text-base"></i>
                                     </button>
                                 </form>
-                                <button onclick="openAnexoModal({{ $manutencao->id }}, '{{ $manutencao->descricao }}')" class="text-gray-500 hover:text-blue-600" title="Anexar">
+                                <button onclick="openAnexoModal({{ $manutencao->id }}, '{{ $manutencao->chamado ? 'OS: ' . $manutencao->chamado : 'Manutenção' }}')" class="text-gray-500 hover:text-blue-600 mr-3" title="Anexar Arquivo">
                                     <i class="bi bi-paperclip text-lg"></i>
                                 </button>
                             </div>
