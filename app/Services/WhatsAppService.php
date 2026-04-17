@@ -11,7 +11,7 @@ class WhatsAppService
 
     public function __construct()
     {
-        $this->apiUrl = env('EVOLUTION_API_URL', 'http://127.0.0.1:8081');
+        $this->apiUrl = config('services.evolution.url', 'http://127.0.0.1:8081');
     }
 
     // Helper: Envia mensagem de volta para o usuário via Evolution API

@@ -22,7 +22,7 @@ class WhatsAppWebhookController extends Controller
     // --- ROTA PRINCIPAL DO WEBHOOK ---
     public function handle(Request $request)
     {
-        $apiKey = env('EVOLUTION_API_KEY'); 
+        $apiKey = config('services.evolution.key');
 
         if (!$request->has('data.message.conversation')) {
             return response()->json(['status' => 'ok', 'message' => 'Not a text message, ignored.']);
