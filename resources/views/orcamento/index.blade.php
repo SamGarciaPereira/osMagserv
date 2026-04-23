@@ -32,7 +32,8 @@
   </div>
 
   <div class="bg-white p-6 rounded-lg shadow-sm mb-6 border border-gray-200">
-    <form method="GET" action="{{ route('orcamentos.index') }}" class="grid grid-cols-1 md:grid-cols-20 gap-4 items-end">
+    <form method="GET" action="{{ route('orcamentos.index') }}" id="filter-form" class="grid grid-cols-1 md:grid-cols-20 gap-4 items-end">
+      <input type="hidden" name="filtro_aplicado" value="1">
 
       <div class="md:col-span-5">
         <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Pesquisar</label>
@@ -40,54 +41,90 @@
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <i class="bi bi-search text-gray-400"></i>
           </div>
-          <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Nº Proposta, Cliente ou Demanda..." class="w-full pl-10 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
+          <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Nº Proposta, Cliente..." class="w-full pl-10 px-3 py-[9px] border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
         </div>
       </div>
 
-      <div class="md:col-span-3">
-        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-        <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
-          <option value="">Todos</option>
-          <option value="Pendente" {{ request('status') == 'Pendente' ? 'selected' : '' }}>Pendente</option>
-          <option value="Em Andamento" {{ request('status') == 'Em Andamento' ? 'selected' : '' }}>Em
-            Andamento</option>
-          <option value="Em Validação" {{ request('status') == 'Em Validação' ? 'selected' : '' }}>Em
-            Validação</option>
-          <option value="Validado" {{ request('status') == 'Validado' ? 'selected' : '' }}>Validado</option>
-          <option value="Enviado" {{ request('status') == 'Enviado' ? 'selected' : '' }}>Enviado</option>
-          <option value="Aprovado" {{ request('status') == 'Aprovado' ? 'selected' : '' }}>Aprovado</option>
-          <option value="Cancelado" {{ request('status') == 'Cancelado' ? 'selected' : '' }}>Cancelado</option>
-        </select>
+      <div class="md:col-span-3 relative dropdown-container">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+        <button type="button" class="dropdown-btn w-full px-3 py-[9px] border border-gray-300 rounded-md text-sm bg-white flex justify-between items-center hover:bg-gray-50 transition-all">
+          <span class="truncate">{{ count($statusSelecionados) }} selecionados</span>
+          <i class="bi bi-chevron-down text-gray-400 ml-2"></i>
+        </button>
+
+        <div class="dropdown-menu hidden absolute z-50 mt-1 w-60 bg-white border border-gray-200 rounded-md shadow-xl p-2 left-0">
+          <div class="flex justify-center gap-4 items-center border-b border-gray-100 pb-2 mb-2">
+            <button type="button" class="btn-select-all flex items-center gap-1 px-2.5 py-1 bg-gray-50 border border-gray-200 text-gray-500 rounded text-[10px] uppercase font-bold hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm">
+              Todos
+            </button>
+            <button type="button" class="btn-clear-all flex items-center gap-1 px-2.5 py-1 bg-gray-50 border border-gray-200 text-gray-500 rounded text-[10px] uppercase font-bold hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all shadow-sm">
+              Limpar
+            </button>
+          </div>
+
+          <div class="flex flex-col gap-1 max-h-64 overflow-y-auto">
+            @foreach (['Pendente', 'Em Andamento', 'Em Validação', 'Validado', 'Enviado', 'Aprovado', 'Cancelado'] as $st)
+              <label class="flex items-center justify-between px-3 py-2 hover:bg-blue-50 rounded-md cursor-pointer group transition-all">
+                <div class="flex items-center">
+                  <input type="checkbox" name="status[]" value="{{ $st }}" class="peer hidden status-checkbox" {{ in_array($st, $statusSelecionados) ? 'checked' : '' }}>
+                  <span class="text-sm text-gray-600 peer-checked:text-blue-700 peer-checked:font-bold transition-all">{{ $st }}</span>
+                </div>
+                <i class="bi bi-check2 text-blue-600 font-bold opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+              </label>
+            @endforeach
+          </div>
+        </div>
       </div>
 
-      <div class="md:col-span-3">
-        <label for="ordem" class="block text-sm font-medium text-gray-700 mb-1">Ordenar</label>
-        <select name="ordem" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
-          <option value="recentes" {{ request('ordem') == 'recentes' ? 'selected' : '' }}>Recentes</option>
-          <option value="antigos" {{ request('ordem') == 'antigos' ? 'selected' : '' }}>Antigos</option>
-          <option value="maior_valor" {{ request('ordem') == 'maior_valor' ? 'selected' : '' }}>Maior Valor
-          </option>
-          <option value="menor_valor" {{ request('ordem') == 'menor_valor' ? 'selected' : '' }}>Menor Valor
-          </option>
-          <option value="envio" {{ request('ordem') == 'envio' ? 'selected' : '' }}>Data Envio</option>
-          <option value="aprovacao" {{ request('ordem') == 'aprovacao' ? 'selected' : '' }}>Data Aprovação
-          </option>
-        </select>
+      @php
+        $ordemAtual = request('ordem', 'recentes');
+        $opcoesOrdem = [
+            'recentes' => 'Recentes',
+            'antigos' => 'Antigos',
+            'maior_valor' => 'Maior Valor',
+            'menor_valor' => 'Menor Valor',
+            'envio' => 'Data Envio',
+            'aprovacao' => 'Data Aprovação',
+        ];
+      @endphp
+      <div class="md:col-span-3 relative dropdown-container">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Ordenar</label>
+        <button type="button" class="dropdown-btn w-full px-3 py-[9px] border border-gray-300 rounded-md text-sm bg-white flex justify-between items-center hover:bg-gray-50 transition-all">
+          <span class="truncate">{{ $opcoesOrdem[$ordemAtual] ?? 'Ordenar' }}</span>
+          <i class="bi bi-chevron-down text-gray-400 ml-2"></i>
+        </button>
+
+        <div class="dropdown-menu hidden absolute z-50 mt-1 w-56 bg-white border border-gray-200 rounded-md shadow-xl p-2 left-0">
+          <div class="flex flex-col gap-1">
+            @foreach ($opcoesOrdem as $val => $label)
+              <label class="flex items-center justify-between px-3 py-2 hover:bg-blue-50 rounded-md cursor-pointer group transition-all">
+                <div class="flex items-center">
+                  <input type="radio" name="ordem" value="{{ $val }}" class="peer hidden" {{ $ordemAtual == $val ? 'checked' : '' }}>
+                  <span class="text-sm text-gray-600 peer-checked:text-blue-700 peer-checked:font-bold transition-all">{{ $label }}</span>
+                </div>
+                <i class="bi bi-check2 text-blue-600 font-bold opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+              </label>
+            @endforeach
+          </div>
+          <div class="mt-2 pt-2 border-t border-gray-100">
+            <button type="submit" class="w-full bg-blue-600 text-white py-1.5 rounded-md text-xs font-bold hover:bg-blue-700 transition">Aplicar</button>
+          </div>
+        </div>
       </div>
 
       <div class="md:col-span-4">
         <label for="data_inicio" class="block text-sm font-medium text-gray-700 mb-1">De</label>
-        <input type="month" name="data_inicio" id="data_inicio" value="{{ request('data_inicio') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
+        <input type="month" name="data_inicio" id="data_inicio" value="{{ request('data_inicio') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500 outline-none bg-white h-[40px]">
       </div>
 
       <div class="md:col-span-4">
         <label for="data_fim" class="block text-sm font-medium text-gray-700 mb-1">Até</label>
-        <input type="month" name="data_fim" id="data_fim" value="{{ request('data_fim') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
+        <input type="month" name="data_fim" id="data_fim" value="{{ request('data_fim') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500 outline-none bg-white h-[40px]">
       </div>
 
       <div class="md:col-span-1">
-        <button type="submit" class="bg-blue-600 text-white w-full py-2 rounded-md text-sm hover:bg-blue-700 transition" title="Filtrar">
-          <i class="bi bi-filter"></i>
+        <button type="submit" class="bg-blue-600 text-white w-full py-[10px] rounded-md text-sm hover:bg-blue-700 transition flex items-center justify-center shadow-sm" title="Filtrar">
+          <i class="bi bi-filter text-lg"></i>
         </button>
       </div>
     </form>
@@ -155,7 +192,7 @@
                   </form>
                   <button onclick="openAnexoModal({{ $orcamento->id }}, '{{ $orcamento->numero_proposta ? 'Proposta ' . $orcamento->numero_proposta : 'Orçamento' }}')" class="text-gray-500 hover:text-blue-600 mr-3" title="Anexar Arquivo">
                     <i class="bi bi-paperclip text-lg"></i>
-                </button>
+                  </button>
                 </div>
               </td>
             </tr>

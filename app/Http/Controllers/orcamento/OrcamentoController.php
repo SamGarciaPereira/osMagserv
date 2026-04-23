@@ -35,6 +35,26 @@ class OrcamentoController extends Controller
             $query->where('status', $request->input('status'));
         }
 
+        $user = auth()->user();
+
+        if (!$request->has('filtro_aplicado')){
+            if (in_array($user->role, ['admin'])){
+                $statusSelecionados = ['Pendente', 'Em Andamento', 'Em Validação', 'Validado', 'Enviado', 'Aprovado', 'Cancelado'];
+            } else if (in_array($user->role, ['diretor'])) {
+                $statusSelecionados = ['Em Validação'];
+            } else if (in_array($user->role, ['user'])) {
+                $statusSelecionados = ['Pendente', 'Em Andamento'];
+            } else {
+                $statusSelecionados = [];
+            }
+        } else{
+            $statusSelecionados = $request->input('status', []);
+        }
+
+        if (!empty($statusSelecionados)) {
+            $query->whereIn('status', $statusSelecionados);
+        }
+
         switch ($request->input('ordem')) {
             case 'recentes':
                 $query->orderBy('data_solicitacao', 'desc');
@@ -94,7 +114,7 @@ class OrcamentoController extends Controller
 
         session(['url_retorno_orcamentos' => $request->fullUrl()]);
 
-        return view('orcamento.index', compact('orcamentos', 'inputInicio', 'inputFim'));
+        return view('orcamento.index', compact('orcamentos', 'inputInicio', 'inputFim', 'statusSelecionados'));
     }
 
     public function create()
