@@ -61,4 +61,9 @@ class User extends Authenticatable
     {
         return $this->role === 'supervisor';
     }
+
+    public function isOrcamentista(): bool
+    {
+        return $this->role === 'orcamentista';
+    }
 }

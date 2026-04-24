@@ -44,10 +44,12 @@
           <i class="bi bi-house-door-fill text-lg min-w-[1.5rem]"></i>
           <span class="sidebar-text text-sm font-semibold ml-4 w-auto opacity-100 md:w-0 md:opacity-0 whitespace-nowrap transition-all">Menu</span>
         </a>
-        <a href="{{ route('processos.index') }}" class="p-2.5 pl-3.5 flex items-center rounded-md hover:bg-blue-600 group">
-          <i class="bi bi-inboxes-fill text-lg min-w-[1.5rem]"></i>
-          <span class="sidebar-text text-sm font-semibold ml-4 w-auto opacity-100 md:w-0 md:opacity-0 whitespace-nowrap transition-all">Processos</span>
-        </a>
+        @if (!auth()->user()->isOrcamentista())
+          <a href="{{ route('processos.index') }}" class="p-2.5 pl-3.5 flex items-center rounded-md hover:bg-blue-600 group">
+            <i class="bi bi-inboxes-fill text-lg min-w-[1.5rem]"></i>
+            <span class="sidebar-text text-sm font-semibold ml-4 w-auto opacity-100 md:w-0 md:opacity-0 whitespace-nowrap transition-all">Processos</span>
+          </a>
+        @endif
         @if (!auth()->user()->isSupervisor())
           <a href="{{ route('orcamentos.index') }}" class="p-2.5 pl-3.5 flex items-center rounded-md hover:bg-blue-600 group">
             <i class="bi bi-file-earmark-ruled-fill text-lg min-w-[1.5rem]"></i>

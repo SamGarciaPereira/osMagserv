@@ -43,21 +43,22 @@
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-    <div class="bg-white p-4 rounded-lg shadow-md border-t-4 border-gray-600 hover:shadow-lg transition">
-      <div class="flex justify-between items-start mb-2">
-        <div>
-          <p class="text-md font-bold text-gray-500  tracking-wide">Processos</p>
-          <h3 class="text-3xl font-bold text-gray-800">{{ array_sum($processosStats) }}</h3>
+    @if (!auth()->user()->isOrcamentista())
+      <div class="bg-white p-4 rounded-lg shadow-md border-t-4 border-gray-600 hover:shadow-lg transition">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <p class="text-md font-bold text-gray-500  tracking-wide">Processos</p>
+            <h3 class="text-3xl font-bold text-gray-800">{{ array_sum($processosStats) }}</h3>
+          </div>
+          <div class="bg-gray-100 text-gray-600 p-2 rounded-lg">
+            <i class="bi bi-inboxes-fill text-xl"></i>
+          </div>
         </div>
-        <div class="bg-gray-100 text-gray-600 p-2 rounded-lg">
-          <i class="bi bi-inboxes-fill text-xl"></i>
+        <div class="border-t border-gray-100 pt-2">
+          <x-dashboard-list :stats="$processosStats" />
         </div>
       </div>
-      <div class="border-t border-gray-100 pt-2">
-        <x-dashboard-list :stats="$processosStats" />
-      </div>
-    </div>
+    @endif
     @if (!auth()->user()->isSupervisor())
       <div class="bg-white p-4 rounded-lg shadow-md border-t-4 border-yellow-500 hover:shadow-lg transition">
         <div class="flex justify-between items-start mb-2">

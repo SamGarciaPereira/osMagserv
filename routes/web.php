@@ -41,8 +41,9 @@ Route::middleware('auth')->group(function() {
 
     // 2. ROTAS COMPARTILHADAS (Supervisor SÓ PODE LER - Index/Show)
     
-    // Processos: Supervisor só pode ver (index e show)
-    Route::resource('processos', ProcessoController::class)->only(['index', 'edit', 'update', 'show']);
+    Route::middleware([\App\Http\Middleware\OrcamentistaMiddleware::class])->group(function () {
+        Route::resource('processos', ProcessoController::class)->only(['index', 'edit', 'update', 'show']);
+    });
 
     // Manutenções Genéricas: Supervisor só acede à listagem
     Route::resource('manutencoes', ManutencaoController::class)
@@ -74,8 +75,10 @@ Route::middleware('auth')->group(function() {
         Route::resource('orcamentos', OrcamentoController::class);
         Route::resource('contratos', ContratoController::class);
         
-        // Processos: Tudo MENOS index e show fica bloqueado (create, edit, update, destroy)
-        Route::resource('processos', ProcessoController::class)->except(['index', 'edit', 'update', 'show']);
+        // Processos: Tudo menos index e show fica bloqueado. Orçamentista bloqueado.
+        Route::middleware([\App\Http\Middleware\BloqueiaProcessosOrcamentista::class])->group(function () {
+            Route::resource('processos', ProcessoController::class)->except(['index', 'edit', 'update', 'show']);
+        });
         
         // Manutenções: Tudo MENOS index fica bloqueado
         Route::resource('manutencoes', ManutencaoController::class)
