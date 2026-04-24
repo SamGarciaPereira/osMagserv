@@ -29,13 +29,33 @@ document.addEventListener("DOMContentLoaded", function () {
         filterForm.submit();
     }
 
-    // Intercepta o clique manual no botão azul de Filtrar 
+    // Intercepta o clique manual no botão azul de Filtrar
     if (filterForm) {
         filterForm.addEventListener("submit", function (e) {
-            e.preventDefault(); 
-            enviarFiltrosComClientes(); 
+            e.preventDefault();
+            enviarFiltrosComClientes();
         });
     }
+
+    // Atalho Enter para submeter os filtros
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            // Proteger a pesquisa interna de clientes
+            if (e.target.classList.contains("client-search-input")) {
+                return; 
+            }
+
+            // verifica se o cursor está dentro de qualquer área de filtro
+            const isInsideForm = filterForm && filterForm.contains(e.target);
+            const isInsideDropdown = e.target.closest(".dropdown-container");
+
+            // Se for um Enter válido num campo de filtro, submete tudo
+            if (isInsideForm || isInsideDropdown) {
+                e.preventDefault();
+                enviarFiltrosComClientes();
+            }
+        }
+    });
 
     dropdowns.forEach((container) => {
         const btn = container.querySelector(".dropdown-btn");

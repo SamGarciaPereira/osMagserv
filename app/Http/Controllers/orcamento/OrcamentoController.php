@@ -31,10 +31,6 @@ class OrcamentoController extends Controller
             });
         }
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->input('status'));
-        }
-
         $user = auth()->user();
 
         if (!$request->has('filtro_aplicado')){
