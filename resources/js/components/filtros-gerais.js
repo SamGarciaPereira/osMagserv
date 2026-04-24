@@ -2,24 +2,20 @@ document.addEventListener("DOMContentLoaded", function () {
     const dropdowns = document.querySelectorAll(".dropdown-container");
     const filterForm = document.getElementById("filter-form");
 
-    // captura as opções da tabela e injeta no formulário principal
     function enviarFiltrosGerais() {
         if (!filterForm) return;
 
-        // Limpa cópias anteriores para não duplicar na URL
         document.querySelectorAll(".hidden-filter-copy").forEach((el) => el.remove());
 
-        // Busca todas as checkboxes marcadas que estejam dentro de um dropdown
         const checkboxesMarcadas = document.querySelectorAll(
             '.dropdown-container input[type="checkbox"]:checked',
         );
 
-        // Copia apenas aquelas que estão fisicamente fora do formulário principal 
         checkboxesMarcadas.forEach((cb) => {
             if (!filterForm.contains(cb)) {
                 const hiddenInput = document.createElement("input");
                 hiddenInput.type = "hidden";
-                hiddenInput.name = cb.name; 
+                hiddenInput.name = cb.name;
                 hiddenInput.value = cb.value;
                 hiddenInput.className = "hidden-filter-copy";
                 filterForm.appendChild(hiddenInput);
@@ -37,7 +33,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         filterForm.addEventListener("keydown", function (e) {
             if (e.key === "Enter") {
-                // Impede o envio se estiver a pesquisar internamente no dropdown
                 if (e.target.classList.contains("internal-search-input"))
                     return;
                 e.preventDefault();
@@ -60,6 +55,36 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // Fechar menus ao fazer scroll ou redimensionar 
+    // O parâmetro 'true' no final captura o scroll até de dentro da tabela
+    window.addEventListener(
+        "scroll",
+        function (e) {
+            // Se estiver fazendo scroll DENTRO do dropdown não fecha
+            if (e.target.closest && e.target.closest(".dropdown-menu")) return;
+
+            dropdowns.forEach((container) => {
+                const menu = container.querySelector(".dropdown-menu");
+                if (menu && !menu.classList.contains("hidden")) {
+                    menu.classList.add("hidden");
+                    if (container.dataset.changed === "true")
+                        enviarFiltrosGerais();
+                }
+            });
+        },
+        true,
+    );
+
+    window.addEventListener("resize", function () {
+        dropdowns.forEach((container) => {
+            const menu = container.querySelector(".dropdown-menu");
+            if (menu && !menu.classList.contains("hidden")) {
+                menu.classList.add("hidden");
+                if (container.dataset.changed === "true") enviarFiltrosGerais();
+            }
+        });
+    });
+
     dropdowns.forEach((container) => {
         const btn = container.querySelector(".dropdown-btn");
         const menu = container.querySelector(".dropdown-menu");
@@ -74,6 +99,9 @@ document.addEventListener("DOMContentLoaded", function () {
         if (btn) {
             btn.addEventListener("click", (e) => {
                 e.stopPropagation();
+
+                const isOpening = menu.classList.contains("hidden");
+
                 dropdowns.forEach((other) => {
                     if (
                         other !== container &&
@@ -88,7 +116,31 @@ document.addEventListener("DOMContentLoaded", function () {
                             enviarFiltrosGerais();
                     }
                 });
-                menu.classList.toggle("hidden");
+
+                if (isOpening) {
+                    // Calcula onde o botão está na tela atualmente
+                    const rect = btn.getBoundingClientRect();
+
+                    // Mostra o menu para pegar a largura dele
+                    menu.classList.remove("hidden");
+
+                    // Transforma em modal (fixed) e define a altura
+                    menu.style.position = "fixed";
+                    menu.style.top = `${rect.bottom + 4}px`;
+                    menu.style.zIndex = "99999";
+
+                    // Evita que o menu passe da margem direita 
+                    const menuWidth = menu.offsetWidth;
+                    if (rect.left + menuWidth > window.innerWidth) {
+                        menu.style.left = `${window.innerWidth - menuWidth - 15}px`;
+                    } else {
+                        menu.style.left = `${rect.left}px`;
+                    }
+                } else {
+                    menu.classList.add("hidden");
+                    if (container.dataset.changed === "true")
+                        enviarFiltrosGerais();
+                }
             });
         }
 
@@ -149,7 +201,6 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
 
-        // Lógica barra de pesquisa interna
         if (searchInput && listItems.length > 0) {
             const emptyState = container.querySelector(".empty-state-msg");
             const termDisplay = container.querySelector(".search-term-display");

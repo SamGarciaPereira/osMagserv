@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Processo;
 use App\Models\ContasReceber;
 use App\Models\Orcamento;
+use App\Models\Cliente;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Validation\Rule;
@@ -38,6 +39,13 @@ class ProcessoController extends Controller
         if ($request->filled('status')) {
             $query->where('processos.status', $request->input('status'));
         }
+
+        $clientesList = Cliente::orderBy('nome')->get(['id', 'nome']);
+        $clientesSelecionados = $request->input('cliente_id', []);
+
+        if (!empty($clientesSelecionados)) {
+            $query->whereIn('cliente_id', $clientesSelecionados);
+        }   
 
         switch ($request->input('ordem')) {
             case 'antigos':
@@ -90,7 +98,7 @@ class ProcessoController extends Controller
 
         session(['url_retorno_processos' => $request->fullUrl()]);
 
-        return view('processo.index', compact('processos'));
+        return view('processo.index', compact('processos', 'clientesList', 'clientesSelecionados', 'inputInicio', 'inputFim'));
     }
 
     public function create()

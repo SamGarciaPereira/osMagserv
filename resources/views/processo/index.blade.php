@@ -23,7 +23,7 @@
     </div>
 
     <div class="bg-white p-4 sm:p-6 rounded-lg shadow-sm mb-6 border border-gray-200">
-      <form method="GET" action="{{ route('processos.index') }}" class="grid grid-cols-2 lg:grid-cols-12 gap-3 sm:gap-4 items-end">
+      <form method="GET" action="{{ route('processos.index') }}" id="filter-form" class="grid grid-cols-2 lg:grid-cols-12 gap-3 sm:gap-4 items-end">
 
         <div class="col-span-2 lg:col-span-3">
           <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Pesquisar</label>
@@ -94,7 +94,52 @@
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NF</th>
               @endif
               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Proposta</th>
-              <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider relative dropdown-container z-20">
+                <button type="button" class="dropdown-btn flex items-center gap-1 hover:text-blue-600 transition-all outline-none uppercase">
+                  Cliente
+                  <i class="bi bi-filter-left text-sm {{ count($clientesSelecionados) > 0 ? 'text-blue-600' : 'text-gray-400' }}"></i>
+                </button>
+
+                <div class="dropdown-menu hidden absolute z-[100] mt-2 w-72 bg-white border border-gray-200 rounded-lg shadow-2xl p-3 normal-case font-normal text-gray-700 left-0 top-full">
+
+                  <div class="mb-3 px-1">
+                    <div class="relative">
+                      <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+                        <i class="bi bi-search text-gray-400 text-xs"></i>
+                      </div>
+                      <input type="text" class="internal-search-input w-full pl-8 pr-2 py-1.5 border border-gray-300 rounded text-xs focus:ring-blue-500 outline-none" placeholder="Buscar cliente..." autocomplete="off">
+                    </div>
+                  </div>
+
+                  <div class="flex justify-center items-center gap-3 border-b border-gray-100 pb-3 mb-2">
+                    <button type="button" class="btn-select-all flex items-center gap-1.5 px-4 py-1.5 bg-gray-50 border-2 border-gray-200 text-gray-500 rounded-md text-[10px] uppercase font-black hover:bg-blue-50 hover:text-blue-600 hover:border-blue-400 transition-all shadow-sm">
+                       Todos
+                    </button>
+                    <button type="button" class="btn-clear-all flex items-center gap-1.5 px-4 py-1.5 bg-gray-50 border-2 border-gray-200 text-gray-500 rounded-md text-[10px] uppercase font-black hover:bg-red-50 hover:text-red-600 hover:border-red-400 transition-all shadow-sm">
+                       Limpar
+                    </button>
+                  </div>
+
+                  <div class="flex flex-col gap-1 max-h-64 overflow-y-auto pr-1 relative">
+                    @foreach ($clientesList as $cli)
+                      <label class="searchable-item flex items-center justify-between px-3 py-2 hover:bg-blue-50 rounded-md cursor-pointer group transition-all">
+                        <div class="flex items-center w-full overflow-hidden">
+                          <input type="checkbox" name="cliente_id[]" value="{{ $cli->id }}" class="peer hidden" {{ in_array($cli->id, $clientesSelecionados) ? 'checked' : '' }}>
+
+                          <span class="searchable-name text-sm text-gray-600 peer-checked:text-blue-700 peer-checked:font-bold truncate w-11/12">
+                            {{ $cli->nome }}
+                          </span>
+                        </div>
+                        <i class="bi bi-check2 text-blue-600 font-bold opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                      </label>
+                    @endforeach
+
+                    <div class="empty-state-msg hidden px-3 py-6 text-center text-sm text-gray-500 italic">
+                      Nenhum cliente encontrado para "<span class="search-term-display font-semibold"></span>"
+                    </div>
+                  </div>
+                </div>
+              </th>
               @if (!auth()->user()->isSupervisor())
                 <th class="hidden sm:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
               @endif
