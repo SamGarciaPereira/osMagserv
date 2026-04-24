@@ -2,6 +2,41 @@ document.addEventListener("DOMContentLoaded", function () {
     const dropdowns = document.querySelectorAll(".dropdown-container");
     const filterForm = document.getElementById("filter-form");
 
+    // captura as opções da tabela e injeta no formulário principal
+    function enviarFiltrosComClientes() {
+        if (!filterForm) return;
+
+        // Limpa cópias anteriores para não duplicar na URL
+        document
+            .querySelectorAll(".hidden-cliente-copy")
+            .forEach((el) => el.remove());
+
+        // Pega todos os clientes marcados na tabela 
+        const clientesMarcados = document.querySelectorAll(
+            'input[name="cliente_id[]"]:checked',
+        );
+
+        // Cria inputs escondidos dentro do formulário principal
+        clientesMarcados.forEach((cb) => {
+            const hiddenInput = document.createElement("input");
+            hiddenInput.type = "hidden";
+            hiddenInput.name = "cliente_id[]";
+            hiddenInput.value = cb.value;
+            hiddenInput.className = "hidden-cliente-copy";
+            filterForm.appendChild(hiddenInput);
+        });
+
+        filterForm.submit();
+    }
+
+    // Intercepta o clique manual no botão azul de Filtrar 
+    if (filterForm) {
+        filterForm.addEventListener("submit", function (e) {
+            e.preventDefault(); 
+            enviarFiltrosComClientes(); 
+        });
+    }
+
     dropdowns.forEach((container) => {
         const btn = container.querySelector(".dropdown-btn");
         const menu = container.querySelector(".dropdown-menu");
@@ -27,8 +62,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         .querySelector(".dropdown-menu")
                         .classList.add("hidden");
 
-                    if (other.dataset.changed === "true" && filterForm) {
-                        filterForm.submit();
+                    if (other.dataset.changed === "true") {
+                        enviarFiltrosComClientes();
                     }
                 }
             });
@@ -38,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Função para atualizar o texto do contador
         const updateCounter = () => {
             const checkedCount = container.querySelectorAll(
-                ".status-checkbox:checked",
+                "input[type='checkbox']:checked",
             ).length;
             if (counterSpan) {
                 counterSpan.innerText =
@@ -51,10 +86,12 @@ document.addEventListener("DOMContentLoaded", function () {
             btnAll.addEventListener("click", (e) => {
                 e.stopPropagation();
                 container.dataset.changed = "true";
-                container.querySelectorAll(".status-checkbox").forEach((cb) => {
-                    cb.checked = true;
-                    cb.dispatchEvent(new Event("change"));
-                });
+                container
+                    .querySelectorAll("input[type='checkbox']")
+                    .forEach((cb) => {
+                        cb.checked = true;
+                        cb.dispatchEvent(new Event("change"));
+                    });
                 updateCounter();
             });
         }
@@ -64,22 +101,23 @@ document.addEventListener("DOMContentLoaded", function () {
             btnClear.addEventListener("click", (e) => {
                 e.stopPropagation();
                 container.dataset.changed = "true";
-                container.querySelectorAll(".status-checkbox").forEach((cb) => {
-                    cb.checked = false;
-                    cb.dispatchEvent(new Event("change"));
-                });
+                container
+                    .querySelectorAll("input[type='checkbox']")
+                    .forEach((cb) => {
+                        cb.checked = false;
+                        cb.dispatchEvent(new Event("change"));
+                    });
                 updateCounter();
             });
         }
 
-        // Mudança manual nos checkboxes ou radios
+        // Mudança manual nos inputs
         const inputs = container.querySelectorAll("input");
         inputs.forEach((input) => {
-            // Ignora o input da pesquisa para não dar trigger de submit
-            if (input.type === "text") return;
+            if (input.type === "text") return; // Ignora a barra de pesquisa
 
             input.addEventListener("change", () => {
-                container.dataset.changed = "true"; // Registra que houve mudança
+                container.dataset.changed = "true";
 
                 if (input.type === "radio") {
                     if (counterSpan)
@@ -87,14 +125,14 @@ document.addEventListener("DOMContentLoaded", function () {
                             .closest("label")
                             .querySelector("span").innerText;
                     menu.classList.add("hidden");
-                    if (filterForm) filterForm.submit(); 
+                    enviarFiltrosComClientes(); // Rádio submete na hora
                 } else {
                     updateCounter();
                 }
             });
         });
 
-        // Barra de pesquisa interna
+        // Lógica barra de pesquisa interna
         if (searchInput && clientItems.length > 0) {
             const emptyState = container.querySelector(".client-empty-state");
             const termDisplay = container.querySelector(".search-term-display");
@@ -105,29 +143,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
             searchInput.addEventListener("input", function (e) {
                 const term = e.target.value.toLowerCase();
-                let hasVisibleItems = false; // Variável para rastrear se achou alguém
+                let hasVisibleItems = false;
 
                 clientItems.forEach((item) => {
                     const name = item
                         .querySelector(".client-name")
                         .textContent.toLowerCase();
-
                     if (name.includes(term)) {
                         item.style.display = "flex";
-                        hasVisibleItems = true; // Achou pelo menos um
+                        hasVisibleItems = true;
                     } else {
                         item.style.display = "none";
                     }
                 });
 
-                // Lógica para mostrar/esconder a mensagem de "Nenhum cliente"
                 if (emptyState) {
                     if (hasVisibleItems) {
                         emptyState.classList.add("hidden");
                     } else {
                         emptyState.classList.remove("hidden");
                         if (termDisplay)
-                            termDisplay.textContent = e.target.value; // Mostra o termo digitado
+                            termDisplay.textContent = e.target.value;
                     }
                 }
             });
@@ -138,16 +174,14 @@ document.addEventListener("DOMContentLoaded", function () {
     document.addEventListener("click", (e) => {
         dropdowns.forEach((container) => {
             const menu = container.querySelector(".dropdown-menu");
-            // Se o menu não contiver o clique e estiver aberto
             if (
                 !container.contains(e.target) &&
                 !menu.classList.contains("hidden")
             ) {
                 menu.classList.add("hidden");
 
-                //Se clicou fora e tem mudanças, submete
-                if (container.dataset.changed === "true" && filterForm) {
-                    filterForm.submit();
+                if (container.dataset.changed === "true") {
+                    enviarFiltrosComClientes();
                 }
             }
         });
