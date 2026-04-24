@@ -38,7 +38,7 @@ class OrcamentoController extends Controller
                 $statusSelecionados = ['Pendente', 'Em Andamento', 'Em Validação', 'Validado', 'Enviado', 'Aprovado', 'Cancelado'];
             } else if (in_array($user->role, ['diretor'])) {
                 $statusSelecionados = ['Em Validação'];
-            } else if (in_array($user->role, ['user'])) {
+            } else if (in_array($user->role, ['orcamentista'])) {
                 $statusSelecionados = ['Pendente', 'Em Andamento'];
             } else {
                 $statusSelecionados = [];
