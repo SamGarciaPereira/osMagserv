@@ -10,7 +10,7 @@ import './components/cep';
 import './components/cep-obra';
 import './components/general-history'
 import './components/docs-funcionario';
-import './components/filtros-orcamentos';
+import './components/filtros-gerais';
 
 import { initDashboard } from "./components/dashboard";
 window.initDashboard = initDashboard;

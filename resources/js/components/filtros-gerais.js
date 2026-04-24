@@ -3,56 +3,59 @@ document.addEventListener("DOMContentLoaded", function () {
     const filterForm = document.getElementById("filter-form");
 
     // captura as opções da tabela e injeta no formulário principal
-    function enviarFiltrosComClientes() {
+    function enviarFiltrosGerais() {
         if (!filterForm) return;
 
         // Limpa cópias anteriores para não duplicar na URL
-        document
-            .querySelectorAll(".hidden-cliente-copy")
-            .forEach((el) => el.remove());
+        document.querySelectorAll(".hidden-filter-copy").forEach((el) => el.remove());
 
-        // Pega todos os clientes marcados na tabela 
-        const clientesMarcados = document.querySelectorAll(
-            'input[name="cliente_id[]"]:checked',
+        // Busca todas as checkboxes marcadas que estejam dentro de um dropdown
+        const checkboxesMarcadas = document.querySelectorAll(
+            '.dropdown-container input[type="checkbox"]:checked',
         );
 
-        // Cria inputs escondidos dentro do formulário principal
-        clientesMarcados.forEach((cb) => {
-            const hiddenInput = document.createElement("input");
-            hiddenInput.type = "hidden";
-            hiddenInput.name = "cliente_id[]";
-            hiddenInput.value = cb.value;
-            hiddenInput.className = "hidden-cliente-copy";
-            filterForm.appendChild(hiddenInput);
+        // Copia apenas aquelas que estão fisicamente fora do formulário principal 
+        checkboxesMarcadas.forEach((cb) => {
+            if (!filterForm.contains(cb)) {
+                const hiddenInput = document.createElement("input");
+                hiddenInput.type = "hidden";
+                hiddenInput.name = cb.name; 
+                hiddenInput.value = cb.value;
+                hiddenInput.className = "hidden-filter-copy";
+                filterForm.appendChild(hiddenInput);
+            }
         });
 
         filterForm.submit();
     }
 
-    // Intercepta o clique manual no botão azul de Filtrar
     if (filterForm) {
         filterForm.addEventListener("submit", function (e) {
             e.preventDefault();
-            enviarFiltrosComClientes();
+            enviarFiltrosGerais();
+        });
+
+        filterForm.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                // Impede o envio se estiver a pesquisar internamente no dropdown
+                if (e.target.classList.contains("internal-search-input"))
+                    return;
+                e.preventDefault();
+                enviarFiltrosGerais();
+            }
         });
     }
 
-    // Atalho Enter para submeter os filtros
     document.addEventListener("keydown", function (e) {
         if (e.key === "Enter") {
-            // Proteger a pesquisa interna de clientes
-            if (e.target.classList.contains("client-search-input")) {
-                return; 
-            }
+            if (e.target.classList.contains("internal-search-input")) return;
 
-            // verifica se o cursor está dentro de qualquer área de filtro
             const isInsideForm = filterForm && filterForm.contains(e.target);
             const isInsideDropdown = e.target.closest(".dropdown-container");
 
-            // Se for um Enter válido num campo de filtro, submete tudo
             if (isInsideForm || isInsideDropdown) {
                 e.preventDefault();
-                enviarFiltrosComClientes();
+                enviarFiltrosGerais();
             }
         }
     });
@@ -65,32 +68,30 @@ document.addEventListener("DOMContentLoaded", function () {
         const btnAll = container.querySelector(".btn-select-all");
         const btnClear = container.querySelector(".btn-clear-all");
 
-        const searchInput = container.querySelector(".client-search-input");
-        const clientItems = container.querySelectorAll(".client-item");
+        const searchInput = container.querySelector(".internal-search-input");
+        const listItems = container.querySelectorAll(".searchable-item");
 
-        // Abrir/Fechar Dropdown
-        btn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            dropdowns.forEach((other) => {
-                if (
-                    other !== container &&
-                    !other
-                        .querySelector(".dropdown-menu")
-                        .classList.contains("hidden")
-                ) {
-                    other
-                        .querySelector(".dropdown-menu")
-                        .classList.add("hidden");
-
-                    if (other.dataset.changed === "true") {
-                        enviarFiltrosComClientes();
+        if (btn) {
+            btn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                dropdowns.forEach((other) => {
+                    if (
+                        other !== container &&
+                        !other
+                            .querySelector(".dropdown-menu")
+                            .classList.contains("hidden")
+                    ) {
+                        other
+                            .querySelector(".dropdown-menu")
+                            .classList.add("hidden");
+                        if (other.dataset.changed === "true")
+                            enviarFiltrosGerais();
                     }
-                }
+                });
+                menu.classList.toggle("hidden");
             });
-            menu.classList.toggle("hidden");
-        });
+        }
 
-        // Função para atualizar o texto do contador
         const updateCounter = () => {
             const checkedCount = container.querySelectorAll(
                 "input[type='checkbox']:checked",
@@ -101,7 +102,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         };
 
-        // Atalho: Marcar Todos
         if (btnAll) {
             btnAll.addEventListener("click", (e) => {
                 e.stopPropagation();
@@ -116,7 +116,6 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
 
-        // Atalho: Limpar Tudo
         if (btnClear) {
             btnClear.addEventListener("click", (e) => {
                 e.stopPropagation();
@@ -131,21 +130,19 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
 
-        // Mudança manual nos inputs
         const inputs = container.querySelectorAll("input");
         inputs.forEach((input) => {
-            if (input.type === "text") return; // Ignora a barra de pesquisa
+            if (input.type === "text") return;
 
             input.addEventListener("change", () => {
                 container.dataset.changed = "true";
-
                 if (input.type === "radio") {
                     if (counterSpan)
                         counterSpan.innerText = input
                             .closest("label")
                             .querySelector("span").innerText;
                     menu.classList.add("hidden");
-                    enviarFiltrosComClientes(); // Rádio submete na hora
+                    enviarFiltrosGerais();
                 } else {
                     updateCounter();
                 }
@@ -153,8 +150,8 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         // Lógica barra de pesquisa interna
-        if (searchInput && clientItems.length > 0) {
-            const emptyState = container.querySelector(".client-empty-state");
+        if (searchInput && listItems.length > 0) {
+            const emptyState = container.querySelector(".empty-state-msg");
             const termDisplay = container.querySelector(".search-term-display");
 
             searchInput.addEventListener("keydown", function (e) {
@@ -165,9 +162,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 const term = e.target.value.toLowerCase();
                 let hasVisibleItems = false;
 
-                clientItems.forEach((item) => {
+                listItems.forEach((item) => {
                     const name = item
-                        .querySelector(".client-name")
+                        .querySelector(".searchable-name")
                         .textContent.toLowerCase();
                     if (name.includes(term)) {
                         item.style.display = "flex";
@@ -190,18 +187,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Fechar ao clicar fora e Auto-Submit Geral
     document.addEventListener("click", (e) => {
         dropdowns.forEach((container) => {
             const menu = container.querySelector(".dropdown-menu");
             if (
+                menu &&
                 !container.contains(e.target) &&
                 !menu.classList.contains("hidden")
             ) {
                 menu.classList.add("hidden");
-
                 if (container.dataset.changed === "true") {
-                    enviarFiltrosComClientes();
+                    enviarFiltrosGerais();
                 }
             }
         });

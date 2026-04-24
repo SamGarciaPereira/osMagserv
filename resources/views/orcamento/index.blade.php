@@ -157,7 +157,7 @@
                     <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
                       <i class="bi bi-search text-gray-400 text-xs"></i>
                     </div>
-                    <input type="text" class="client-search-input w-full pl-8 pr-2 py-1.5 border border-gray-300 rounded text-xs focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="Buscar cliente..." autocomplete="off">
+                    <input type="text" class="internal-search-input w-full pl-8 pr-2 py-1.5 border border-gray-300 rounded text-xs focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="Buscar cliente..." autocomplete="off">
                   </div>
                 </div>
 
@@ -172,16 +172,16 @@
 
                 <div class="flex flex-col gap-1 max-h-64 overflow-y-auto pr-1 relative">
                   @foreach ($clientesList as $cli)
-                    <label class="client-item flex items-center justify-between px-3 py-2 hover:bg-blue-50 rounded-md cursor-pointer group transition-all">
+                    <label class="searchable-item flex items-center justify-between px-3 py-2 hover:bg-blue-50 rounded-md cursor-pointer group transition-all">
                       <div class="flex items-center w-full overflow-hidden">
                         <input type="checkbox" name="cliente_id[]" value="{{ $cli->id }}" class="peer hidden status-checkbox" {{ in_array($cli->id, $clientesSelecionados) ? 'checked' : '' }}>
-                        <span class="client-name text-sm text-gray-600 peer-checked:text-blue-700 peer-checked:font-bold truncate w-11/12">{{ $cli->nome }}</span>
+                        <span class="searchable-name text-sm text-gray-600 peer-checked:text-blue-700 peer-checked:font-bold truncate w-11/12">{{ $cli->nome }}</span>
                       </div>
                       <i class="bi bi-check2 text-blue-600 font-bold opacity-0 peer-checked:opacity-100 transition-opacity"></i>
                     </label>
                   @endforeach
 
-                  <div class="client-empty-state hidden px-3 py-6 text-center text-sm text-gray-500 italic">
+                  <div class="empty-state-msg hidden px-3 py-6 text-center text-sm text-gray-500 italic">
                     Nenhum cliente encontrado para "<span class="search-term-display font-semibold"></span>"
                   </div>
                 </div>
