@@ -110,11 +110,18 @@ class OrcamentoController extends Controller
             }
         }
 
+        $clientesList = Cliente::orderBy('nome')->get(['id', 'nome']);
+        $clientesSelecionados = $request->input('cliente_id', []);
+
+        if (!empty($clientesSelecionados)) {
+            $query->whereIn('cliente_id', $clientesSelecionados);
+        }
+
         $orcamentos = $query->paginate(2000);
 
         session(['url_retorno_orcamentos' => $request->fullUrl()]);
 
-        return view('orcamento.index', compact('orcamentos', 'inputInicio', 'inputFim', 'statusSelecionados'));
+        return view('orcamento.index', compact('orcamentos', 'inputInicio', 'inputFim', 'statusSelecionados', 'clientesList', 'clientesSelecionados'));
     }
 
     public function create()
