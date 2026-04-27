@@ -24,6 +24,7 @@
 
     <div class="bg-white p-4 sm:p-6 rounded-lg shadow-sm mb-6 border border-gray-200">
       <form method="GET" action="{{ route('processos.index') }}" id="filter-form" class="grid grid-cols-2 lg:grid-cols-12 gap-3 sm:gap-4 items-end">
+        <input type="hidden" name="filtro_aplicado" value="1">
 
         <div class="col-span-2 lg:col-span-3">
           <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Pesquisar</label>
@@ -35,30 +36,70 @@
           </div>
         </div>
 
-        <div class="col-span-1 lg:col-span-2">
-          <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-          <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
-            <option value="">Todos</option>
-            <option value="Em Aberto" {{ request('status') == 'Em Aberto' ? 'selected' : '' }}>Em Aberto</option>
-            <option value="Finalizado" {{ request('status') == 'Finalizado' ? 'selected' : '' }}>Finalizado</option>
-            @if (!auth()->user()->isSupervisor())
-              <option value="Faturado" {{ request('status') == 'Faturado' ? 'selected' : '' }}>Faturado</option>
-            @endif
-          </select>
+        <div class="col-span-1 lg:col-span-2 relative dropdown-container">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+          <button type="button" class="dropdown-btn w-full px-3 py-[9px] border border-gray-300 rounded-md text-sm bg-white flex justify-between items-center hover:bg-gray-50 transition-all">
+            <span class="truncate">{{ count($statusSelecionados) }} selecionados</span>
+            <i class="bi bi-chevron-down text-gray-400 ml-2"></i>
+          </button>
+
+          <div class="dropdown-menu hidden absolute z-50 mt-1 w-60 bg-white border border-gray-200 rounded-md shadow-xl p-2 left-0">
+            <div class="flex justify-center gap-4 items-center border-b border-gray-100 pb-2 mb-2">
+              <button type="button" class="btn-select-all flex items-center gap-1 px-2.5 py-1 bg-gray-50 border border-gray-200 text-gray-500 rounded text-[10px] uppercase font-bold hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm">
+                Todos
+              </button>
+              <button type="button" class="btn-clear-all flex items-center gap-1 px-2.5 py-1 bg-gray-50 border border-gray-200 text-gray-500 rounded text-[10px] uppercase font-bold hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all shadow-sm">
+                Limpar
+              </button>
+            </div>
+
+            <div class="flex flex-col gap-1 max-h-64 overflow-y-auto">
+              @foreach (['Em Aberto', 'Finalizado', 'Faturado'] as $status)
+                <label class="flex items-center justify-between px-3 py-2 hover:bg-blue-50 rounded-md cursor-pointer group transition-all">
+                  <div class="flex items-center">
+                    <input type="checkbox" name="status[]" value="{{ $status }}" class="peer hidden status-checkbox" {{ in_array($status, $statusSelecionados) ? 'checked' : '' }}>
+                    <span class="text-sm text-gray-600 peer-checked:text-blue-700 peer-checked:font-bold transition-all">{{ $status }}</span>
+                  </div>
+                  <i class="bi bi-check2 text-blue-600 font-bold opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                </label>
+              @endforeach
+            </div>
+          </div>
         </div>
 
-        <div class="col-span-1 lg:col-span-2">
-          <label for="ordem" class="block text-sm font-medium text-gray-700 mb-1">Ordenar</label>
-          <select name="ordem" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
-            <option value="recentes" {{ request('ordem') == 'recentes' ? 'selected' : '' }}>Recentes</option>
-            <option value="antigos" {{ request('ordem') == 'antigos' ? 'selected' : '' }}>Antigos</option>
-            @if (!auth()->user()->isSupervisor())
-              <option value="maior_valor" {{ request('ordem') == 'maior_valor' ? 'selected' : '' }}>Maior Valor</option>
-              <option value="menor_valor" {{ request('ordem') == 'menor_valor' ? 'selected' : '' }}>Menor Valor</option>
-            @endif
-          </select>
-        </div>
+        @php
+          $ordemAtual = request('ordem', 'recentes');
+          $opcoesOrdem = [
+              'recentes' => 'Recentes',
+              'antigos' => 'Antigos',
+              'maior_valor' => 'Maior Valor',
+              'menor_valor' => 'Menor Valor',
+          ];
+        @endphp
+        <div class="col-span-1 lg:col-span-2 relative dropdown-container">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Ordenar</label>
+          <button type="button" class="dropdown-btn w-full px-3 py-[9px] border border-gray-300 rounded-md text-sm bg-white flex justify-between items-center hover:bg-gray-50 transition-all">
+            <span class="truncate">{{ $opcoesOrdem[$ordemAtual] ?? 'Ordenar' }}</span>
+            <i class="bi bi-chevron-down text-gray-400 ml-2"></i>
+          </button>
 
+          <div class="dropdown-menu hidden absolute z-50 mt-1 w-56 bg-white border border-gray-200 rounded-md shadow-xl p-2 left-0">
+            <div class="flex flex-col gap-1">
+              @foreach ($opcoesOrdem as $val => $label)
+                <label class="flex items-center justify-between px-3 py-2 hover:bg-blue-50 rounded-md cursor-pointer group transition-all">
+                  <div class="flex items-center">
+                    <input type="radio" name="ordem" value="{{ $val }}" class="peer hidden" {{ $ordemAtual == $val ? 'checked' : '' }}>
+                    <span class="text-sm text-gray-600 peer-checked:text-blue-700 peer-checked:font-bold transition-all">{{ $label }}</span>
+                  </div>
+                  <i class="bi bi-check2 text-blue-600 font-bold opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                </label>
+              @endforeach
+            </div>
+            <div class="mt-2 pt-2 border-t border-gray-100">
+              <button type="submit" class="w-full bg-blue-600 text-white py-1.5 rounded-md text-xs font-bold hover:bg-blue-700 transition">Aplicar</button>
+            </div>
+          </div>
+        </div>
         <div class="col-span-1 lg:col-span-2">
           <label for="data_inicio" class="block text-sm font-medium text-gray-700 mb-1">De</label>
           <input type="month" name="data_inicio" id="data_inicio" value="{{ request('data_inicio') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
@@ -74,7 +115,6 @@
             <i class="bi bi-filter text-base"></i> <span class="ml-2 lg:hidden">Aplicar Filtros</span>
           </button>
         </div>
-
       </form>
     </div>
 
@@ -113,10 +153,10 @@
 
                   <div class="flex justify-center items-center gap-3 border-b border-gray-100 pb-3 mb-2">
                     <button type="button" class="btn-select-all flex items-center gap-1.5 px-4 py-1.5 bg-gray-50 border-2 border-gray-200 text-gray-500 rounded-md text-[10px] uppercase font-black hover:bg-blue-50 hover:text-blue-600 hover:border-blue-400 transition-all shadow-sm">
-                       Todos
+                      Todos
                     </button>
                     <button type="button" class="btn-clear-all flex items-center gap-1.5 px-4 py-1.5 bg-gray-50 border-2 border-gray-200 text-gray-500 rounded-md text-[10px] uppercase font-black hover:bg-red-50 hover:text-red-600 hover:border-red-400 transition-all shadow-sm">
-                       Limpar
+                      Limpar
                     </button>
                   </div>
 

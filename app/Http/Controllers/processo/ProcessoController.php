@@ -36,8 +36,20 @@ class ProcessoController extends Controller
             });
         }
 
-        if ($request->filled('status')) {
-            $query->where('processos.status', $request->input('status'));
+        $user = auth()->user();
+
+        if (!$request->has('filtro_aplicado')){
+            if (in_array($user->role, ['supervisor']))  {
+                $statusSelecionados = ['Em Aberto', 'Finalizado'];
+            } else {
+                $statusSelecionados = ['Em Aberto', 'Finalizado', 'Faturado'];
+            }
+        } else {
+            $statusSelecionados = $request->input('status', []);
+        }
+
+        if (!empty($statusSelecionados)) {
+            $query->whereIn('processos.status', $statusSelecionados);
         }
 
         $clientesList = Cliente::orderBy('nome')->get(['id', 'nome']);
@@ -87,7 +99,7 @@ class ProcessoController extends Controller
                     $dataFim = $dataInicio->copy()->endOfMonth();
                 }
 
-                $query->whereBetween('data_aprovacao', [$dataInicio, $dataFim]);
+                $query->whereBetween('orcamentos.data_aprovacao', [$dataInicio, $dataFim]);
 
             } catch (\Exception $e) {
 
@@ -98,7 +110,7 @@ class ProcessoController extends Controller
 
         session(['url_retorno_processos' => $request->fullUrl()]);
 
-        return view('processo.index', compact('processos', 'clientesList', 'clientesSelecionados', 'inputInicio', 'inputFim'));
+        return view('processo.index', compact('processos', 'clientesList', 'clientesSelecionados', 'inputInicio', 'inputFim', 'statusSelecionados'));
     }
 
     public function create()
