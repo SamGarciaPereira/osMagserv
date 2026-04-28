@@ -78,6 +78,7 @@
             'recentes' => 'Recentes',
             'antigos' => 'Antigos',
             'maior_valor' => 'Maior Valor',
+            'menor_valor' => 'Menor Valor',
         ];
       @endphp
       <div class="md:col-span-3 relative dropdown-container">
