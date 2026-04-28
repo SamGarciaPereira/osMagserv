@@ -27,9 +27,21 @@ class ContasPagarController extends Controller
         });
       }
 
-      if($request->filled('status')){
-        $query->where('status', $request->input('status'));
-      }
+      $user = auth()->user();
+
+      if (!$request->has('filtro_aplicado')){
+            if (in_array($user->role, ['admin', 'diretor']))  {
+                $statusSelecionados = ['Pendente', 'Atrasado', 'Pago'];
+            } else {
+                $statusSelecionados = [];
+            }
+        } else {
+            $statusSelecionados = $request->input('status', []);
+        }
+
+        if (!empty($statusSelecionados)) {
+            $query->whereIn('contas_pagars.status', $statusSelecionados);
+        }
 
       switch ($request->input('ordem')) {
             case 'vencimento_asc':
@@ -83,7 +95,7 @@ class ContasPagarController extends Controller
         $contasFixas = $query->clone()->where('fixa', true)->paginate(1000, ['*'], 'page_fixas');
         $contasVariaveis = $query->clone()->where('fixa', false)->paginate(1000, ['*'], 'page_variaveis');
         session(['url_retorno_contas_pagar' => $request->fullUrl()]);
-        return view('financeiro.contas-pagar.index', compact('contasFixas', 'contasVariaveis'));
+        return view('financeiro.contas-pagar.index', compact('contasFixas', 'contasVariaveis', 'inputInicio', 'inputFim', 'statusSelecionados'));
     }
 
     /**
