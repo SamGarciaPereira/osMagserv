@@ -31,9 +31,9 @@ class ContasPagarController extends Controller
 
       if (!$request->has('filtro_aplicado')){
             if (in_array($user->role, ['admin', 'diretor']))  {
-                $statusSelecionados = ['Pendente', 'Atrasado', 'Pago'];
+                $statusSelecionados = ['Pendente', 'Atrasado'];
             } else {
-                $statusSelecionados = [];
+                $statusSelecionados = ['Pendente', 'Atrasado', 'Pago'];
             }
         } else {
             $statusSelecionados = $request->input('status', []);
