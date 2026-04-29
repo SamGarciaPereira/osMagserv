@@ -139,33 +139,39 @@
         <table class="w-full table-auto">
           <thead class="bg-gray-50">
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DANFE</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fornecedor</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vencimento</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pagamento</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DANFE</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fornecedor</th>
+              <th class="py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vencimento</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pagamento</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
             @forelse ($contasFixas as $conta)
               <tr class="hover:bg-gray-50 transition-colors">
-                <td class="px-6 py-4">
+                <td class="px-4 py-3">
                   <button class="toggle-details-btn text-gray-500 hover:text-gray-800 transition-colors" data-target-id="{{ $conta->id }}">
                     <i class="bi bi-chevron-down toggle-arrow inline-block transition-transform duration-300"></i>
                   </button>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $conta->danfe ?? 'N/A' }}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $conta->fornecedor ?? 'N/A' }}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $conta->descricao }}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">R$ {{ number_format($conta->valor, 2, ',', '.') }}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td class="max-w-[85px] truncate px-4 py-4 whitespace-nowrap text-sm font-medium text-blue-600" title="{{ $conta->danfe ?? 'N/A' }}">
+                  {{ $conta->danfe ?? 'N/A' }}
+                </td>
+                <td class="max-w-[150px] truncate px-4 py-4 whitespace-nowrap text-sm text-gray-700" title="{{ $conta->fornecedor ?? 'N/A' }}">
+                  {{ $conta->fornecedor ?? 'N/A' }}
+                </td>
+                <td class="max-w-[250px] truncate py-4 whitespace-nowrap text-sm font-medium text-gray-700" title="{{ $conta->descricao }}">
+                  {{ $conta->descricao }}
+                </td>
+                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">R$ {{ number_format($conta->valor, 2, ',', '.') }}</td>
+                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                   {{ $conta->data_vencimento ? \Carbon\Carbon::parse($conta->data_vencimento)->format('d/m/Y') : '-' }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                   {{ $conta->data_pagamento ? \Carbon\Carbon::parse($conta->data_pagamento)->format('d/m/Y') : '-' }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
@@ -302,14 +308,14 @@
         <table class="w-full table-auto">
           <thead class="bg-gray-50">
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DANFE</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fornecedor</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vencimento</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pagamento</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DANFE</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fornecedor</th>
+              <th class="py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vencimento</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pagamento</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
             </tr>
           </thead>
@@ -321,17 +327,23 @@
                     <i class="bi bi-chevron-down toggle-arrow inline-block transition-transform duration-300"></i>
                   </button>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $conta->danfe ?? 'N/A' }}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $conta->fornecedor ?? 'N/A' }}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $conta->descricao }}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">R$ {{ number_format($conta->valor, 2, ',', '.') }}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {{ $conta->data_vencimento ? \Carbon\Carbon::parse($conta->data_vencimento)->format('d/m/Y') : 'Não definida' }}
+                <td class="max-w-[85px] truncate px-4 py-4 whitespace-nowrap text-sm font-medium text-blue-600" title="{{ $conta->danfe ?? 'N/A' }}">
+                  {{ $conta->danfe ?? 'N/A' }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {{ $conta->data_pagamento ? \Carbon\Carbon::parse($conta->data_pagamento)->format('d/m/Y') : 'Não definida' }}
+                <td class="max-w-[150px] truncate px-4 py-4 whitespace-nowrap text-sm text-gray-700" title="{{ $conta->fornecedor ?? 'N/A' }}">
+                  {{ $conta->fornecedor ?? 'N/A' }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap">
+                <td class="max-w-[250px] truncate py-4 whitespace-nowrap text-sm font-medium text-gray-700" title="{{ $conta->descricao }}">
+                  {{ $conta->descricao }}
+                </td>
+                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">R$ {{ number_format($conta->valor, 2, ',', '.') }}</td>
+                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {{ $conta->data_vencimento ? \Carbon\Carbon::parse($conta->data_vencimento)->format('d/m/Y') : 'N/A' }}
+                </td>
+                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {{ $conta->data_pagamento ? \Carbon\Carbon::parse($conta->data_pagamento)->format('d/m/Y') : 'N/A' }}
+                </td>
+                <td class="px-4 py-4 whitespace-nowrap">
                   <x-status-badge :status="$conta->status" />
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
