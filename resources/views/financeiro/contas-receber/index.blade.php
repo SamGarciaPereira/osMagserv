@@ -28,7 +28,7 @@
   </div>
 
   <div class="bg-white p-6 rounded-lg shadow-sm mb-6 border border-gray-200">
-    <form method="GET" action="{{ route('financeiro.contas-receber.index') }}" class="grid grid-cols-1 md:grid-cols-20 gap-4 items-end">
+    <form method="GET" action="{{ route('financeiro.contas-receber.index') }}" id="filter-form" class="grid grid-cols-1 md:grid-cols-20 gap-4 items-end">
 
       <div class="md:col-span-5">
         <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Pesquisar</label>

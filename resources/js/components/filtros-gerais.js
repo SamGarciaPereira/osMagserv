@@ -5,7 +5,9 @@ document.addEventListener("DOMContentLoaded", function () {
     function enviarFiltrosGerais() {
         if (!filterForm) return;
 
-        document.querySelectorAll(".hidden-filter-copy").forEach((el) => el.remove());
+        document
+            .querySelectorAll(".hidden-filter-copy")
+            .forEach((el) => el.remove());
 
         const checkboxesMarcadas = document.querySelectorAll(
             '.dropdown-container input[type="checkbox"]:checked',
@@ -55,7 +57,15 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Fechar menus ao fazer scroll ou redimensionar 
+    // Listener para os inputs de data (data_inicio e data_fim)
+    const dateInputs = document.querySelectorAll("#data_inicio, #data_fim");
+    dateInputs.forEach((input) => {
+        input.addEventListener("change", function () {
+            enviarFiltrosGerais();
+        });
+    });
+
+    // Fechar menus ao fazer scroll ou redimensionar
     // O parâmetro 'true' no final captura o scroll até de dentro da tabela
     window.addEventListener(
         "scroll",
@@ -129,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     menu.style.top = `${rect.bottom + 4}px`;
                     menu.style.zIndex = "99999";
 
-                    // Evita que o menu passe da margem direita 
+                    // Evita que o menu passe da margem direita
                     const menuWidth = menu.offsetWidth;
                     if (rect.left + menuWidth > window.innerWidth) {
                         menu.style.left = `${window.innerWidth - menuWidth - 15}px`;
