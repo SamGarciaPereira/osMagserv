@@ -55,7 +55,7 @@ class ContasReceberController extends Controller
                 break;
         }
 
-        $inputInicio = $request->input('data_inicio');
+        $inputInicio = $request->input('data_inicio', now()->format('Y-m'));
         $inputFim    = $request->input('data_fim');
 
 
@@ -64,16 +64,11 @@ class ContasReceberController extends Controller
                 $dataInicio = Carbon::parse($inputInicio)->startOfMonth();
 
                 if ($inputFim) {
-                    try {
-                        $dataFim = Carbon::parse($inputFim)->endOfMonth();
-                        
-                        if ($dataFim->lt($dataInicio)) {
-                            $dataFim = $dataInicio->copy()->endOfMonth();
-                            $inputFim = null; 
-                        }
-                    } catch (\Exception $e) {
+                    $dataFim = Carbon::parse($inputFim)->endOfMonth();
+                    
+                    if ($dataFim->lt($dataInicio)) {
                         $dataFim = $dataInicio->copy()->endOfMonth();
-                        $inputFim = null;
+                        $inputFim = null; 
                     }
                 } else {
                     $dataFim = $dataInicio->copy()->endOfMonth();
@@ -88,7 +83,7 @@ class ContasReceberController extends Controller
 
         $contasReceber = $query->get();
         session(['url_retorno_contas_receber' => $request->fullUrl()]);
-        return view('financeiro.contas-receber.index', compact('contasReceber'));
+        return view('financeiro.contas-receber.index', compact('contasReceber', 'inputInicio', 'inputFim'));
     }
 
     /**
