@@ -38,14 +38,17 @@ class ContasReceberController extends Controller
         }
 
         switch ($request->input('ordem')) {
-            case 'vencimento_asc':
+            case 'antigos':
                 $query->orderBy('data_vencimento', 'asc');
                 break;
-            case 'vencimento_desc':
+            case 'recentes':
                 $query->orderBy('data_vencimento', 'desc');
                 break;
             case 'maior_valor':
                 $query->orderByDesc('valor');
+                break;
+            case 'menor_valor':
+                $query->orderBy('valor', 'asc');
                 break;
             default:
                 $query->orderBy('data_vencimento', 'asc');

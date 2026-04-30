@@ -62,29 +62,29 @@ class ContasPagarController extends Controller
         }
 
         $inputInicio = $request->input('data_inicio', now()->format('Y-m'));
-    $inputFim    = $request->input('data_fim');
+        $inputFim    = $request->input('data_fim');
 
-    if ($inputInicio) {
-        try {
-            $dataInicio = Carbon::parse($inputInicio)->startOfMonth();
+        if ($inputInicio) {
+            try {
+                $dataInicio = Carbon::parse($inputInicio)->startOfMonth();
 
-            if ($inputFim) {
-                $dataFim = Carbon::parse($inputFim)->endOfMonth();
-                
-                if ($dataFim->lt($dataInicio)) {
+                if ($inputFim) {
+                    $dataFim = Carbon::parse($inputFim)->endOfMonth();
+                    
+                    if ($dataFim->lt($dataInicio)) {
+                        $dataFim = $dataInicio->copy()->endOfMonth();
+                        $inputFim = null; 
+                    }
+                } else {
                     $dataFim = $dataInicio->copy()->endOfMonth();
-                    $inputFim = null; 
                 }
-            } else {
-                $dataFim = $dataInicio->copy()->endOfMonth();
+
+                $query->whereBetween('data_vencimento', [$dataInicio, $dataFim]);
+
+            } catch (\Exception $e) {
+                
             }
-
-            $query->whereBetween('data_vencimento', [$dataInicio, $dataFim]);
-
-        } catch (\Exception $e) {
-            
         }
-    }
 
         $contasFixas = $query->clone()->where('fixa', true)->paginate(1000, ['*'], 'page_fixas');
         $contasVariaveis = $query->clone()->where('fixa', false)->paginate(1000, ['*'], 'page_variaveis');
