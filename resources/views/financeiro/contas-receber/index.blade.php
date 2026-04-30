@@ -29,6 +29,7 @@
 
   <div class="bg-white p-6 rounded-lg shadow-sm mb-6 border border-gray-200">
     <form method="GET" action="{{ route('financeiro.contas-receber.index') }}" id="filter-form" class="grid grid-cols-1 md:grid-cols-20 gap-4 items-end">
+      <input type="hidden" name="filtro_aplicado" value="1">
 
       <div class="md:col-span-5">
         <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Pesquisar</label>
@@ -40,14 +41,35 @@
         </div>
       </div>
 
-      <div class="md:col-span-3">
-        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-        <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
-          <option value="">Todos</option>
-          <option value="Pendente" {{ request('status') == 'Pendente' ? 'selected' : '' }}>Pendente</option>
-          <option value="Pago" {{ request('status') == 'Pago' ? 'selected' : '' }}>Pago</option>
-          <option value="Atrasado" {{ request('status') == 'Atrasado' ? 'selected' : '' }}>Atrasado</option>
-        </select>
+      <div class="md:col-span-3 relative dropdown-container">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+        <button type="button" class="dropdown-btn w-full px-3 py-[9px] border border-gray-300 rounded-md text-sm bg-white flex justify-between items-center hover:bg-gray-50 transition-all">
+          <span class="truncate">{{ count($statusSelecionados) }} selecionados</span>
+          <i class="bi bi-chevron-down text-gray-400 ml-2"></i>
+        </button>
+
+        <div class="dropdown-menu hidden absolute z-50 mt-1 w-60 bg-white border border-gray-200 rounded-md shadow-xl p-2 left-0">
+          <div class="flex justify-center gap-4 items-center border-b border-gray-100 pb-2 mb-2">
+            <button type="button" class="btn-select-all flex items-center gap-1 px-2.5 py-1 bg-gray-50 border border-gray-200 text-gray-500 rounded text-[10px] uppercase font-bold hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm">
+              Todos
+            </button>
+            <button type="button" class="btn-clear-all flex items-center gap-1 px-2.5 py-1 bg-gray-50 border border-gray-200 text-gray-500 rounded text-[10px] uppercase font-bold hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all shadow-sm">
+              Limpar
+            </button>
+          </div>
+
+          <div class="flex flex-col gap-1 max-h-64 overflow-y-auto">
+            @foreach (['Pendente', 'Pago', 'Atrasado'] as $status)
+              <label class="flex items-center justify-between px-3 py-2 hover:bg-blue-50 rounded-md cursor-pointer group transition-all">
+                <div class="flex items-center">
+                  <input type="checkbox" name="status[]" value="{{ $status }}" class="peer hidden status-checkbox" {{ in_array($status, $statusSelecionados) ? 'checked' : '' }}>
+                  <span class="text-sm text-gray-600 peer-checked:text-blue-700 peer-checked:font-bold transition-all">{{ $status }}</span>
+                </div>
+                <i class="bi bi-check2 text-blue-600 font-bold opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+              </label>
+            @endforeach
+          </div>
+        </div>
       </div>
 
       @php

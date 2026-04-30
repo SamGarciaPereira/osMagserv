@@ -33,8 +33,20 @@ class ContasReceberController extends Controller
             });
         }
 
-        if($request->filled('status')){
-            $query->where('status', $request->input('status'));
+        $user = auth()->user();
+
+        if (!$request->has('filtro_aplicado')){
+            if (in_array($user->role, ['admin', 'diretor']))  {
+                $statusSelecionados = ['Pendente', 'Atrasado'];
+            } else {
+                $statusSelecionados = ['Pendente', 'Atrasado', 'Pago'];
+            }
+        } else {
+            $statusSelecionados = $request->input('status', []);
+        }
+
+        if (!empty($statusSelecionados)) {
+            $query->whereIn('contas_recebers.status', $statusSelecionados);
         }
 
         switch ($request->input('ordem')) {
@@ -83,7 +95,7 @@ class ContasReceberController extends Controller
 
         $contasReceber = $query->get();
         session(['url_retorno_contas_receber' => $request->fullUrl()]);
-        return view('financeiro.contas-receber.index', compact('contasReceber', 'inputInicio', 'inputFim'));
+        return view('financeiro.contas-receber.index', compact('contasReceber', 'inputInicio', 'inputFim', 'statusSelecionados'));
     }
 
     /**
