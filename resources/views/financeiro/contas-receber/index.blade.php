@@ -113,46 +113,46 @@
       <table class="w-full table-auto">
         <thead class="bg-gray-50">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NF</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Venc.</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Receb.</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NF</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
+            <th class="py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Venc.</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Receb.</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           @forelse ($contasReceber as $conta)
-            <tr>
-              <td class="px-6 py-4">
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-4 py-3">
                 <button class="toggle-details-btn text-gray-500 hover:text-gray-800 transition-colors" data-target-id="{{ $conta->id }}">
                   <i class="bi bi-chevron-down toggle-arrow inline-block transition-transform duration-300"></i>
                 </button>
               </td>
 
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
+              <td class="max-w-[85px] truncate px-4 py-4 whitespace-nowrap text-sm font-medium text-blue-600" title="{{ $conta->nf ?? 'N/A' }}">
                 {{ $conta->nf ?? '-' }}
               </td>
 
-              <td class="max-w-[150px] truncate py-4 whitespace-nowrap text-sm text-gray-900" title="{{ $conta->cliente->nome ?? 'N/A' }}">{{ $conta->cliente->nome ?? 'N/A' }}</td>
-              <td class="max-w-[295px] truncate px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" title="{{ $conta->processo->orcamento->numero_proposta ?? $conta->descricao }}">
+              <td class="max-w-[150px] truncate px-4 py-4 whitespace-nowrap text-sm text-gray-700" title="{{ $conta->cliente->nome ?? 'N/A' }}">{{ $conta->cliente->nome ?? 'N/A' }}</td>
+              <td class="max-w-[250px] truncate py-4 whitespace-nowrap text-sm font-medium text-gray-700" title="{{ $conta->processo->orcamento->numero_proposta ?? $conta->descricao }}">
                 @if ($conta->processo && $conta->processo->orcamento)
                   {{ $conta->descricao }}: <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-mono font-bold border border-gray-300 select-all">{{ $conta->processo->orcamento->numero_proposta }} </span>
                 @else
                   {{ 'N/A' }}
                 @endif
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">R$ {{ number_format($conta->valor, 2, ',', '.') }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">R$ {{ number_format($conta->valor, 2, ',', '.') }}</td>
+              <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                 {{ $conta->data_vencimento ? \Carbon\Carbon::parse($conta->data_vencimento)->format('d/m/Y') : 'N/A' }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                 {{ $conta->data_recebimento ? \Carbon\Carbon::parse($conta->data_recebimento)->format('d/m/Y') : 'N/A' }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="px-4 py-4 whitespace-nowrap">
                 <x-status-badge :status="$conta->status" />
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
